@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title> 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head> 
+
+<style> 
+
+body{
+    background-color: #0e1113; 
+    color: white; 
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
+.tarjeta{
+    border: 1px ;
+    padding: 50px;
+    margin: 100px ; 
+    width: 900px;
+    background-color: #161a1d; 
+    border-radius: 10px;
+    box-shadow:  1px 1px 10px rgb(83, 83, 83) ;  
+    border-color: darkslategray; 
+    margin-left: 150px;
+    margin-top: 90px;
+    
+
+} 
+
+.botonRegistra{
+    width: 450px;
+    height: 55px;
+    border-radius: 500px;
+    background-color: white;
+    font-weight: bold;
+    border: none;
+} 
+
+.botonYaTengoCuenta{
+    width: 300px;
+    height: 40px;
+    border-radius: 500px;
+    background: transparent;
+    color: white;
+    font-weight: bold ;
+    border: 2px solid white ;
+} 
+
+.gris{
+color: #C7D1DB; 
+font-weight: bold;
+transition: 0.5s;
+} 
+
+.azul{
+    color: #C7D1DB;
+    font-weight: bold;
+}
+
+
+.campo{
+    background: transparent;
+    border:5px solid gray;
+    border-radius: 10px; 
+    width: 450px;
+    height: 45px; 
+    border-width: 1px;
+    color: white;
+}
+
+
+
+
+
+</style>
+
+<body> 
+       
+<form method="POST" action="">  
+    <div class="container">
+        <div class="tarjeta"> 
+            <div class="row"> 
+
+                <h2><center>Empieza a usar nuestra web</center></h2>
+                <h5> <center>Registrate para mejorar tu experiencia de estacionamiento</center> </h5>
+                
+                <br><br>
+                <center>
+                <form>
+                
+                <div class="-mb -3"> 
+                    
+                    <label><p class="form-label"> <p class="gris"> Nombre de usuario </p></label>
+                    <input type="text" class="campo" id="user" name="user" placeholder=" Ingrese su usuario " >
+                </div>
+      
+                <br>
+                
+                <div class="-mb -3">
+                    <label><p class="form-label"> <p class="gris"> Nombre completo </p></label>
+                    <input type="text" class="campo" id="nombre" name="nombre" placeholder=" Ingrese nombre completo  " >
+                </div>
+              
+                <br>
+                
+                <div class="-mb -3">
+                    <label><p class="form-label"> <p class="gris"> Ingrese su apellido </p></label>
+                    <input type="text" class="campo" id="apellido" name="apellido" placeholder=" Ingrese su apellido  " >
+                </div>
+                
+                <br>
+
+                <div class="-mb -3">
+                    <label><p class="form-label"> <p class="gris"> Ingrese su E-mail </p></label>
+                    <input type="email" class="campo" id="email" name="email" placeholder=" Ingrese e-mail">
+                </div>
+
+                <br>
+
+                <div class="-mb -3">
+                        <label class="form-label"> <p class="gris"> Contraseña </p></label>
+                        <input type="password" id="contraseña" name="contraseña" class="campo" placeholder="  Ingrese su contraseña aquí">
+                </div>
+                
+
+                
+                <br><br>
+                
+                <div class="-mb -3">
+                        <button type="submit" class="botonRegistra" >Registrate</button> 
+                        
+                </div>
+                </form>
+                </center>
+            </div>
+        </div>
+    </div>
+</form>
+
+</body>
+</html>
