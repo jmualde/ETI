@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <style>
+    body{
+    background-color: #1c1c1c;
+    color: white; 
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    font-family: "Inter", sans-serif;
+        
+}
+
+.tarjeta{
+    border: 1px solid white; ;
+    padding: 50px;
+    margin: 100px ; 
+    width: 550px;
+    background-color: #1c1c1c; 
+    border-radius: 10px;
+    margin-top: 250px;
+    
+
+} 
+
+.botonenviar{
+    width: 100px;
+    height: 45px;
+    border-radius: 10px;   
+    background-color: white;
+    font-weight: bold;
+    border: none;
+} 
+
+.campoinput{
+    background: transparent;
+    border:5px solid gray;
+    border-radius: 10px; 
+    width: 300px;
+    height: 45px; 
+    border-width: 1px;
+    font-style: normal;
+    color: white;
+}
+   </style> 
+   <center>
+    <form action="mailProcesa.php" method="POST">
+<div class="tarjeta">
+    <h1>Recuperar Contraseña </h1>  <br> <br>
+    <input type="email" class="campoinput" placeholder="Correo electrónico" name="mailRecuperacion" id="mailRecuperacion"> <button class="botonenviar">Enviar</button>
+        </div>
+    </center>
+
+
+
+
+
+
+</body>
+</html>
