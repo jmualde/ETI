@@ -1,12 +1,13 @@
 CREATE DATABASE estacionamiento;
 USE estacionamiento;
 
-CREATE TABLE Usuario(
-    ci VARCHAR(9) PRIMARY KEY,
+CREATE TABLE usuarios(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nombreUsuario VARCHAR(50),
     nombre VARCHAR(50),
     apellido VARCHAR(50),
-    email VARCHAR(100),
-    contraseña VARCHAR(100),
+    email VARCHAR(200),
+    contrasenia VARCHAR(200),
     rol BOOLEAN
 );
 
