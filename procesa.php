@@ -1,14 +1,22 @@
 <?php
+require_once ("conexion.php");
 $user=$_POST["user"];
 $contrasenia=$_POST["contrasenia"];
 
-$usuario="usuario";
-$contra="123";
+$sql = "SELECT * FROM usuarios WHERE nombreUsuario = :nombreUsuario AND contrasenia = :contrasenia";
+$stmt = $conexion->prepare($sql);
+$stmt->execute([
+    ':nombreUsuario' => $user,
+    ':contrasenia' => $contrasenia
+]);
+
+$fila = $stmt->fetch(PDO::FETCH_ASSOC);
+
 
 session_start();
 
-    if ($user === $usuario && $contrasenia === $contrasenia){
-        $_SESSION["$usuario"]=$user;
+    if ($fila){
+        $_SESSION["usuario"]=$user;
         header("Location: principal.html" );
         exit();
     }else{
@@ -18,8 +26,8 @@ session_start();
         <?php
 }
 
-    if (!isset($_SESSION[usuario])) {
-      heder("Location: login.html");
+    if (!isset($_SESSION["usuario"])) {
+      header("Location: login.html");
       exit();
     }
 
