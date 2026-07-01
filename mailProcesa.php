@@ -1,4 +1,5 @@
 <?php
+require_once("conexion.php");
 $email = $_POST['mailRecuperacion'];
 $sql = "SELECT * FROM usuarios WHERE email = :email";
 $stmt = $conexion->prepare($sql);

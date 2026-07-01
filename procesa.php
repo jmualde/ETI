@@ -20,14 +20,11 @@ session_start();
         header("Location: principal.html" );
         exit();
     }else{
-        ?>
-            Usuario o Contraseña incorrectos.<br>
-            <a href="login.html">Pulse aquí para volver</a>
-        <?php
+      header("Location: login.php?error=1");
 }
 
     if (!isset($_SESSION["usuario"])) {
-      header("Location: login.html");
+      header("Location: login.php");
       exit();
     }
 

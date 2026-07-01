@@ -10,7 +10,7 @@ $resultado = $conexion->query($sql);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title> 
+    <title>Iniciar sesión</title> 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head> 
 
@@ -96,8 +96,7 @@ line-height: 1;
     width: 450px;
     height: 45px; 
     border-width: 1px;
-
-
+    color: white;
 }
 
 
@@ -118,7 +117,7 @@ line-height: 1;
                     <h1 class="text-center">Inicio de sesión</h1>
                     <br><br>
                     
-                <form>
+                
                         
                     <div class="mb-3">
                             <label for="exampleInputEmail1" class="form-label"><p class="azul">Inicia sesión con tu usuario</p></label>
@@ -129,19 +128,19 @@ line-height: 1;
                         <label class="form-label" > <p class="gris">Contraseña</p></label>
                         <input type="password" class="campo" name="contrasenia" id ="contrasenia" placeholder="  Ingrese su contraseña aquí">
                     </div> 
-                    
-                    <form action="post" action="recuperacion.html">
-                    <div class ="mb-3">
-                        <button type="submit" class="btn btn-link" src="recuperacion.html" text-decoration: none;> <p class = "gris"> Ayuda, olvide mi contraseña</p></button> 
-                    </div>
-                    </form>
-                    
+        
                     <div class="mb-3">
                         <button type="submit" class="botonIniciar" id="btnIniciar" name="btnIniciar" >Iniciar sesión</button> 
                         <br><br>
+                    </form>
                     </div>
+                     <form action="olvidoContrasenia.html" method="POST">
+                    <div class ="mb-3">
+                        <button type="submit" class="btn btn-link" text-decoration: none;> <p class = "gris"> Ayuda, olvide mi contraseña</p></button> 
+                    </div>
+                    </form>
 
-                </form>
+                
                 </div>  
 
                 <div class="col-md-6"> 
@@ -153,9 +152,9 @@ line-height: 1;
             </div>        
         </div>
     </div> 
-</form>
+
     
-<form method="POST" action="registra.html">
+<form method="POST" action="registra(arreglo).html">
     <div class="mb-3">
         <center>
             <h3>¿Tu primera vez en nuestra web?</h3>
