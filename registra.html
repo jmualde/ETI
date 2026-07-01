@@ -71,6 +71,11 @@ transition: 0.5s;
     height: 45px; 
     border-width: 1px;
     color: white;
+} 
+
+.formulario{
+    width: 450px;
+     margin-left: 150px;
 }
 
 
@@ -80,67 +85,52 @@ transition: 0.5s;
 </style>
 
 <body> 
-       
-<form method="POST" action="">  
+         
     <div class="container">
         <div class="tarjeta"> 
             <div class="row"> 
+               
 
                 <h2><center>Empieza a usar nuestra web</center></h2>
                 <h5> <center>Registrate para mejorar tu experiencia de estacionamiento</center> </h5>
                 
                 <br><br>
-                <center>
-                <form>
-                
-                <div class="-mb -3"> 
-                    
-                    <label><p class="form-label"> <p class="gris"> Nombre de usuario </p></label>
-                    <input type="text" class="campo" id="user" name="user" placeholder=" Ingrese su usuario " >
-                </div>
-      
-                <br>
-                
-                <div class="-mb -3">
-                    <label><p class="form-label"> <p class="gris"> Nombre completo </p></label>
-                    <input type="text" class="campo" id="nombre" name="nombre" placeholder=" Ingrese nombre completo  " >
-                </div>
-              
-                <br>
-                
-                <div class="-mb -3">
-                    <label><p class="form-label"> <p class="gris"> Ingrese su apellido </p></label>
-                    <input type="text" class="campo" id="apellido" name="apellido" placeholder=" Ingrese su apellido  " >
-                </div>
-                
-                <br>
+    <div class="formulario">           
+<form action="guardar.php" method="POST">
 
-                <div class="-mb -3">
-                    <label><p class="form-label"> <p class="gris"> Ingrese su E-mail </p></label>
-                    <input type="email" class="campo" id="email" name="email" placeholder=" Ingrese e-mail">
-                </div>
+    <div class="mb-3">
+        <label class="form-label gris">Nombre de usuario</label>
+        <input type="text" class="campo" id="nombreUsuario" name="nombreUsuario" placeholder="Ingrese su usuario">
+    </div>
 
-                <br>
+    <div class="mb-3">
+        <label class="form-label gris">Nombre completo</label>
+        <input type="text" class="campo" id="nombre" name="nombre" placeholder="Ingrese nombre completo">
+    </div>
 
-                <div class="-mb -3">
-                        <label class="form-label"> <p class="gris"> Contraseña </p></label>
-                        <input type="password" id="contraseña" name="contraseña" class="campo" placeholder="  Ingrese su contraseña aquí">
-                </div>
-                
+    <div class="mb-3">
+        <label class="form-label gris">Apellido</label>
+        <input type="text" class="campo" id="apellido" name="apellido" placeholder="Ingrese su apellido">
+    </div>
 
+    <div class="mb-3">
+        <label class="form-label gris">E-mail</label>
+        <input type="email" class="campo" id="email" name="email" placeholder="Ingrese e-mail">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label gris">Contraseña</label>
+        <input type="password" id="contrasenia" name="contrasenia" class="campo" placeholder="Ingrese su contraseña">
+    </div>
+
+    <button type="submit" class="botonRegistra">Registrate</button>
+
+</form>
                 
-                <br><br>
-                
-                <div class="-mb -3">
-                        <button type="submit" class="botonRegistra" >Registrate</button> 
-                        
-                </div>
-                </form>
-                </center>
             </div>
         </div>
+    </div> 
     </div>
-</form>
 
 </body>
 </html>

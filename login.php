@@ -95,7 +95,8 @@ line-height: 1;
     border-radius: 10px; 
     width: 450px;
     height: 45px; 
-    border-width: 1px;
+    border-width: 1px; 
+    color: white;
 
 
 }
@@ -107,6 +108,8 @@ line-height: 1;
 </style>
 
 <body> 
+
+
        
 <form method="POST" action="procesa.php"> 
     <div class="container">
@@ -165,6 +168,6 @@ line-height: 1;
 
     </div>
 </form>
-
+ 
 </body>
 </html>

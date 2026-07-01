@@ -3,6 +3,7 @@ require_once ("conexion.php");
 $user=$_POST["user"];
 $contrasenia=$_POST["contrasenia"];
 
+
 $sql = "SELECT * FROM usuarios WHERE nombreUsuario = :nombreUsuario AND contrasenia = :contrasenia";
 $stmt = $conexion->prepare($sql);
 $stmt->execute([
@@ -20,14 +21,15 @@ session_start();
         header("Location: principal.html" );
         exit();
     }else{
-        ?>
-            Usuario o Contraseña incorrectos.<br>
-            <a href="login.html">Pulse aquí para volver</a>
-        <?php
+   header("Location: login.php");
+
+
+   
 }
 
+
     if (!isset($_SESSION["usuario"])) {
-      header("Location: login.html");
+      header("Location: login.php");
       exit();
     }
 

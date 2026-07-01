@@ -14,7 +14,7 @@ body{
 
 .tarjeta{
     margin-top: 100px;
-    border: 1px solid darkslategray;
+    border: 1px solid whitesmoke;
     padding: 50px;
     background-color: #161a1d;
     border-radius: 10px;
@@ -43,7 +43,7 @@ body{
     background-color: white;
     font-weight: bold;
     border: none;
-    margin-top: 10px;
+    margin-top: 20px;
     margin-left: 1750px;
 }
 
@@ -66,14 +66,17 @@ body{
     font-size: 70px; 
     margin-top: 100px;
     font-weight: bold;
-    color: #f0e8d8;
-}
+    color: white;
+} 
 
 </style>
 
 
 <body>
-<button class="botonCuenta" name="cuenta" id="cuenta">Cuenta</button>
+
+    <form method="POST" action="cuenta.html">
+<button type="submit" class="botonCuenta" name="cuenta" id="cuenta">Cuenta</button> 
+</form>
 
 <div class="container">
     <div class="row">
@@ -83,7 +86,7 @@ body{
 y cobrá como capo.
             </h1>
             <br>
-            <button class="botonRegistraAuto" name="auto" id="auto">
+            <button class="botonRegistraAuto" name="auto" id="auto" onclick="auto()">
                 <p class="textoBlanco">Registre su vehiculo</p>
             </button>
             <button class="botonOcupa" name="ocupa" id="ocupa">Ocupar lugar</button>
@@ -96,7 +99,18 @@ y cobrá como capo.
             </div>
         </div>
     </div>
-</div>
+</div> 
+
+<script>
+
+function auto() {
+    console.log("pone tu auto papa");
+    
+}
+
+
+
+</script>
 
 </body>
 </html>

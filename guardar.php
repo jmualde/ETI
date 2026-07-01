@@ -16,6 +16,6 @@ $stmt->execute([
     ':email' => $email,
     ':contrasenia' => $contrasenia
 ]);
-header("Location: principal.html");
+header("Location: login.php");
 exit;
 ?>
