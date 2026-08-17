@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <title>PaginaPrincipal</title>
 </head>
 <style>
@@ -12,13 +15,30 @@ body{
     color: white; 
 }
 
+.tarjetaAbajo{
+ background-color: white;
+    color: #101214; 
+}
+
 .tarjeta{
-    margin-top: 100px;
+    margin-top: 150px;
+    margin-left: 120px;
     border: 1px solid darkslategray;
-    padding: 50px;
+    padding: 40px;
     background-color: #161a1d;
     border-radius: 10px;
     box-shadow: 1px 1px 10px rgb(83, 83, 83);
+    width: fit-content;
+    display: flex;
+}
+.tarjetaArriba{
+    background-color: #181C1F;
+    width: 100%;
+    height: 60px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    
 }
 
 .botonRegistraAuto{
@@ -28,23 +48,24 @@ body{
     background-color: transparent;
     border: 1px solid white;
     font-weight: bold;
+    margin-left: 300px;
 }
 
 .textoBlanco{
     color: white;
     margin: 0; 
     transition: 0.5s;
+    font-family: "Inter", sans-serif;
 }
-
-.botonCuenta{
-    width: 100px;
-    height: 55px;
-    border-radius: 500px;
-    background-color: white;
-    font-weight: bold;
-    border: none;
-    margin-top: 10px;
-    margin-left: 1750px;
+.textoAbajo{
+    color: white;
+    margin: 0; 
+    transition: 0.5s;
+    font-family: "Inter", sans-serif;
+    margin-left: 200px ;
+  word-spacing: 4px;    
+  line-height: 1.6; 
+  font-size: 20px;
 }
 
 .botonOcupa{
@@ -54,31 +75,57 @@ body{
     background-color: white;
     font-weight: bold;
     border: none;
-    margin-top: 20px;
+
+    
 }
 
 .mapa{    
     border-radius: 10px;
-    max-width: 100%;
+    max-width: 90%;
+
 }
 
 .textoPrincipal{
     font-size: 70px; 
-    margin-top: 100px;
+    margin-top: 200px;
     font-weight: bold;
     color: #f0e8d8;
+    margin-left: 200px;
+    font-family: "Inter", sans-serif;
 }
+.tituloAbajo{
+    font-size: 60px; 
+    font-weight: bold;
+    color: #f0e8d8;
+    font-family: "Inter", sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+     margin: 0 20px;                                                            
+}
+
+
 
 </style>
 
 
 <body>
-<button class="botonCuenta" name="cuenta" id="cuenta">Cuenta</button>
-
-<div class="container">
+<div class="container-fluid">
+    <nav class="tarjetaArriba">
+            <a href="principal.html"> <h7 class = "textoBlanco">Pagina Principal</h7></a>
+            <a href="#quienes_somos"> <h7 class = "textoBlanco">¿Quiénes somos?</h7></a>
+            <a href="registrar_vehiculo.html"> <h7 class = "textoBlanco">Registrar vehiculo</h7></a>
+            <a href="ocupar_lugar.html"> <h7 class = "textoBlanco ">Ocupar lugar</h7></a>
+            <a href="cuenta.html"> <h7 class = "textoBlanco ">Cuenta</h7></a>
+            </nav>
     <div class="row">
-        <div class="col-md-6">
+            
+        <div class="col-12 col-md-6 col-lg-6">
+
             <br><br>
+            
             <h1 class="textoPrincipal">Estaciona en el caos
 y cobrá como capo.
             </h1>
@@ -88,13 +135,41 @@ y cobrá como capo.
             </button>
             <button class="botonOcupa" name="ocupa" id="ocupa">Ocupar lugar</button>
         </div>
-        <div class="col-md-6">
+        <div class="col-12 col-md-6 col-lg-6">
+            
+    
             <div class="tarjeta">
                 <center>
                     <img class="mapa" src="image.png">
                 </center>
             </div>
         </div>
+    </div> 
+<br><br><br><br><br><br><br><br><br><br>
+    <div class="row">
+        <div id="quienes_somos">
+        <center>
+       <h3 class="tituloAbajo">¿Quiénes somos?</h3>
+       </center>
+        <div class="col-12 col-md-6 col-lg-6">
+       <br><br><br><br><br>
+           <p class = "textoAbajo">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</p>
+    </div><br><br><br><br><br>
+         <center>
+<h3 class="tituloAbajo">¿Como funciona?</h3>
+</center>
+<br><br><br><br><br>
+    <div class="col-12 col-md-6 col-lg-6">
+          <p class = "textoAbajo">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</p>
+<br><br>
+<h5 class = "textoAbajo"></h5>
+    </div>
+
+    </div>
     </div>
 </div>
 
