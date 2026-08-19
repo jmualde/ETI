@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión Estacionamiento</title> 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .videoauto {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1; 
+        } 
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+        }
+
+        .titulo {
+            font-size: 100px; 
+            font-weight: bold;
+            color: #f0e8d8;
+            line-height: 1;
+        }
+
+        .subtitulo {
+            font-size: 50px;
+            font-weight: bold;
+            color: #f0e8d8;
+            line-height: 1;
+        }
+
+        .overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(17, 18, 19, 0.45);
+            z-index: 1;
+        } 
+
+        .contenido-flex {
+            position: relative;
+            z-index: 2;
+            height: 100vh;
+        }
+
+        .boton { 
+            font-size: 20px;
+            font-weight: bold;
+            width: 350px;
+            height: 65px;
+            background: transparent; 
+            border-radius: 999px;
+            border: 2px solid #f0e8d8; 
+
+        }
+
+        .oliva {
+            color:  #f0e8d8;
+            margin: 0; 
+            transition: 0.5s;
+        
+        }
+
+        .boton:hover {
+            background:   #f0e8d8 ;  
+            color: black;  
+              
+        }
+
+        .boton:hover .oliva {
+            color: black;
+        }
+    </style>
+</head> 
+
+<body> 
+    <div class="videoauto"> 
+        <video autoplay muted loop> 
+            <source src="download.mp4" type="video/mp4">
+        </video>
+    </div> 
+
+    <div class="overlay"></div> 
+
+    <div class="contenido-flex"> 
+        <div class="container h-100 d-flex flex-column align-items-center justify-content-center text-center">
+            <h1 class="titulo">Gestión Estacionamiento</h1> 
+            <br>
+            <p class="subtitulo">E.T.I reacciones</p>
+            <br>
+            <form action="login.html" method="post">
+                <button class="boton" type="submit">
+                    <p class="oliva">Iniciar sesión</p>
+                </button>
+            </form>
+        </div> 
+    </div> 
+</body>
+</html>
