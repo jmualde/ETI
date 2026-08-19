@@ -33,13 +33,13 @@ $resultado = $conexion->query($sql);
             padding: 30px 15px;
         }
 
-        /* CONTENEDOR PRINCIPAL */
+       
         .contenedor {
             width: 100%;
             max-width: 1000px;
         }
 
-        /* TARJETA */
+        
         .tarjeta {
             width: 100%;
             min-height: 450px;
@@ -54,19 +54,19 @@ $resultado = $conexion->query($sql);
             box-shadow: 1px 1px 10px rgb(83, 83, 83);
         }
 
-        /* COLUMNAS */
+        
         .columna-formulario,
         .columna-imagen {
             width: 50%;
             padding: 20px;
         }
 
-        /* TITULO */
+        
         h3 {
             margin-bottom: 30px;
         }
 
-        /* CAMPOS */
+        
         .campo {
             width: 100%;
             height: 45px;
@@ -90,7 +90,7 @@ $resultado = $conexion->query($sql);
             color: #999;
         }
 
-        /* TEXTOS */
+        
         .gris {
             color: #C7D1DB;
             font-weight: bold;
@@ -106,7 +106,7 @@ $resultado = $conexion->query($sql);
             font-weight: bold;
         }
 
-        /* BOTÓN INICIAR */
+        
         .botonIniciar {
             width: 100%;
             height: 45px;
@@ -127,7 +127,7 @@ $resultado = $conexion->query($sql);
             transform: scale(1.02);
         }
 
-        /* BOTÓN REGISTRARSE */
+       
         .botonRegistra {
             width: 250px;
             max-width: 100%;
@@ -150,7 +150,7 @@ $resultado = $conexion->query($sql);
             color: #101214;
         }
 
-        /* IMAGEN */
+        
         .imagenauto {
             display: block;
 
@@ -164,7 +164,7 @@ $resultado = $conexion->query($sql);
             margin: 0 auto;
         }
 
-        /* LINK OLVIDÉ CONTRASEÑA */
+    
         .botonAyuda {
             background: none;
             border: none;
@@ -178,7 +178,7 @@ $resultado = $conexion->query($sql);
             color: white;
         }
 
-        /* REGISTRO */
+    
         .registro {
             text-align: center;
             margin-top: 30px;
@@ -188,9 +188,7 @@ $resultado = $conexion->query($sql);
             margin-bottom: 15px;
         }
 
-        /* =========================
-           TABLET
-        ========================= */
+       
         @media (max-width: 768px) {
 
             body {
@@ -218,9 +216,7 @@ $resultado = $conexion->query($sql);
             }
         }
 
-        /* =========================
-           CELULAR
-        ========================= */
+      
         @media (max-width: 480px) {
 
             body {
