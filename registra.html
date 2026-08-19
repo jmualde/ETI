@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Registrarse</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="disenio.css">
+</head>
+
+<body>
+
+    <div class="contenedor">
+
+        <div class="tarjeta tarjeta-registro">
+
+            <div class="formulario-registro">
+
+                <h2 class="text-center">
+                    Empieza a usar nuestra web
+                </h2>
+
+                <h5 class="text-center subtitulo">
+                    Registrate para mejorar tu experiencia de estacionamiento
+                </h5>
+
+                <form action="guardar.php" method="POST">
+
+                    <div class="mb-3">
+                        <label for="nombreUsuario" class="form-label gris">
+                            Nombre de usuario
+                        </label>
+
+                        <input
+                            type="text"
+                            class="campo"
+                            id="nombreUsuario"
+                            name="nombreUsuario"
+                            placeholder="Ingrese su usuario"
+                            required
+                        >
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label gris">
+                            Nombre completo
+                        </label>
+
+                        <input
+                            type="text"
+                            class="campo"
+                            id="nombre"
+                            name="nombre"
+                            placeholder="Ingrese nombre completo"
+                            required
+                        >
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="apellido" class="form-label gris">
+                            Apellido
+                        </label>
+
+                        <input
+                            type="text"
+                            class="campo"
+                            id="apellido"
+                            name="apellido"
+                            placeholder="Ingrese su apellido"
+                            required
+                        >
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label gris">
+                            E-mail
+                        </label>
+
+                        <input
+                            type="email"
+                            class="campo"
+                            id="email"
+                            name="email"
+                            placeholder="Ingrese e-mail"
+                            required
+                        >
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="contrasenia" class="form-label gris">
+                            Contraseña
+                        </label>
+
+                        <input
+                            type="password"
+                            class="campo"
+                            id="contrasenia"
+                            name="contrasenia"
+                            placeholder="Ingrese su contraseña"
+                            required
+                        >
+                    </div>
+                    <br>
+                    <button
+                        type="submit"
+                        class="botonRegistra"
+                        id="btnRegistra"
+                        name="btnRegistra"
+                    >
+                        Registrate
+                    </button>
+
+                </form>
+
+                <div class="volver-login">
+
+                    <p>
+                        ¿Ya tenés una cuenta?
+                    </p>
+
+                    <form action="login.php" method="POST">
+
+                        <button
+                            type="submit"
+                            class="botonYaTengoCuenta"
+                        >
+                            Iniciar sesión
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
