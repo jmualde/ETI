@@ -241,3 +241,208 @@
                 margin-top: 25px;
             }
         }
+        html,
+body {
+    background-color: #161a1d;
+    color: white;
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+}
+
+
+/* TARJETA */
+
+.tarjeta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: min(900px, 90%);
+    min-height: 500px;
+
+    margin: 100px auto;
+
+    padding: 50px;
+
+    background-color: #161a1d;
+
+    border: 1px solid darkslategray;
+    border-radius: 10px;
+
+    box-shadow: 1px 1px 10px rgb(83, 83, 83);
+}
+  
+
+.contenido {
+    width: 100%;
+    max-width: 450px;
+}
+
+
+.titulo {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+
+
+.gris {
+    color: #C7D1DB;
+    font-weight: bold;
+    transition: 0.5s;
+}
+
+.azul {
+    color: #C7D1DB;
+    font-weight: bold;
+}
+
+
+
+.campo {
+    background: transparent;
+
+    border: 1px solid gray;
+    border-radius: 10px;
+
+    width: 100%;
+    height: 45px;
+
+    color: white;
+
+    padding: 0 12px;
+}
+
+
+select.campo {
+    background-color: #161a1d;
+}
+
+
+select.campo option {
+    background-color: #161a1d;
+    color: white;
+}
+
+
+
+.marca-color {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+
+.marca-color .campo {
+    flex: 1;
+    min-width: 0;
+}
+
+
+.campoColor {
+    background: transparent;
+
+    border: 1px solid gray;
+    border-radius: 10px;
+
+    width: 60px;
+    height: 45px;
+
+    padding: 2px;
+}
+
+
+
+.botonRegistra {
+    width: 100%;
+    height: 55px;
+
+    border-radius: 500px;
+
+    background-color: white;
+
+    font-weight: bold;
+
+    border: none;
+
+    margin-top: 20px;
+}
+
+
+
+@media (max-width: 768px) {
+
+    .tarjeta {
+        width: 90%;
+        margin: 60px auto;
+        padding: 35px 25px;
+    }
+
+}
+
+
+
+@media (max-width: 576px) {
+
+    .tarjeta {
+        width: 94%;
+        min-height: auto;
+
+        margin: 30px auto;
+
+        padding: 30px 20px;
+    }
+
+
+    .contenido {
+        max-width: 100%;
+    }
+
+
+    .titulo {
+        font-size: 20px;
+        margin-bottom: 30px;
+    }
+
+
+    .campo {
+        height: 45px;
+    }
+
+
+    .marca-color {
+        gap: 8px;
+    }
+
+
+    .campoColor {
+        width: 55px;
+        flex-shrink: 0;
+    }
+
+
+    .botonRegistra {
+        height: 50px;
+    }
+
+}
+
+
+@media (max-width: 380px) {
+
+    .tarjeta {
+        padding: 25px 15px;
+    }
+
+
+    .titulo {
+        font-size: 18px;
+    }
+
+
+    .campoColor {
+        width: 50px;
+    }
+
+}
