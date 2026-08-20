@@ -1,129 +1,254 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title> 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head> 
 
-<style> 
+    <title>Registrar vehículo</title>
 
-body{
-    background-color: #0e1113; 
-    color: white; 
-    position: fixed;
-    width: 100%;
-    height: 100%;
-}
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
 
-.tarjeta{
-    display: flex;
-    border: 1px ;
-    padding: 50px;
-    margin: 100px ; 
-    width: 900px;
-    background-color: #161a1d; 
-    border-radius: 10px;
-    box-shadow:  1px 1px 10px rgb(83, 83, 83) ;  
-    border-color: darkslategray; 
-    margin-left: 200px;
-    margin-top: 160px;
+    <link rel="stylesheet" href="disenio.css">
+</head>
 
-} 
+<body>
 
-.botonRegistra{
-    width: 450px;
-    height: 55px;
-    border-radius: 500px;
-    background-color: white;
-    font-weight: bold;
-    border: none;
-}  
+    <div class="container-fluid">
+        <div class="tarjeta">
 
-.gris{
-color: #C7D1DB; 
-font-weight: bold;
-transition: 0.5s;
-} 
+            <div class="contenido">
 
-.azul{
-    color: #C7D1DB;
-    font-weight: bold;
-}
+                <h2></h2>
+
+                <h4 class="titulo">
+                    Ingrese los datos del vehículo
+                </h4>
+
+                <form action="guardar_auto.php" method="POST">
+
+                    <!-- MARCA -->
+                    <div class="mb-3">
+                        <label for="marca" class="form-label gris">
+                            Marca
+                        </label>
+
+                        <select
+                            class="campo"
+                            id="marca"
+                            name="marca"
+                            required
+                        >
+                            <option value="">Seleccione una marca</option>
+                        </select>
+                    </div>
 
 
-.campo{
-    background: transparent;
-    border:5px solid gray;
-    border-radius: 10px; 
-    width: 450px;
-    height: 45px; 
-    border-width: 1px;
-    color: white;
-} 
-.marca-color{
-  display: flex;
-  gap: 10px; 
-  width: 450PX;
-}
-.campoColor{
-    background: transparent;
-    border:5px solid gray;
-    border-radius: 10px; 
-    width: 80px;
-    height: 45px; 
-    border-width: 1px;
-    color: white;
-} 
+                    <!-- MODELO -->
+                    <div class="mb-3">
 
-.formulario{
-    width: 450px;
-     margin-left: 150px;
-}
+                        <label for="modelo" class="form-label gris">
+                            Modelo
+                        </label>
 
+                        <div class="marca-color">
 
+                            <select
+                                class="campo"
+                                id="modelo"
+                                name="modelo"
+                                required
+                            >
+                                <option value="">
+                                    Primero seleccione marca
+                                </option>
+                            </select>
 
+                            <input
+                                type="color"
+                                class="campoColor"
+                                id="color"
+                                name="color"
+                            >
 
+                        </div>
 
-</style>
-
-<body> 
-         
-    <div class="container">
-        <div class="tarjeta"> 
-            <div class="row"> 
-               
-
-                <h2><center></center></h2>
-                <h4> <center>Ingrese los datos del vehiculo</center> </h4>
-                
-                <br><br>
-    <div class="formulario">           
-<form action="guardar_auto.php" method="POST">
-
-    <div class="mb-3">
-        <label class="form-label gris">Marca</label>
-        <input type="text" class="campo" id="marca" name="marca" placeholder="Ingrese marca del vehiculo">
-    </div>
-    <label class="form-label gris">Modelo</label>
-    <div class="mb-3 marca-color">
-        
-        <input type="text" class="campo" id="modelo" name="modelo" placeholder="Ingrese modelo del vehiculo">
-        <input type="color" class="campoColor" id="color" name="color" placeholder="Ingrese color del vehiculo">
-    </div>
+                    </div>
 
 
- 
+                    <!-- BOTÓN -->
+                    <button
+                        type="submit"
+                        class="botonRegistra"
+                    >
+                        Registre vehículo
+                    </button>
 
-    <button type="submit" class="botonRegistra">Registre vehiculo</button>
+                </form>
 
-</form>
-                
             </div>
+
         </div>
-    </div> 
     </div>
+
+
+    <!-- JAVASCRIPT -->
+    <script>
+
+        const selectMarca = document.getElementById("marca");
+
+        fetch("obtener_marcas.php")
+            .then(response => {
+
+                if (!response.ok) {
+                    throw new Error("Error HTTP: " + response.status);
+                }
+
+                return response.json();
+            })
+
+            .then(data => {
+
+                console.log("Datos recibidos:", data);
+
+                selectMarca.innerHTML = "";
+
+                const opcionInicial = document.createElement("option");
+
+                opcionInicial.value = "";
+                opcionInicial.textContent = "Seleccione una marca";
+                opcionInicial.disabled = true;
+                opcionInicial.selected = true;
+
+                selectMarca.appendChild(opcionInicial);
+
+
+                data.data.forEach(marca => {
+
+                    const opcion = document.createElement("option");
+
+                    opcion.value = marca.name;
+                    opcion.textContent = marca.name;
+
+                    selectMarca.appendChild(opcion);
+
+                });
+
+            })
+
+            .catch(error => {
+
+                console.error(
+                    "Error al cargar las marcas:",
+                    error
+                );
+
+                selectMarca.innerHTML = "";
+
+                const opcionError = document.createElement("option");
+
+                opcionError.value = "";
+                opcionError.textContent =
+                    "No se pudieron cargar las marcas";
+
+                selectMarca.appendChild(opcionError);
+
+            });
+
+
+        const selectModelo = document.getElementById("modelo");
+
+
+        selectMarca.addEventListener("change", function () {
+
+            const marcaSeleccionada = this.value;
+
+            selectModelo.innerHTML = "";
+
+            const cargando = document.createElement("option");
+
+            cargando.value = "";
+            cargando.textContent = "Cargando modelos...";
+
+            selectModelo.appendChild(cargando);
+
+
+            fetch(
+                "obtener_modelos.php?marca=" +
+                encodeURIComponent(marcaSeleccionada)
+            )
+
+                .then(response => {
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Error HTTP: " + response.status
+                        );
+                    }
+
+                    return response.json();
+                })
+
+                .then(data => {
+
+                    console.log("Modelos recibidos:", data);
+
+                    selectModelo.innerHTML = "";
+
+                    const opcionInicial =
+                        document.createElement("option");
+
+                    opcionInicial.value = "";
+                    opcionInicial.textContent =
+                        "Seleccione un modelo";
+
+                    opcionInicial.disabled = true;
+                    opcionInicial.selected = true;
+
+                    selectModelo.appendChild(opcionInicial);
+
+
+                    data.data.forEach(modelo => {
+
+                        const opcion =
+                            document.createElement("option");
+
+                        opcion.value = modelo.name;
+                        opcion.textContent = modelo.name;
+
+                        selectModelo.appendChild(opcion);
+
+                    });
+
+                })
+
+                .catch(error => {
+
+                    console.error(
+                        "Error al cargar los modelos:",
+                        error
+                    );
+
+                    selectModelo.innerHTML = "";
+
+                    const opcionError =
+                        document.createElement("option");
+
+                    opcionError.value = "";
+                    opcionError.textContent =
+                        "No se pudieron cargar los modelos";
+
+                    selectModelo.appendChild(opcionError);
+
+                });
+
+        });
+
+    </script>
 
 </body>
+
 </html>
