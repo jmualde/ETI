@@ -147,18 +147,25 @@ html, body {
         }
 
         
-        .botonAyuda {
-            background: none;
-            border: none;
-            padding: 0;
+      .botonAyuda {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #C7D1DB;
+    text-decoration: none;
+    width: fit-content;
+    display: inline-block;
+    cursor: pointer;
+}
 
-            color: #C7D1DB;
-            text-decoration: none;
-        }
+.botonAyuda:hover {
+    color: black;
+}
 
-        .botonAyuda:hover {
-            color: white;
-        }
+.text-center form {
+    width: fit-content;
+    margin: 0 auto;
+}
 
         
         .registro {
