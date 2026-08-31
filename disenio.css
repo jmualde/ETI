@@ -112,13 +112,13 @@ html, body {
         
         .botonRegistra {
             width: 130px;
-            max-width: 100%;
+            max-width: 50%;
 
             height: 45px;
 
             border-radius: 25px;
             background: transparent;
-            color: white;
+            color: black;
 
             font-weight: bold;
             border: 2px solid white;
@@ -127,10 +127,6 @@ html, body {
             transition: 0.3s;
         }
 
-        .botonRegistra:hover {
-            background-color: white;
-            color: #101214;
-        }
 
         
         .imagenauto {
