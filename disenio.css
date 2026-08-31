@@ -111,7 +111,7 @@ html, body {
 
         
         .botonRegistra {
-            width: 250px;
+            width: 130px;
             max-width: 100%;
 
             height: 45px;
@@ -147,25 +147,17 @@ html, body {
         }
 
         
-      .botonAyuda {
-    background: none;
-    border: none;
-    padding: 0;
-    color: #C7D1DB;
-    text-decoration: none;
-    width: fit-content;
-    display: inline-block;
-    cursor: pointer;
-}
+        .botonAyuda {
+            background: none;
+            border: none;
+            padding: 0;
+            color: #C7D1DB;
+            text-decoration: none;
+        }
 
-.botonAyuda:hover {
-    color: black;
-}
-
-.text-center form {
-    width: fit-content;
-    margin: 0 auto;
-}
+        .botonAyuda:hover {
+            color: black;
+        }
 
         
         .registro {
