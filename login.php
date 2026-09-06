@@ -76,7 +76,7 @@ $resultado = $conexion->query($sql);
                 </div>
 
             </form>
-
+        
            
             <div class="text-center">
                 <form action="olvidoContrasenia.html" method="POST">
@@ -98,7 +98,6 @@ $resultado = $conexion->query($sql);
             <img
                 src="pexels-kaue-barbier-710715348-30233581.jpg"
                 class="imagenauto"
-                alt="Automóvil"
             >
 
         </div>

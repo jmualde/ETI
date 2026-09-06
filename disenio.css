@@ -111,13 +111,13 @@ html, body {
 
         
         .botonRegistra {
-            width: 130px;
-            max-width: 50%;
+            width: 250px;
+            max-width: 100%;
 
             height: 45px;
 
             border-radius: 25px;
-            background: transparent;
+            background: white;
             color: black;
 
             font-weight: bold;
@@ -165,7 +165,8 @@ html, body {
             margin-bottom: 15px;
         }
 
-        
+
+
         @media (max-width: 768px) {
 
             body {
@@ -237,21 +238,13 @@ html, body {
                 margin-top: 25px;
             }
         }
-/*---FIN-LOGIN----*/
-/*---REGISTRAR-AUTO----*/
-        html,
-body {
-    background-color: #161a1d;
-    color: white;
-    width: 100%;
-    min-height: 100%;
-    margin: 0;
-}
+
+/*---FIN LOGIN----*/
 
 
 /* TARJETA */
 
-.tarjeta {
+.tarjeta-auto {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -285,20 +278,7 @@ body {
 
 
 
-.gris {
-    color: #C7D1DB;
-    font-weight: bold;
-    transition: 0.5s;
-}
-
-.azul {
-    color: #C7D1DB;
-    font-weight: bold;
-}
-
-
-
-.campo {
+.campo-auto {
     background: transparent;
 
     border: 1px solid gray;
@@ -332,7 +312,7 @@ select.campo option {
 }
 
 
-.marca-color .campo {
+.marca-color .campo-auto {
     flex: 1;
     min-width: 0;
 }
@@ -352,7 +332,7 @@ select.campo option {
 
 
 
-.botonRegistra {
+.botonRegistra-auto {
     width: 100%;
     height: 55px;
 
@@ -371,7 +351,7 @@ select.campo option {
 
 @media (max-width: 768px) {
 
-    .tarjeta {
+    .tarjeta-auto {
         width: 90%;
         margin: 60px auto;
         padding: 35px 25px;
@@ -383,7 +363,7 @@ select.campo option {
 
 @media (max-width: 576px) {
 
-    .tarjeta {
+    .tarjeta-auto {
         width: 94%;
         min-height: auto;
 
@@ -404,7 +384,7 @@ select.campo option {
     }
 
 
-    .campo {
+    .campo-auto {
         height: 45px;
     }
 
@@ -420,7 +400,7 @@ select.campo option {
     }
 
 
-    .botonRegistra {
+    .botonRegistra-auto {
         height: 50px;
     }
 
@@ -429,7 +409,7 @@ select.campo option {
 
 @media (max-width: 380px) {
 
-    .tarjeta {
+    .tarjeta-auto {
         padding: 25px 15px;
     }
 
@@ -445,3 +425,88 @@ select.campo option {
 
 }
 /*---FIN-REGISTRAR-AUTO----*/
+
+.tarjeta-registrar {
+    border: 1px solid darkslategray;
+    padding: 50px;
+    width: 100%;
+    max-width: 900px;
+    box-sizing: border-box;
+    margin: 90px auto 0;
+    background-color: #161a1d;
+    border-radius: 10px;
+    box-shadow: 1px 1px 10px rgb(83, 83, 83);
+     margin: 40px auto 0;
+}
+
+.botonRegistra-registro {
+    width: 100%;
+    max-width: 450px;
+    height: 55px;
+    border-radius: 500px;
+    background-color: white;
+    font-weight: bold;
+    border: none;
+}
+
+.botonYaTengoCuenta {
+    width: 100%;
+    max-width: 300px;
+    height: 40px;
+    border-radius: 500px;
+    background: transparent;
+    color: white;
+    font-weight: bold;
+    border: 2px solid white;
+}
+
+
+.campo-registro {
+    background: transparent;
+    border: 1px solid gray;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 450px;
+    height: 45px;
+    box-sizing: border-box;
+    color: white;
+}
+
+.formulario-registro {
+    width: 100%;
+    max-width: 450px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-sizing: border-box;
+}
+
+
+/*  Celulares */
+@media (max-width: 600px) {
+
+    body {
+        padding: 10px;
+    }
+
+    .tarjeta-registrar {
+        padding: 25px 20px;
+        margin-top: 30px;
+    }
+
+    .botonRegistra-registro,
+    .campo-registro,
+    .formulario-registro {
+        width: 100%;
+    }
+
+    .botonRegistra-registro {
+        height: 50px;
+    }
+
+    .botonYaTengoCuenta {
+        width: 100%;
+    }
+}
+
