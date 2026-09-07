@@ -15,44 +15,20 @@ y despues a la opcion de exportar como zip. Descargada esta verison comprimida d
 Cuando se descomprime queda una carpeta llamada ETI, esta misma la movemos a htdocs en caso de estar en Windows. En caso de estar con linux hay que entrar a 
 var/www/HTML.
 
-Ejecutando las pruebas ⚙️
-Para ejecutar el proyecto debemos crear la base de datos vamos al cmd y y ejecutamos 
 
-Analice las pruebas end-to-end 🔩
-Explica que verifican estas pruebas y por qué
+En caso de estar con linux para ejecutar el proyecto debemos crear la base de datos vamos al cmd y y ejecutamos mysql -u root -p
+y pegamos el script de base de datos llamado "BaseDeDatosEstacionamiento.sql"
 
-Da un ejemplo
-Y las pruebas de estilo de codificación ⌨️
-Explica que verifican estas pruebas y por qué
+En caso de estar usando Xampp (Windows) debemos abrir el mismo y activar los servicios de mysql y apache,
+y entrar al navegador de confianza y en la barra de busqueda escribir localhost y entrar a phpMyAdmin,
+dar click a SQL y pegar el script de base de datos.
 
-Da un ejemplo
-Despliegue 📦
-Agrega notas adicionales sobre como hacer deploy
+Por ultimo escribir en la barra de busqueda del navegador localhost/ETI/
 
-Construido con 🛠️
-Menciona las herramientas que utilizaste para crear tu proyecto
+Un ejemplo clave es cuando se registra el usuario en la base de datos, los datos del usuario aparecen 
+en la tabla usuarios.
 
-Dropwizard - El framework web usado
-Maven - Manejador de dependencias
-ROME - Usado para generar RSS
-Contribuyendo 🖇️
-Por favor lee el CONTRIBUTING.md para detalles de nuestro código de conducta, y el proceso para enviarnos pull requests.
+Construido con PHP,CSS y JavaScript
 
-Wiki 📖
-Puedes encontrar mucho más de cómo utilizar este proyecto en nuestra Wiki
-
-Versionado 📌
-Usamos SemVer para el versionado. Para todas las versiones disponibles, mira los tags en este repositorio.
-
-Autores ✒️
-Menciona a todos aquellos que ayudaron a levantar el proyecto desde sus inicios
-
-Andrés Villanueva - Trabajo Inicial - villanuevand
-Fulanito Detal - Documentación - fulanitodetal
-También puedes mirar la lista de todos los contribuyentes quíenes han participado en este proyecto.
-
-Licencia 📄
-Este proyecto está bajo la Licencia (Tu Licencia) - mira el archivo LICENSE.md para detalles
-Da las gracias públicamente 🤓.
-Dona con cripto a esta dirección: 0xf253fc233333078436d111175e5a76a649890000
-etc.
+Autores
+Juan Pablo Trelles, Facundo Centurion, Juan Ualde, Pedro Serra.
