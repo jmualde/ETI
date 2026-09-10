@@ -111,13 +111,13 @@ html, body {
 
         
         .botonRegistra {
-            width: 250px;
-            max-width: 100%;
+            width: 130px;
+            max-width: 50%;
 
             height: 45px;
 
             border-radius: 25px;
-            background: white;
+            background: transparent;
             color: black;
 
             font-weight: bold;
@@ -165,8 +165,7 @@ html, body {
             margin-bottom: 15px;
         }
 
-
-
+        
         @media (max-width: 768px) {
 
             body {
@@ -238,13 +237,21 @@ html, body {
                 margin-top: 25px;
             }
         }
-
-/*---FIN LOGIN----*/
+/*---FIN-LOGIN----*/
+/*---REGISTRAR-AUTO----*/
+        html,
+body {
+    background-color: #161a1d;
+    color: white;
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+}
 
 
 /* TARJETA */
 
-.tarjeta-auto {
+.tarjeta {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -278,7 +285,20 @@ html, body {
 
 
 
-.campo-auto {
+.gris {
+    color: #C7D1DB;
+    font-weight: bold;
+    transition: 0.5s;
+}
+
+.azul {
+    color: #C7D1DB;
+    font-weight: bold;
+}
+
+
+
+.campo {
     background: transparent;
 
     border: 1px solid gray;
@@ -312,7 +332,7 @@ select.campo option {
 }
 
 
-.marca-color .campo-auto {
+.marca-color .campo {
     flex: 1;
     min-width: 0;
 }
@@ -332,7 +352,7 @@ select.campo option {
 
 
 
-.botonRegistra-auto {
+.botonRegistra {
     width: 100%;
     height: 55px;
 
@@ -351,7 +371,7 @@ select.campo option {
 
 @media (max-width: 768px) {
 
-    .tarjeta-auto {
+    .tarjeta {
         width: 90%;
         margin: 60px auto;
         padding: 35px 25px;
@@ -363,7 +383,7 @@ select.campo option {
 
 @media (max-width: 576px) {
 
-    .tarjeta-auto {
+    .tarjeta {
         width: 94%;
         min-height: auto;
 
@@ -384,7 +404,7 @@ select.campo option {
     }
 
 
-    .campo-auto {
+    .campo {
         height: 45px;
     }
 
@@ -400,7 +420,7 @@ select.campo option {
     }
 
 
-    .botonRegistra-auto {
+    .botonRegistra {
         height: 50px;
     }
 
@@ -409,7 +429,7 @@ select.campo option {
 
 @media (max-width: 380px) {
 
-    .tarjeta-auto {
+    .tarjeta {
         padding: 25px 15px;
     }
 
@@ -425,88 +445,108 @@ select.campo option {
 
 }
 /*---FIN-REGISTRAR-AUTO----*/
-
-.tarjeta-registrar {
-    border: 1px solid darkslategray;
-    padding: 50px;
+.campo-cuenta {
     width: 100%;
-    max-width: 900px;
-    box-sizing: border-box;
-    margin: 90px auto 0;
-    background-color: #161a1d;
-    border-radius: 10px;
-    box-shadow: 1px 1px 10px rgb(83, 83, 83);
-     margin: 40px auto 0;
-}
+    height: 45px;
+    padding: 0 15px;
 
-.botonRegistra-registro {
-    width: 100%;
-    max-width: 450px;
-    height: 55px;
-    border-radius: 500px;
-    background-color: white;
-    font-weight: bold;
-    border: none;
-}
-
-.botonYaTengoCuenta {
-    width: 100%;
-    max-width: 300px;
-    height: 40px;
-    border-radius: 500px;
-    background: transparent;
+    background-color: transparent;
     color: white;
-    font-weight: bold;
-    border: 2px solid white;
-}
 
-
-.campo-registro {
-    background: transparent;
     border: 1px solid gray;
     border-radius: 10px;
-    width: 100%;
-    max-width: 450px;
-    height: 45px;
-    box-sizing: border-box;
+
+    outline: none;
+}
+.boton-logout{
+background-color: transparent;
+    color: red  ;
+    border: 1px solid red;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+
+}
+.boton-logout:hover {
+    background-color: red ;
     color: white;
+    transform: scale(1.02); 
+}
+.boton-vertical{
+background-color: #3c4146;
+color: white;
+padding: 10px 20px;
+border-radius: 25px;
+font-weight: bold;
+}
+.textoPrincipal-cuenta {
+            font-size: clamp(40px, 5vw, 70px);
+            font-weight: bold;
+            color: #f0e8d8;
+
+            margin: 0;
+            max-width: 700px;
 }
 
-.formulario-registro {
-    width: 100%;
-    max-width: 450px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    box-sizing: border-box;
-}
+        .tarjetaArriba-principal {
+            background-color: #181C1F;
+            width: 100%;
+            min-height: 60px;
 
+            display: flex;
+            justify-content: center;
+            align-items: center;
 
-/*  Celulares */
-@media (max-width: 600px) {
+            gap: 35px;
+            padding: 10px 20px;
 
-    body {
-        padding: 10px;
-    }
+            flex-wrap: wrap;
+        }
 
-    .tarjeta-registrar {
-        padding: 25px 20px;
-        margin-top: 30px;
-    }
+          .textoBlanco-principal {
+            color: white;
+            margin: 0;
+            font-family: "Inter", sans-serif;
+            transition: 0.3s;
+        }
 
-    .botonRegistra-registro,
-    .campo-registro,
-    .formulario-registro {
-        width: 100%;
-    }
+        .textoBlanco-principal:hover {
+            color: #c7c7c7;
+        }
 
-    .botonRegistra-registro {
-        height: 50px;
-    }
+                .tarjetaArriba-principal a {
+            text-decoration: none;
+            color: white;
+            margin: 0;
+        }
 
-    .botonYaTengoCuenta {
-        width: 100%;
-    }
-}
+                .pagina-cuenta {
+                    display: block;
+                    align-items: initial;
+                    padding: 0;
+                }
 
+                .pagina-cuenta > .container-fluid {
+                    padding: 0;
+                }
+
+                @media (max-width: 576px) {
+                    .pagina-cuenta .tarjetaArriba-principal {
+                        flex-direction: column;
+                        gap: 12px;
+                        padding: 16px 10px;
+                    }
+
+                    .pagina-cuenta .tarjetaArriba-principal a {
+                        width: 100%;
+                        text-align: center;
+                        font-size: 14px;
+                    }
+                }
+
+         .seccionPrincipal {
+            min-height: calc(100vh - 60px);
+            display: flex;
+            align-items: center;
+        }
