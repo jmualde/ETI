@@ -1,62 +1,73 @@
 CREATE DATABASE estacionamiento;
 USE estacionamiento;
 
-CREATE TABLE usuarios(
+CREATE TABLE usuario(
     id INT PRIMARY KEY AUTO_INCREMENT,
-    nombreUsuario VARCHAR(50),
-    nombre VARCHAR(50),
-    apellido VARCHAR(50),
-    email VARCHAR(200),
-    contrasenia VARCHAR(200),
-    rol BOOLEAN
+    nombre_usuario VARCHAR(50) NOT NULL UNIQUE,
+    nombre VARCHAR(50) NOT NULL,
+    apellido VARCHAR(50) NOT NULL,
+    email VARCHAR(200) NOT NULL UNIQUE,
+    contrasenia VARCHAR(200) NOT NULL
+);
+
+CREATE TABLE admin(
+    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    nombre_admin VARCHAR(50) NOT NULL UNIQUE,
+    contrasenia VARCHAR(200) NOT NULL UNIQUE
+);
+
+CREATE TABLE gestiona(
+    id_usuario INT, 
+    id_admin INT,
+    
+    FOREIGN KEY(id_usuario) REFERENCES usuario(id),
+    FOREIGN KEY(id_admin) REFERENCES admin(id),
+    PRIMARY KEY(id_usuario, id_admin)
+);
+
+CREATE TABLE automovil(
+    id INT PRIMARY KEY NOT NULL,
+    marca VARCHAR(100) NOT NULL,
+    modelo VARCHAR(100) NOT NULL,
+    color VARCHAR(50) NOT NULL,
+    id_usuario INT NOT NULL,
+
+    FOREIGN KEY(id_usuario) REFERENCES usuario(id)
 );
 
 
-CREATE TABLE Automovil(
-    matricula VARCHAR(7) PRIMARY KEY,
-    marca VARCHAR(100),
-    modelo VARCHAR(100),
-    color VARCHAR(50),
-    tamanio VARCHAR(50),
-    estado BOOLEAN,
-    ciUsuario VARCHAR(9),
-
-    FOREIGN KEY(ciUsuario) REFERENCES Usuario(ci)
-);
-
-
-CREATE TABLE Lugar(
+CREATE TABLE lugar(
     coordenadaX INT,
     coordenadaY INT,
     calle VARCHAR(100),
-    numeroDePuerta INT,
-    estado BOOLEAN,
+    numero_puerta INT,
+    esquina VARCHAR(100),
 
     PRIMARY KEY(coordenadaX, coordenadaY)
 );
 
 
-CREATE TABLE Registra(
-    matriculaAutomovil VARCHAR(7),
-    ciUsuario VARCHAR(9),
+CREATE TABLE registra(
+    id_automovil INT,
+    id_usuario INT,
 
-    PRIMARY KEY(matriculaAutomovil, ciUsuario),
+    PRIMARY KEY(id_automovil, id_usuario),
 
-    FOREIGN KEY (ciUsuario) REFERENCES Usuario(ci),
-    FOREIGN KEY (matriculaAutomovil) REFERENCES Automovil(matricula)
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id),
+    FOREIGN KEY (id_automovil) REFERENCES automovil(id)
 );
 
 
-CREATE TABLE Ocupa(
+CREATE TABLE ocupa(
     id INT PRIMARY KEY,
     coordenadaX INT,
     coordenadaY INT,
-    ciUsuario VARCHAR(9),
-    fechaInicio DATE,
-    fechaFin DATE,
-    matriculaAutomovil VARCHAR(7),
+    id_usuario INT,
+    fecha_inicio DATE,
+    fecha_fin DATE,
+    id_automovil INT,
 
-    FOREIGN KEY (ciUsuario) REFERENCES Usuario(ci),
-    FOREIGN KEY (matriculaAutomovil) REFERENCES Automovil(matricula),
-    FOREIGN KEY (coordenadaX, coordenadaY) REFERENCES Lugar(coordenadaX, coordenadaY)
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id),
+    FOREIGN KEY (id_automovil) REFERENCES automovil(id),
+    FOREIGN KEY (coordenadaX, coordenadaY) REFERENCES lugar(coordenadaX, coordenadaY)
 );

@@ -112,8 +112,8 @@ html, body {
 
         /* boton-REGISTRAR */
         .botonRegistra {
-            width: 130px;
-            max-width: 70%;
+            width: 250px;
+            max-width: 100%;
 
             height: 45px;
 
@@ -238,51 +238,13 @@ html, body {
                 margin-top: 25px;
             }
         }
-/*---REGISTRAR-AUTO----*/
-/* =========================
-   BARRA SUPERIOR
-========================= */
 
-.tarjetaArriba {
-    background-color: #181C1F;
-    width: 100%;
-
-    min-height: 60px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    gap: 35px;
-    padding: 10px 20px;
-
-    flex-wrap: wrap;
-    box-sizing: border-box;
-}
-
-.tarjetaArriba a {
-    text-decoration: none;
-    color: white;
-    white-space: nowrap;
-}
-
-.textoBlanco {
-    color: white;
-    margin: 0;
-    font-family: "Inter", sans-serif;
-    transition: 0.3s;
-}
-
-.textoBlanco:hover {
-    color: #c7c7c7;
-}
+/*---FIN LOGIN----*/
 
 
-/* =========================
-   TARJETA REGISTRAR AUTO
-========================= */
+/* TARJETA */
 
-.tarjeta_registrar_auto {
+.tarjeta-auto {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -330,12 +292,8 @@ html, body {
    CAMPOS
 ========================= */
 
-.campo {
-    width: 100%;
-    min-height: 45px;
-
-    background-color: #161a1d;
-    color: white;
+.campo-auto {
+    background: transparent;
 
     border: 1px solid gray;
     border-radius: 10px;
@@ -371,7 +329,8 @@ select.campo option {
     width: 100%;
 }
 
-.marca-color .campo {
+
+.marca-color .campo-auto {
     flex: 1;
     min-width: 0;
 }
@@ -423,16 +382,19 @@ select.campo option {
 
 @media (max-width: 600px) {
 
-    .tarjetaArriba {
-        gap: 15px;
-        padding: 10px;
+    .tarjeta-auto {
+        width: 90%;
+        margin: 60px auto;
+        padding: 35px 25px;
     }
 
-    .tarjetaArriba a {
-        font-size: 14px;
-    }
+}
 
-    .tarjeta_registrar_auto {
+
+
+@media (max-width: 576px) {
+
+    .tarjeta-auto {
         width: 94%;
 
         min-height: auto;
@@ -448,8 +410,13 @@ select.campo option {
     }
 
     .titulo {
-        font-size: 22px;
-        margin-bottom: 25px;
+        font-size: 20px;
+        margin-bottom: 30px;
+    }
+
+
+    .campo-auto {
+        height: 45px;
     }
 
     .marca-color {
@@ -461,7 +428,8 @@ select.campo option {
         height: 45px;
     }
 
-    .botonRegistra {
+
+    .botonRegistra-auto {
         height: 50px;
     }
 }
@@ -473,10 +441,13 @@ select.campo option {
 
 @media (min-width: 601px) and (max-width: 900px) {
 
-    .tarjeta_registrar_auto {
-        width: 90%;
-        margin: 60px auto;
-        padding: 40px;
+    .tarjeta-auto {
+        padding: 25px 15px;
+    }
+
+
+    .titulo {
+        font-size: 18px;
     }
 
     .tarjetaArriba {
@@ -485,107 +456,87 @@ select.campo option {
 }
 /*---FIN-REGISTRAR-AUTO----*/
 
-/* =========================
-   CUENTA
-========================= */
-
-.pagina-cuenta {
-    display: block;
-    min-height: 100vh;
-    padding: 0;
-    margin: 0;
-    background-color: #101214;
-    color: white;
-}
-
-.tarjetaArriba-cuenta {
-      background-color: #181C1F;
-            width: 100%;
-            min-height: 60px;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            gap: 35px;
-            padding: 10px 20px;
-
-
-
-            flex-wrap: wrap;
-}
-
-.tarjetaArriba-cuenta a {
-     text-decoration: none;
-            color: white;
-
-            margin: 0;
-}
-
-.textoBlanco-cuenta {
-    color: white;
-    margin: 0;
-    font-family: "Inter", sans-serif;
-    transition: 0.3s;
-}
-
-.textoBlanco-cuenta:hover {
-    color: #c7c7c7;
-}
-
-.titulo-cuenta {
-    text-align: center;
-    color: white;
-    margin: 30px 0;
-}
-
-.pagina-cuenta .seccionPrincipal {
+.tarjeta-registrar {
+    border: 1px solid darkslategray;
+    padding: 50px;
     width: 100%;
-}
-
-.pagina-cuenta .contenido {
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
+    max-width: 900px;
     box-sizing: border-box;
-    color: white;
+    margin: 90px auto 0;
+    background-color: #161a1d;
+    border-radius: 10px;
+    box-shadow: 1px 1px 10px rgb(83, 83, 83);
+     margin: 40px auto 0;
 }
 
-.campo-cuenta {
+.botonRegistra-registro {
     width: 100%;
-    height: 45px;
-    padding: 0 15px;
-    box-sizing: border-box;
+    max-width: 450px;
+    height: 55px;
+    border-radius: 500px;
+    background-color: white;
+    font-weight: bold;
+    border: none;
+}
 
-    background-color: transparent;
+.botonYaTengoCuenta {
+    width: 100%;
+    max-width: 300px;
+    height: 40px;
+    border-radius: 500px;
+    background: transparent;
     color: white;
+    font-weight: bold;
+    border: 2px solid white;
+}
 
+
+.campo-registro {
+    background: transparent;
     border: 1px solid gray;
     border-radius: 10px;
-    outline: none;
+    width: 100%;
+    max-width: 450px;
+    height: 45px;
+    box-sizing: border-box;
+    color: white;
 }
 
-.campo-cuenta:focus {
-    border-color: white;
+.formulario-registro {
+    width: 100%;
+    max-width: 450px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-sizing: border-box;
 }
 
-@media (max-width: 576px) {
 
-    .tarjetaArriba-cuenta {
-        flex-direction: column;
-        gap: 12px;
-        padding: 16px 10px;
+/*  Celulares */
+@media (max-width: 600px) {
+
+    body {
+        padding: 10px;
     }
 
-    .tarjetaArriba-cuenta a {
+    .tarjeta-registrar {
+        padding: 25px 20px;
+        margin-top: 30px;
+    }
+
+    .botonRegistra-registro,
+    .campo-registro,
+    .formulario-registro {
         width: 100%;
-        text-align: center;
-        font-size: 14px;
     }
 
-    .pagina-cuenta .contenido {
-        padding: 15px;
+    .botonRegistra-registro {
+        height: 50px;
+    }
+
+    .botonYaTengoCuenta {
+        width: 100%;
     }
 }
-    
+
