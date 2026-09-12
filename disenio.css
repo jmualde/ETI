@@ -278,20 +278,6 @@ html, body {
 
 
 
-.campo-auto {
-    background: transparent;
-
-    border: 1px solid gray;
-    border-radius: 10px;
-
-    width: 100%;
-    height: 45px;
-
-    color: white;
-
-    padding: 0 12px;
-}
-
 
 select.campo {
     background-color: #161a1d;
@@ -449,12 +435,19 @@ select.campo option {
     border: none;
 }
 
-.botonYaTengoCuenta {
-    width: 100%;
-    max-width: 300px;
-    height: 40px;
-    border-radius: 500px;
-    background: transparent;
+.textoBlanco-cuenta {
+    color: white;
+    margin: 0;
+    font-family: "Inter", sans-serif;
+    transition: 0.3s;
+}
+
+.textoBlanco-cuenta:hover {
+    color: #c7c7c7;
+}
+
+.titulo-cuenta {
+    text-align: center;
     color: white;
     font-weight: bold;
     border: 2px solid white;
