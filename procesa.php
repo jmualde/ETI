@@ -51,8 +51,6 @@ if ($fila1) {
     exit();
 }
 
-if (!isset($_SESSION["usuario"])) { 
-    header("Location: login.php"); 
-    exit();   
-}
+header("Location: login.php?error=1");
+exit();
 ?>
