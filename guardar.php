@@ -6,7 +6,7 @@ $nombre = $_POST['nombre'];
 $email = $_POST['email'];
 $contrasenia = $_POST['contrasenia'];
 
-$sql = "INSERT INTO usuarios (nombreUsuario, nombre, apellido, email, contrasenia) 
+$sql = "INSERT INTO usuario (nombre_usuario, nombre, apellido, email, contrasenia) 
 VALUES (:nombreUsuario, :nombre, :apellido, :email, :contrasenia)";
 $stmt = $conexion->prepare($sql);
 $stmt->execute([

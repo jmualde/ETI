@@ -5,7 +5,7 @@ $marca = $_POST['marca'];
 $modelo = $_POST['modelo'];
 $color = $_POST['color'];
 
-$sql = "INSERT INTO Automovil (marca,modelo,color) 
+$sql = "INSERT INTO automovil (marca,modelo,color) 
 VALUES (:marca, :modelo, :color)";
 $stmt = $conexion->prepare($sql);
 $stmt->execute([
@@ -15,8 +15,5 @@ $stmt->execute([
 ]);
 header("Location: principal.html");
 exit;
-
-
-
 
 ?>

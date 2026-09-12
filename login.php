@@ -1,6 +1,6 @@
 <?php
 require_once ("conexion.php");
-$sql = "SELECT * FROM usuarios";
+$sql = "SELECT * FROM usuario";
 $resultado = $conexion->query($sql);
 ?>
 

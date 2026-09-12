@@ -1,4 +1,5 @@
 /*---LOGIN----*/
+
 html, body {
             margin: 0;
             padding: 0;
@@ -109,15 +110,15 @@ html, body {
             transform: scale(1.02);
         }
 
-        
+        /* boton-REGISTRAR */
         .botonRegistra {
-            width: 250px;
-            max-width: 100%;
+            width: 130px;
+            max-width: 70%;
 
             height: 45px;
 
             border-radius: 25px;
-            background: white;
+            background: transparent;
             color: black;
 
             font-weight: bold;
@@ -165,8 +166,7 @@ html, body {
             margin-bottom: 15px;
         }
 
-
-
+        
         @media (max-width: 768px) {
 
             body {
@@ -238,13 +238,51 @@ html, body {
                 margin-top: 25px;
             }
         }
+/*---REGISTRAR-AUTO----*/
+/* =========================
+   BARRA SUPERIOR
+========================= */
 
-/*---FIN LOGIN----*/
+.tarjetaArriba {
+    background-color: #181C1F;
+    width: 100%;
+
+    min-height: 60px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 35px;
+    padding: 10px 20px;
+
+    flex-wrap: wrap;
+    box-sizing: border-box;
+}
+
+.tarjetaArriba a {
+    text-decoration: none;
+    color: white;
+    white-space: nowrap;
+}
+
+.textoBlanco {
+    color: white;
+    margin: 0;
+    font-family: "Inter", sans-serif;
+    transition: 0.3s;
+}
+
+.textoBlanco:hover {
+    color: #c7c7c7;
+}
 
 
-/* TARJETA */
+/* =========================
+   TARJETA REGISTRAR AUTO
+========================= */
 
-.tarjeta-auto {
+.tarjeta_registrar_auto {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -262,8 +300,14 @@ html, body {
     border-radius: 10px;
 
     box-shadow: 1px 1px 10px rgb(83, 83, 83);
+
+    box-sizing: border-box;
 }
-  
+
+
+/* =========================
+   CONTENIDO
+========================= */
 
 .contenido {
     width: 100%;
@@ -271,18 +315,43 @@ html, body {
 }
 
 
+/* =========================
+   TÍTULO
+========================= */
+
 .titulo {
     text-align: center;
     margin-bottom: 40px;
+    color: white;
 }
 
 
+/* =========================
+   CAMPOS
+========================= */
 
+.campo {
+    width: 100%;
+    min-height: 45px;
+
+    background-color: #161a1d;
+    color: white;
+
+    border: 1px solid gray;
+    border-radius: 10px;
+
+    padding: 8px 12px;
+
+    box-sizing: border-box;
+}
+
+
+/* SELECT */
 
 select.campo {
     background-color: #161a1d;
+    color: white;
 }
-
 
 select.campo option {
     background-color: #161a1d;
@@ -290,19 +359,25 @@ select.campo option {
 }
 
 
+/* =========================
+   MODELO + COLOR
+========================= */
 
 .marca-color {
     display: flex;
+    align-items: center;
+
     gap: 10px;
     width: 100%;
 }
 
-
-.marca-color .campo-auto {
+.marca-color .campo {
     flex: 1;
     min-width: 0;
 }
 
+
+/* COLOR */
 
 .campoColor {
     background: transparent;
@@ -314,125 +389,137 @@ select.campo option {
     height: 45px;
 
     padding: 2px;
+
+    flex-shrink: 0;
 }
 
 
+/* =========================
+   BOTÓN
+========================= */
 
-.botonRegistra-auto {
+.botonRegistra {
     width: 100%;
     height: 55px;
 
     border-radius: 500px;
 
     background-color: white;
+    color: black;
 
     font-weight: bold;
 
     border: none;
 
     margin-top: 20px;
+
+    cursor: pointer;
 }
 
 
+/* =========================
+   CELULAR
+========================= */
 
-@media (max-width: 768px) {
+@media (max-width: 600px) {
 
-    .tarjeta-auto {
-        width: 90%;
-        margin: 60px auto;
-        padding: 35px 25px;
+    .tarjetaArriba {
+        gap: 15px;
+        padding: 10px;
     }
 
-}
+    .tarjetaArriba a {
+        font-size: 14px;
+    }
 
-
-
-@media (max-width: 576px) {
-
-    .tarjeta-auto {
+    .tarjeta_registrar_auto {
         width: 94%;
+
         min-height: auto;
 
-        margin: 30px auto;
+        margin: 40px auto;
 
-        padding: 30px 20px;
+        padding: 25px 18px;
     }
-
 
     .contenido {
-        max-width: 100%;
+        width: 100%;
+        max-width: none;
     }
-
 
     .titulo {
-        font-size: 20px;
-        margin-bottom: 30px;
+        font-size: 22px;
+        margin-bottom: 25px;
     }
-
-
-    .campo-auto {
-        height: 45px;
-    }
-
 
     .marca-color {
         gap: 8px;
     }
 
-
     .campoColor {
-        width: 55px;
-        flex-shrink: 0;
+        width: 50px;
+        height: 45px;
     }
 
-
-    .botonRegistra-auto {
+    .botonRegistra {
         height: 50px;
     }
-
 }
 
 
-@media (max-width: 380px) {
+/* =========================
+   TABLET
+========================= */
 
-    .tarjeta-auto {
-        padding: 25px 15px;
+@media (min-width: 601px) and (max-width: 900px) {
+
+    .tarjeta_registrar_auto {
+        width: 90%;
+        margin: 60px auto;
+        padding: 40px;
     }
 
-
-    .titulo {
-        font-size: 18px;
+    .tarjetaArriba {
+        gap: 25px;
     }
-
-
-    .campoColor {
-        width: 50px;
-    }
-
 }
 /*---FIN-REGISTRAR-AUTO----*/
 
-.tarjeta-registrar {
-    border: 1px solid darkslategray;
-    padding: 50px;
-    width: 100%;
-    max-width: 900px;
-    box-sizing: border-box;
-    margin: 90px auto 0;
-    background-color: #161a1d;
-    border-radius: 10px;
-    box-shadow: 1px 1px 10px rgb(83, 83, 83);
-     margin: 40px auto 0;
+/* =========================
+   CUENTA
+========================= */
+
+.pagina-cuenta {
+    display: block;
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+    background-color: #101214;
+    color: white;
 }
 
-.botonRegistra-registro {
-    width: 100%;
-    max-width: 450px;
-    height: 55px;
-    border-radius: 500px;
-    background-color: white;
-    font-weight: bold;
-    border: none;
+.tarjetaArriba-cuenta {
+      background-color: #181C1F;
+            width: 100%;
+            min-height: 60px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            gap: 35px;
+            padding: 10px 20px;
+
+
+
+            flex-wrap: wrap;
+}
+
+.tarjetaArriba-cuenta a {
+     text-decoration: none;
+            color: white;
+
+            margin: 0;
 }
 
 .textoBlanco-cuenta {
@@ -449,57 +536,56 @@ select.campo option {
 .titulo-cuenta {
     text-align: center;
     color: white;
-    font-weight: bold;
-    border: 2px solid white;
+    margin: 30px 0;
 }
 
-
-.campo-registro {
-    background: transparent;
-    border: 1px solid gray;
-    border-radius: 10px;
+.pagina-cuenta .seccionPrincipal {
     width: 100%;
-    max-width: 450px;
-    height: 45px;
+}
+
+.pagina-cuenta .contenido {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
     box-sizing: border-box;
     color: white;
 }
 
-.formulario-registro {
+.campo-cuenta {
     width: 100%;
-    max-width: 450px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+    height: 45px;
+    padding: 0 15px;
     box-sizing: border-box;
+
+    background-color: transparent;
+    color: white;
+
+    border: 1px solid gray;
+    border-radius: 10px;
+    outline: none;
 }
 
-
-/*  Celulares */
-@media (max-width: 600px) {
-
-    body {
-        padding: 10px;
-    }
-
-    .tarjeta-registrar {
-        padding: 25px 20px;
-        margin-top: 30px;
-    }
-
-    .botonRegistra-registro,
-    .campo-registro,
-    .formulario-registro {
-        width: 100%;
-    }
-
-    .botonRegistra-registro {
-        height: 50px;
-    }
-
-    .botonYaTengoCuenta {
-        width: 100%;
-    }
+.campo-cuenta:focus {
+    border-color: white;
 }
 
+@media (max-width: 576px) {
+
+    .tarjetaArriba-cuenta {
+        flex-direction: column;
+        gap: 12px;
+        padding: 16px 10px;
+    }
+
+    .tarjetaArriba-cuenta a {
+        width: 100%;
+        text-align: center;
+        font-size: 14px;
+    }
+
+    .pagina-cuenta .contenido {
+        padding: 15px;
+    }
+}
+    
