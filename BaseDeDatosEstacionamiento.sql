@@ -30,8 +30,6 @@ CREATE TABLE automovil(
     marca VARCHAR(100) NOT NULL,
     modelo VARCHAR(100) NOT NULL,
     color VARCHAR(50) NOT NULL,
-    tamanio VARCHAR(50) NOT NULL,
-    estado BOOLEAN,
     id_usuario INT NOT NULL,
 
     FOREIGN KEY(id_usuario) REFERENCES usuario(id)
@@ -44,8 +42,7 @@ CREATE TABLE lugar(
     calle VARCHAR(100),
     numero_puerta INT,
     esquina VARCHAR(100),
-    estado BOOLEAN,
-
+ 
     PRIMARY KEY(coordenadaX, coordenadaY)
 );
 
@@ -68,9 +65,9 @@ CREATE TABLE ocupa(
     id_usuario INT,
     fecha_inicio DATE,
     fecha_fin DATE,
-    id_automovil VARCHAR(7),
+    id_automovil INT,
 
-    FOREIGN KEY (idUsuario) REFERENCES usuario(id),
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id),
     FOREIGN KEY (id_automovil) REFERENCES automovil(id),
     FOREIGN KEY (coordenadaX, coordenadaY) REFERENCES lugar(coordenadaX, coordenadaY)
 );
