@@ -1,0 +1,572 @@
+/*---LOGIN----*/
+html, body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+            background-color: #101214;
+            color: white;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 30px 15px;
+        }
+
+        .contenedor {
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        /* TARJETA */
+        .tarjeta {
+            width: 100%;
+            min-height: 450px;
+            padding: 40px;
+            display: flex;
+            align-items: center;
+
+            background-color: #161a1d;
+            border-radius: 15px;
+            border: 1px solid darkslategray;
+
+            box-shadow: 1px 1px 10px rgb(83, 83, 83);
+        }
+
+        /* COLUMNAS */
+        .columna-formulario,
+        .columna-imagen {
+            width: 50%;
+            padding: 20px;
+        }
+
+      
+        h3 {
+            margin-bottom: 30px;
+        }
+
+        
+        .campo {
+            width: 100%;
+            height: 45px;
+            padding: 0 15px;
+
+            background-color: transparent;
+            color: white;
+
+            border: 1px solid gray;
+            border-radius: 10px;
+
+            outline: none;
+        }
+
+        .campo:focus {
+            border-color: white;
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+        }
+
+        .campo::placeholder {
+            color: #999;
+        }
+
+        
+        .gris {
+            color: #C7D1DB;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .gris:hover {
+            color: #edf0f3;
+        }
+
+        .azul {
+            color: #C7D1DB;
+            font-weight: bold;
+        }
+
+        
+        .botonIniciar {
+            width: 100%;
+            height: 45px;
+
+            border-radius: 25px;
+            background-color: white;
+            color: black;
+
+            font-weight: bold;
+            border: none;
+
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .botonIniciar:hover {
+            background-color: #d8d8d8;
+            transform: scale(1.02);
+        }
+
+        
+        .botonRegistra {
+            width: 130px;
+            max-width: 50%;
+
+            height: 45px;
+
+            border-radius: 25px;
+            background: transparent;
+            color: black;
+
+            font-weight: bold;
+            border: 2px solid white;
+
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+
+        
+        .imagenauto {
+            display: block;
+
+            width: 100%;
+            max-width: 450px;
+            height: 350px;
+
+            object-fit: cover;
+            border-radius: 10px;
+
+            margin: 0 auto;
+        }
+
+        
+        .botonAyuda {
+            background: none;
+            border: none;
+            padding: 0;
+            color: #C7D1DB;
+            text-decoration: none;
+        }
+
+        .botonAyuda:hover {
+            color: black;
+        }
+
+        
+        .registro {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .registro h5 {
+            margin-bottom: 15px;
+        }
+
+        
+        @media (max-width: 768px) {
+
+            body {
+                padding: 20px 15px;
+            }
+
+            .tarjeta {
+                flex-direction: column;
+                padding: 25px;
+            }
+
+            .columna-formulario,
+            .columna-imagen {
+                width: 100%;
+                padding: 15px;
+            }
+
+            .columna-imagen {
+                order: -1;
+            }
+
+            .imagenauto {
+                height: 250px;
+                max-width: 100%;
+            }
+        }
+
+       
+        @media (max-width: 480px) {
+
+            body {
+                padding: 15px 10px;
+            }
+
+            .tarjeta {
+                padding: 20px 15px;
+                min-height: auto;
+                border-radius: 12px;
+            }
+
+            .columna-formulario,
+            .columna-imagen {
+                padding: 10px 5px;
+            }
+
+            h3 {
+                font-size: 24px;
+                margin-bottom: 25px;
+            }
+
+            .imagenauto {
+                height: 180px;
+            }
+
+            .campo {
+                height: 43px;
+                font-size: 14px;
+            }
+
+            .botonIniciar {
+                height: 43px;
+            }
+
+            .botonRegistra {
+                width: 100%;
+            }
+
+            .registro {
+                margin-top: 25px;
+            }
+        }
+/*---FIN-LOGIN----*/
+/*---REGISTRAR-AUTO----*/
+        html,
+body {
+    background-color: #161a1d;
+    color: white;
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+}
+
+
+/* TARJETA */
+
+.tarjeta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: min(900px, 90%);
+    min-height: 500px;
+
+    margin: 100px auto;
+
+    padding: 50px;
+
+    background-color: #161a1d;
+
+    border: 1px solid darkslategray;
+    border-radius: 10px;
+
+    box-shadow: 1px 1px 10px rgb(83, 83, 83);
+}
+  
+
+.contenido {
+    width: 100%;
+    max-width: 450px;
+}
+
+
+.titulo {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+
+
+.gris {
+    color: #C7D1DB;
+    font-weight: bold;
+    transition: 0.5s;
+}
+
+.azul {
+    color: #C7D1DB;
+    font-weight: bold;
+}
+
+
+
+.campo {
+    background: transparent;
+
+    border: 1px solid gray;
+    border-radius: 10px;
+
+    width: 100%;
+    height: 45px;
+
+    color: white;
+
+    padding: 0 12px;
+}
+
+
+select.campo {
+    background-color: #161a1d;
+}
+
+
+select.campo option {
+    background-color: #161a1d;
+    color: white;
+}
+
+
+
+.marca-color {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+
+.marca-color .campo {
+    flex: 1;
+    min-width: 0;
+}
+
+
+.campoColor {
+    background: transparent;
+
+    border: 1px solid gray;
+    border-radius: 10px;
+
+    width: 60px;
+    height: 45px;
+
+    padding: 2px;
+}
+
+
+
+.botonRegistra {
+    width: 100%;
+    height: 55px;
+
+    border-radius: 500px;
+
+    background-color: white;
+
+    font-weight: bold;
+
+    border: none;
+
+    margin-top: 20px;
+}
+
+
+
+@media (max-width: 768px) {
+
+    .tarjeta {
+        width: 90%;
+        margin: 60px auto;
+        padding: 35px 25px;
+    }
+
+}
+
+
+
+@media (max-width: 576px) {
+
+    .tarjeta {
+        width: 94%;
+        min-height: auto;
+
+        margin: 30px auto;
+
+        padding: 30px 20px;
+    }
+
+
+    .contenido {
+        max-width: 100%;
+    }
+
+
+    .titulo {
+        font-size: 20px;
+        margin-bottom: 30px;
+    }
+
+
+    .campo {
+        height: 45px;
+    }
+
+
+    .marca-color {
+        gap: 8px;
+    }
+
+
+    .campoColor {
+        width: 55px;
+        flex-shrink: 0;
+    }
+
+
+    .botonRegistra {
+        height: 50px;
+    }
+
+}
+
+
+@media (max-width: 380px) {
+
+    .tarjeta {
+        padding: 25px 15px;
+    }
+
+
+    .titulo {
+        font-size: 18px;
+    }
+
+
+    .campoColor {
+        width: 50px;
+    }
+
+}
+/*---FIN-REGISTRAR-AUTO----*/
+.campo-cuenta {
+    width: 100%;
+    height: 45px;
+    padding: 0 15px;
+
+    background-color: transparent;
+    color: white;
+
+    border: 1px solid gray;
+    border-radius: 10px;
+
+    outline: none;
+}
+.boton-logout{
+background-color: transparent;
+    color: red  ;
+    border: 1px solid red;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 450px;
+height: 50px;
+
+}
+.boton-logout:hover {
+    background-color: red ;
+    color: white;
+    transform: scale(1.02); 
+} 
+
+.boton-guardar{
+background-color: transparent;
+    color: greenyellow  ;
+    border: 1px solid greenyellow;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 450px;
+height: 50px;
+
+}
+.boton-guardar:hover {
+    background-color: greenyellow ;
+    color: black;
+    transform: scale(1.02); 
+} 
+.boton-vertical{
+background-color: #3c4146;
+color: white;
+padding: 10px 20px;
+border-radius: 25px;
+font-weight: bold;
+}
+.textoPrincipal-cuenta {
+            font-size: clamp(40px, 5vw, 70px);
+            font-weight: bold;
+            color: #f0e8d8;
+
+            margin: 0;
+            max-width: 700px;
+}
+
+        .tarjetaArriba-principal {
+            background-color: #181C1F;
+            width: 100%;
+            min-height: 60px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            gap: 35px;
+            padding: 10px 20px;
+
+            flex-wrap: wrap;
+        }
+
+          .textoBlanco-principal {
+            color: white;
+            margin: 0;
+            font-family: "Inter", sans-serif;
+            transition: 0.3s; 
+        }
+
+        .textoBlanco-principal:hover {
+            color: #c7c7c7;
+        }
+
+                .tarjetaArriba-principal a {
+            text-decoration: none;
+            color: white;
+            margin: 0;
+        }
+
+                .pagina-cuenta {
+                    display: block;
+                    align-items: initial;
+                    padding: 0;
+                }
+
+                .pagina-cuenta > .container-fluid {
+                    padding: 0;
+                }
+
+                @media (max-width: 576px) {
+                    .pagina-cuenta .tarjetaArriba-principal {
+                        flex-direction: column;
+                        gap: 12px;
+                        padding: 16px 10px;
+                    }
+
+                    .pagina-cuenta .tarjetaArriba-principal a {
+                        width: 100%;
+                        text-align: center;
+                        font-size: 14px;
+                    }
+                }
+
+         .seccionPrincipal {
+            min-height: calc(100vh - 60px);
+            display: flex;
+            align-items: center;
+        }
