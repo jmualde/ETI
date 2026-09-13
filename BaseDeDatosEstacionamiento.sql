@@ -11,7 +11,7 @@ CREATE TABLE usuario(
 );
 
 CREATE TABLE admin(
-    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    id INT PRIMARY KEY AUTO_INCREMENT,
     nombre_admin VARCHAR(50) NOT NULL UNIQUE,
     contrasenia VARCHAR(200) NOT NULL UNIQUE
 );
@@ -26,7 +26,7 @@ CREATE TABLE gestiona(
 );
 
 CREATE TABLE automovil(
-    id INT PRIMARY KEY NOT NULL,
+    id INT PRIMARY KEY AUTO_INCREMENT,
     marca VARCHAR(100) NOT NULL,
     modelo VARCHAR(100) NOT NULL,
     color VARCHAR(50) NOT NULL,
@@ -59,7 +59,7 @@ CREATE TABLE registra(
 
 
 CREATE TABLE ocupa(
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY AUTO_INCREMENT,
     coordenadaX INT,
     coordenadaY INT,
     id_usuario INT,

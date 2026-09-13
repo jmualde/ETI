@@ -78,17 +78,6 @@ require_once ("conexion.php");
             color: #c7c7c7;
         }
 
-        /* =========================
-           SECCIÓN PRINCIPAL
-        ========================= */
-
-        .seccionPrincipal {
-    min-height: calc(100vh - 60px);
-    display: flex;
-    align-items: flex-start;
-    padding-top: clamp(80px, 12vh, 150px);
-}
-
         .textoPrincipal {
             font-size: clamp(40px, 5vw, 70px);
             font-weight: bold;
@@ -97,35 +86,6 @@ require_once ("conexion.php");
             margin: 0;
             max-width: 900px;
         }
-
-        .tarjeta-principal,
-         {
-            border: 1px solid darkslategray;
-            padding: 30px;
-
-            background-color: #161a1d;
-            border-radius: 10px;
-
-            box-shadow: 1px 1px 10px rgb(83, 83, 83);
-
-            width: 90%;
-            max-width: 650px;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-         .boton {
-            width: 65px;
-            height: 35px;
-            border-radius: 50px;
-            font-weight: bold;
-            cursor: pointer;
-            background-color: white ;
-            color: black;
-        }
-
 
         /* =========================
            TABLET
@@ -232,6 +192,8 @@ require_once ("conexion.php");
                                 <th scope="col">Nombre</th>
                                 <th scope="col">Apellido</th>
                                 <th scope="col">Correo electrónico</th>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -247,8 +209,8 @@ require_once ("conexion.php");
                                 echo "<td>" . $fila1['nombre'] . "</td>";
                                 echo "<td>" . $fila1['apellido'] . "</td>";
                                 echo "<td>" . $fila1['email'] . "</td>";
-                                echo "</td> <button class='boton'>Editar</button>";
-                                echo "</td> <button class='boton'>Eliminar</button>";
+                                echo "<td><button class='boton' onclick='editar_usuario(" . $fila1['id'] . ")'>Editar</button></td>";
+                                echo "<td><button class='boton' onclick='eliminar_usuario(" . $fila1['id'] . ")'>Eliminar</button></td>";
                                 echo "</tr>";
                             }
                             ?>
@@ -266,6 +228,8 @@ require_once ("conexion.php");
                                 <th scope="col">Modelo</th>
                                 <th scope="col">Color</th>
                                 <th scope="col">ID Usuario</th>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -281,6 +245,8 @@ require_once ("conexion.php");
                                 echo "<td>" . $fila2['modelo'] . "</td>";
                                 echo "<td>" . $fila2['color'] . "</td>";
                                 echo "<td>" . $fila2['id_usuario'] . "</td>";
+                                echo "<td><button class='boton' onclick='editar_automovil(" . $fila2['id'] . ")'>Editar</button></td>";
+                                echo "<td><button class='boton' onclick='eliminar_automovil(" . $fila2['id'] . ")'>Eliminar</button></td>";
                                 echo "</tr>";
                             }
                             ?>
@@ -300,6 +266,8 @@ require_once ("conexion.php");
                                 <th scope="col">Fecha_inicio</th>
                                 <th scope="col">Fecha_fin</th>
                                 <th scope="col">ID Automovil</th>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -317,6 +285,8 @@ require_once ("conexion.php");
                                 echo "<td>" . $fila3['fecha_inicio'] . "</td>";
                                 echo "<td>" . $fila3['fecha_fin'] . "</td>";
                                 echo "<td>" . $fila3['id_automovil'] . "</td>";
+                                echo "<td><button class='boton' onclick='editar_ocupa(" . $fila3['id'] . ")'>Editar</button></td>";
+                                echo "<td><button class='boton' onclick='eliminar_ocupa(" . $fila3['id'] . ")'>Eliminar</button></td>";
                                 echo "</tr>";
                             }
                             ?>
@@ -335,6 +305,40 @@ require_once ("conexion.php");
 
 
     </div>
+    <script>
+        function editar_usuario(id) {
+         window.location.href = "editar_usuarios.php?id=" + id;
+        }
+
+        function eliminar_usuario(id) {
+            window.location.href = "eliminar_usuarios.php?id=" + id;
+        }
+
+        function editar_automovil(id) {
+         window.location.href = "editar_automovil.php?id=" + id;
+        }
+
+        function eliminar_automovil(id) {
+            window.location.href = "eliminar_automovil.php?id=" + id;
+        }
+
+        function editar_ocupa(id) {
+            window.location.href = "editar_ocupa.php?id=" + id;
+        }
+
+        function eliminar_ocupa(id) {
+            window.location.href = "eliminar_ocupa.php?id=" + id;
+        }
+             
+
+        function editar_ocupa(id) {
+            window.location.href = "editar_ocupa.php?id=" + id;
+        }
+
+        function eliminar_ocupa(id) {
+            window.location.href = "eliminar_ocupa.php?id=" + id;
+        }
+    </script>
 
 </body>
 
