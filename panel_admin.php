@@ -191,12 +191,8 @@ require_once ("conexion.php");
 
         <nav class="tarjetaArriba-principal">
 
-            <a href="principal.html">
+            <a href="principal_admin.html">
                 <p class="textoBlanco-principal">Página Principal</p>
-            </a>
-
-            <a href="#quienes_somos">
-                <p class="textoBlanco-principal">¿Quiénes somos?</p>
             </a>
 
             <a href="registra_auto.html">
