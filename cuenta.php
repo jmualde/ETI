@@ -19,19 +19,9 @@ try {
 
     $fila = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($fila) {
-
-        echo "Usuario: " . $fila["nombre_usuario"] . "<br>";
-        echo "Nombre: " . $fila["nombre"] . "<br>";
-        echo "Email: " . $fila["email"] . "<br>";
-
-    } else {
-        echo "No se encontró el usuario.";
-    }
-
 } catch (PDOException $e) {
 
-    echo "Error: " . $e->getMessage();
+    $fila = null;
 
 }
 ?>
@@ -45,57 +35,68 @@ try {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="disenio.css">
+    <link rel="stylesheet" href="disenio.css?v=20260912">
 
     <title>Cuenta</title>
 </head>
 
 <body>
-
+    <div class="container-fluid p-0">
 
         <nav class="tarjetaArriba-cuenta">
 
             <a href="principal.html">
-                <p class="textoBlanco-cuenta">Página Principal</p>
-            </a>
-
-            <a href="#quienes_somos">
-                <p class="textoBlanco-cuenta">¿Quiénes somos?</p>
+                <p class="textoBlanco">Página Principal</p>
             </a>
 
             <a href="registra_auto.html">
-                <p class="textoBlanco-cuenta">Registrar vehículo</p>
+                <p class="textoBlanco">Registrar vehículo</p>
             </a>
 
             <a href="ocupar_lugar.html">
-                <p class="textoBlanco-cuenta">Ocupar lugar</p>
+                <p class="textoBlanco">Ocupar lugar</p>
             </a>
 
             <a href="cuenta.php">
-                <p class="textoBlanco-cuenta">Cuenta</p>
+                <p class="textoBlanco">Cuenta</p>
             </a>
 
-        </nav>
+        </nav><br><br><br>
+<center>
+        <h1>Tu cuenta</h1>
+        </center>
+<br><br>
+        <div class=" row justify-content-center">
 
-        <br>
-
-        <h1 class="titulo-cuenta">Tu cuenta</h1>
-
-        <section class="seccionPrincipal">
-
-            <div class="contenido">
+            <div class="col-12 col-md-6 col-lg-4">
 
                 <label>Nombre de usuario:</label>
-                <input class="campo-cuenta" type="text">
+
+                <div class="d-flex gap-2 align-items-center">
+                    <input class="campo-cuenta form control" type="text" value="<?= htmlspecialchars($fila["nombre_usuario"]) ?>" readonly>
+                    <button class="btn btn-primary" style="background-color: white; color: black; border: 1px solid white; max-height: 40px;" onclick="editar('nombre_usuario')">Editar</button>
+                </div>
 
                 <br>
-
                 <label>Correo electrónico:</label>
-                <input class="campo-cuenta" type="email">
+
+                <div class="d-flex gap-2 align-items-center">
+                <input class="campo-cuenta form control" type="email" value="<?= htmlspecialchars($fila["email"]) ?>" readonly>
+                <button class="btn btn-primary" style="background-color: white; color: black; border: 1px solid white; max-height: 40px;" onclick="editar('email')">Editar</button>
+                
+                </div>
+                <br>
+                   <label >Contraseña:</label>
+
+                <div class="d-flex gap-2 align-items-center">
+                <input class="campo-cuenta form control" type="password" value="<?= htmlspecialchars($fila["contrasenia"]) ?>" readonly>
+                <button class="btn btn-primary" style="background-color: white; color: black; border: 1px solid white; max-height: 40px;" onclick="editar('contrasenia')">Editar</button>
+                
+                </div>
 
             </div>
-
-        </section>
+        </div>
+       
 
     </div>
 

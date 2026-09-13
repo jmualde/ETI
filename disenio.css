@@ -1,4 +1,19 @@
-/*---LOGIN----*/
+/*
+     MAPA DE CLASES POR ARCHIVO
+     - login.php: .contenedor, .tarjeta, .columna-formulario,
+         .columna-imagen, .campo, .gris, .azul, .botonIniciar,
+         .botonAyuda, .imagenauto, .registro y .botonRegistra.
+     - olvidoContrasenia.html: .tarjeta, .campo y .botonRegistra.
+     - registra_auto.html: .tarjetaArriba, .textoBlanco,
+         .tarjeta_registrar_auto, .contenido, .titulo, .campo,
+         .marca-color, .campoColor, .botonRegistra y .textoPrincipal.
+     - registra.html: .tarjeta-registrar, .formulario-registro,
+         .campo, .gris y .botonRegistra.
+     - cuenta.php: .tarjetaArriba-cuenta, .textoBlanco-cuenta,
+         .titulo-cuenta, .seccionPrincipal, .contenido  .campo-cuenta y .textoPrincipal.
+*/
+
+/* login.php */
 
 html, body {
             margin: 0;
@@ -9,10 +24,6 @@ html, body {
         }
 
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            align-items: center;
             min-height: 100vh;
             padding: 30px 15px;
         }
@@ -20,6 +31,7 @@ html, body {
         .contenedor {
             width: 100%;
             max-width: 1000px;
+            margin: 0 auto;
         }
 
         /* TARJETA */
@@ -239,10 +251,10 @@ html, body {
             }
         }
 
-/*---FIN LOGIN----*/
+/* Fin de login.php */
 
 
-/* TARJETA */
+/* registra_auto.html: tarjeta principal */
 
 .tarjeta-auto {
     display: flex;
@@ -266,10 +278,88 @@ html, body {
     box-sizing: border-box;
 }
 
+.tarjeta_registrar_auto {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: min(900px, 90%);
+    min-height: 500px;
+    margin: 40px auto;
+    padding: 50px;
+    background-color: #161a1d;
+    border: 1px solid darkslategray;
+    border-radius: 10px;
+    box-shadow: 1px 1px 10px rgb(83, 83, 83);
+    box-sizing: border-box;
+}
 
-/* =========================
-   CONTENIDO
-========================= */
+/* registra_auto.html y cuenta.php: navegación */
+.tarjetaArriba,
+.tarjetaArriba-cuenta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 35px;
+    flex-wrap: wrap;
+    width: 100%;
+    min-height: 60px;
+    padding: 10px 20px;
+    background-color: #181c1f;
+}
+
+.tarjetaArriba a,
+.tarjetaArriba-cuenta a {
+    color: white;
+    text-decoration: none;
+}
+
+.textoBlanco,
+.textoBlanco-cuenta {
+    margin: 0;
+    color: white;
+    transition: 0.3s;
+}
+
+.textoBlanco:hover,
+.textoBlanco-cuenta:hover {
+    color: #c7c7c7;
+}
+
+/* cuenta.php */
+.titulo-cuenta {
+    margin: 50px auto 35px;
+    color: #f0e8d8;
+    text-align: center;
+}
+
+.seccionPrincipal {
+    display: flex;
+    justify-content: center;
+}
+
+.seccionPrincipal .contenido {
+    width: min(600px, 100%);
+    padding: 35px;
+    background-color: #161a1d;
+    border: 1px solid darkslategray;
+    border-radius: 10px;
+    box-shadow: 1px 1px 10px rgb(83, 83, 83);
+}
+
+.campo-cuenta {
+    display: block;
+    width: 100%;
+    height: 45px;
+    padding: 0 15px;
+    background-color: transparent;
+    color: white;
+    border: 1px solid gray;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+
+/* registra_auto.html y registra.html: contenido compartido */
 
 .contenido {
     width: 100%;
@@ -277,9 +367,7 @@ html, body {
 }
 
 
-/* =========================
-   TÍTULO
-========================= */
+/* registra_auto.html y registra.html: título */
 
 .titulo {
     text-align: center;
@@ -288,9 +376,7 @@ html, body {
 }
 
 
-/* =========================
-   CAMPOS
-========================= */
+/* login.php, registra.html y registra_auto.html: campos */
 
 .campo-auto {
     background: transparent;
@@ -304,7 +390,7 @@ html, body {
 }
 
 
-/* SELECT */
+/* registra_auto.html: listas desplegables */
 
 select.campo {
     background-color: #161a1d;
@@ -317,9 +403,7 @@ select.campo option {
 }
 
 
-/* =========================
-   MODELO + COLOR
-========================= */
+/* registra_auto.html: modelo y color */
 
 .marca-color {
     display: flex;
@@ -335,8 +419,13 @@ select.campo option {
     min-width: 0;
 }
 
+.marca-color .campo {
+    flex: 1;
+    min-width: 0;
+}
 
-/* COLOR */
+
+/* registra_auto.html: selector de color */
 
 .campoColor {
     background: transparent;
@@ -353,9 +442,7 @@ select.campo option {
 }
 
 
-/* =========================
-   BOTÓN
-========================= */
+/* registra.html y registra_auto.html: botón de registro */
 
 .botonRegistra {
     width: 100%;
@@ -376,9 +463,7 @@ select.campo option {
 }
 
 
-/* =========================
-   CELULAR
-========================= */
+/* registra_auto.html: vista celular */
 
 @media (max-width: 600px) {
 
