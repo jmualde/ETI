@@ -73,7 +73,7 @@ try {
                 <label>Nombre de usuario:</label>
 
                 <div class="d-flex gap-2 align-items-center">
-                    <input class="campo-cuenta form control" type="text" value="<?= htmlspecialchars($fila["nombre_usuario"]) ?>" readonly>
+                    <input class="campo-cuenta form control" type="text" id="nombre_usuario" value="<?= htmlspecialchars($fila["nombre_usuario"]) ?>" readonly>
                     <button class="btn btn-primary" style="background-color: white; color: black; border: 1px solid white; max-height: 40px;" onclick="editar('nombre_usuario')">Editar</button>
                 </div>
 
@@ -81,7 +81,7 @@ try {
                 <label>Correo electrónico:</label>
 
                 <div class="d-flex gap-2 align-items-center">
-                <input class="campo-cuenta form control" type="email" value="<?= htmlspecialchars($fila["email"]) ?>" readonly>
+                <input class="campo-cuenta form control" type="email" id="email" value="<?= htmlspecialchars($fila["email"]) ?>" readonly>
                 <button class="btn btn-primary" style="background-color: white; color: black; border: 1px solid white; max-height: 40px;" onclick="editar('email')">Editar</button>
                 
                 </div>
@@ -89,16 +89,48 @@ try {
                    <label >Contraseña:</label>
 
                 <div class="d-flex gap-2 align-items-center">
-                <input class="campo-cuenta form control" type="password" value="<?= htmlspecialchars($fila["contrasenia"]) ?>" readonly>
+                <input class="campo-cuenta form control" type="password" id="contrasenia" value="<?= htmlspecialchars($fila["contrasenia"]) ?>" readonly>
                 <button class="btn btn-primary" style="background-color: white; color: black; border: 1px solid white; max-height: 40px;" onclick="editar('contrasenia')">Editar</button>
                 
                 </div>
+                <br>
+                <center>
+                <form action="cerrar_sesion.php" method="post">
+                    <button class="btn btn-danger "style=" background-color: transparent; border-color: #dc3545; color: #dc3545;" type="submit">Cerrar sesión</button>
+                </form>
+                </center>
 
             </div>
         </div>
        
 
     </div>
+    
+    <script>
+        function editar(id) {
+            const input = document.getElementById(id);
+
+            input.readOnly = false;
+            input.focus();
+
+            let boton = document.createElement("button");
+
+            boton.innerHTML = "Guardar";
+
+            boton.className = "btn btn-primary";
+            boton.setAttribute("style", "background-color: white; color: black; border: 1px solid white; max-height: 40px;");
+        
+            boton.onclick = function() {
+                input.readOnly = true;
+                window.location.href="actualizar_cuenta.php?campo=" + encodeURIComponent(id) + "&valor=" + encodeURIComponent(input.value);
+                boton.remove();
+            }
+            
+                input.parentNode.appendChild(boton);
+               
+            
+        }
+    </script>
 
 </body>
 </html>
