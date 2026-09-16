@@ -1,70 +1,58 @@
 <?php
+session_start();
 
-<<<<<<< Updated upstream
-
-$sql = "SELECT * FROM usuarios WHERE nombreUsuario = :nombreUsuario AND contrasenia = :contrasenia";
-=======
 require_once("conexion.php");
 
 $user = $_POST["user"];
 $contrasenia = $_POST["contrasenia"];
 
-$sql = "SELECT * FROM usuarios 
-        WHERE nombreUsuario = :nombreUsuario 
-        AND contrasenia = :contrasenia";
+// Buscar usuario normal
+$sql1 = "SELECT * FROM usuario 
+         WHERE nombre_usuario = :nombreUsuario 
+         AND contrasenia = :contrasenia";
 
->>>>>>> Stashed changes
-$stmt = $conexion->prepare($sql);
+$stmt1 = $conexion->prepare($sql1);
 
-$stmt->execute([
+$stmt1->execute([
     ':nombreUsuario' => $user,
     ':contrasenia' => $contrasenia
 ]);
 
-$fila = $stmt->fetch(PDO::FETCH_ASSOC);
-
-session_start();
-
-<<<<<<< Updated upstream
-    if ($fila){
-        $_SESSION["usuario"]=$user;
-        header("Location: principal.html" );
-        exit();
-    }else{
-   header("Location: login.php");
+$fila1 = $stmt1->fetch(PDO::FETCH_ASSOC);
 
 
-   
+// Buscar administrador
+$sql2 = "SELECT * FROM admin 
+         WHERE nombre_admin = :nombre_admin 
+         AND contrasenia = :contrasenia";
+
+$stmt2 = $conexion->prepare($sql2);
+
+$stmt2->execute([
+    ':nombre_admin' => $user,
+    ':contrasenia' => $contrasenia
+]);
+
+$fila2 = $stmt2->fetch(PDO::FETCH_ASSOC);
+
+
+// Si es administrador
+if ($fila2) {
+    $_SESSION["usuario"] = $user;
+    $_SESSION['id_admin'] = $fila2['id'];
+    header("Location: principal_admin.html");
+    exit();
 }
 
 
-    if (!isset($_SESSION["usuario"])) {
-      header("Location: login.php");
-      exit();
-    }
-
-
-    // FUTURO LOG OUT session_unset();
-
-
-
-
-?>
-=======
-if ($fila) {
-
+// Si es usuario normal
+if ($fila1) {
     $_SESSION["usuario"] = $user;
-    $_SESSION["idUsuario"] = $fila["id"];
-
+    $_SESSION['id_usuario'] = $fila1['id'];
     header("Location: principal.html");
     exit();
-
-} else {
-
-    header("Location: login.php?error=1");
-    exit();
-
 }
 
+header("Location: login.php?error=1");
+exit();
 ?>
->>>>>>> Stashed changes
