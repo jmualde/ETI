@@ -1,4 +1,20 @@
-/*---LOGIN----*/
+/*
+     MAPA DE CLASES POR ARCHIVO
+     - login.php: .contenedor, .tarjeta, .columna-formulario,
+         .columna-imagen, .campo, .gris, .azul, .botonIniciar,
+         .botonAyuda, .imagenauto, .registro y .botonRegistra.
+     - olvidoContrasenia.html: .tarjeta, .campo y .botonRegistra.
+     - registra_auto.html: .tarjetaArriba, .textoBlanco,
+         .tarjeta_registrar_auto, .contenido, .titulo, .campo,
+         .marca-color, .campoColor, .botonRegistra y .textoPrincipal.
+     - registra.html: .tarjeta-registrar, .formulario-registro,
+         .campo, .gris y .botonRegistra.
+     - cuenta.php: .tarjetaArriba-cuenta, .textoBlanco-cuenta,
+         .titulo-cuenta, .seccionPrincipal, .contenido  .campo-cuenta y .textoPrincipal.
+*/
+
+/* login.php */
+
 html, body {
             margin: 0;
             padding: 0;
@@ -8,10 +24,6 @@ html, body {
         }
 
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            align-items: center;
             min-height: 100vh;
             padding: 30px 15px;
         }
@@ -19,6 +31,7 @@ html, body {
         .contenedor {
             width: 100%;
             max-width: 1000px;
+            margin: 0 auto;
         }
 
         /* TARJETA */
@@ -109,10 +122,10 @@ html, body {
             transform: scale(1.02);
         }
 
-        
+        /* boton-REGISTRAR */
         .botonRegistra {
-            width: 130px;
-            max-width: 50%;
+            width: 250px;
+            max-width: 100%;
 
             height: 45px;
 
@@ -237,21 +250,13 @@ html, body {
                 margin-top: 25px;
             }
         }
-/*---FIN-LOGIN----*/
-/*---REGISTRAR-AUTO----*/
-        html,
-body {
-    background-color: #161a1d;
-    color: white;
-    width: 100%;
-    min-height: 100%;
-    margin: 0;
-}
+
+/* Fin de login.php */
 
 
-/* TARJETA */
+/* registra_auto.html: tarjeta principal */
 
-.tarjeta {
+.tarjeta-auto {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -269,8 +274,92 @@ body {
     border-radius: 10px;
 
     box-shadow: 1px 1px 10px rgb(83, 83, 83);
+
+    box-sizing: border-box;
 }
-  
+
+.tarjeta_registrar_auto {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: min(900px, 90%);
+    min-height: 500px;
+    margin: 40px auto;
+    padding: 50px;
+    background-color: #161a1d;
+    border: 1px solid darkslategray;
+    border-radius: 10px;
+    box-shadow: 1px 1px 10px rgb(83, 83, 83);
+    box-sizing: border-box;
+}
+
+/* registra_auto.html y cuenta.php: navegación */
+.tarjetaArriba,
+.tarjetaArriba-cuenta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 35px;
+    flex-wrap: wrap;
+    width: 100%;
+    min-height: 60px;
+    padding: 10px 20px;
+    background-color: #181c1f;
+}
+
+.tarjetaArriba a,
+.tarjetaArriba-cuenta a {
+    color: white;
+    text-decoration: none;
+}
+
+.textoBlanco,
+.textoBlanco-cuenta {
+    margin: 0;
+    color: white;
+    transition: 0.3s;
+}
+
+.textoBlanco:hover,
+.textoBlanco-cuenta:hover {
+    color: #c7c7c7;
+}
+
+/* cuenta.php */
+.titulo-cuenta {
+    margin: 50px auto 35px;
+    color: #f0e8d8;
+    text-align: center;
+}
+
+.seccionPrincipal {
+    display: flex;
+    justify-content: center;
+}
+
+.seccionPrincipal .contenido {
+    width: min(600px, 100%);
+    padding: 35px;
+    background-color: #161a1d;
+    border: 1px solid darkslategray;
+    border-radius: 10px;
+    box-shadow: 1px 1px 10px rgb(83, 83, 83);
+}
+
+.campo-cuenta {
+    display: block;
+    width: 100%;
+    height: 45px;
+    padding: 0 15px;
+    background-color: transparent;
+    color: white;
+    border: 1px solid gray;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+
+/* registra_auto.html y registra.html: contenido compartido */
 
 .contenido {
     width: 100%;
@@ -278,45 +367,35 @@ body {
 }
 
 
+/* registra_auto.html y registra.html: título */
+
 .titulo {
     text-align: center;
     margin-bottom: 40px;
+    color: white;
 }
 
 
+/* login.php, registra.html y registra_auto.html: campos */
 
-.gris {
-    color: #C7D1DB;
-    font-weight: bold;
-    transition: 0.5s;
-}
-
-.azul {
-    color: #C7D1DB;
-    font-weight: bold;
-}
-
-
-
-.campo {
+.campo-auto {
     background: transparent;
 
     border: 1px solid gray;
     border-radius: 10px;
 
-    width: 100%;
-    height: 45px;
+    padding: 8px 12px;
 
-    color: white;
-
-    padding: 0 12px;
+    box-sizing: border-box;
 }
 
+
+/* registra_auto.html: listas desplegables */
 
 select.campo {
     background-color: #161a1d;
+    color: white;
 }
-
 
 select.campo option {
     background-color: #161a1d;
@@ -324,19 +403,29 @@ select.campo option {
 }
 
 
+/* registra_auto.html: modelo y color */
 
 .marca-color {
     display: flex;
+    align-items: center;
+
     gap: 10px;
     width: 100%;
 }
 
+
+.marca-color .campo-auto {
+    flex: 1;
+    min-width: 0;
+}
 
 .marca-color .campo {
     flex: 1;
     min-width: 0;
 }
 
+
+/* registra_auto.html: selector de color */
 
 .campoColor {
     background: transparent;
@@ -348,9 +437,12 @@ select.campo option {
     height: 45px;
 
     padding: 2px;
+
+    flex-shrink: 0;
 }
 
 
+/* registra.html y registra_auto.html: botón de registro */
 
 .botonRegistra {
     width: 100%;
@@ -359,19 +451,23 @@ select.campo option {
     border-radius: 500px;
 
     background-color: white;
+    color: black;
 
     font-weight: bold;
 
     border: none;
 
     margin-top: 20px;
+
+    cursor: pointer;
 }
 
 
+/* registra_auto.html: vista celular */
 
-@media (max-width: 768px) {
+@media (max-width: 600px) {
 
-    .tarjeta {
+    .tarjeta-auto {
         width: 90%;
         margin: 60px auto;
         padding: 35px 25px;
@@ -383,20 +479,20 @@ select.campo option {
 
 @media (max-width: 576px) {
 
-    .tarjeta {
+    .tarjeta-auto {
         width: 94%;
+
         min-height: auto;
 
-        margin: 30px auto;
+        margin: 40px auto;
 
-        padding: 30px 20px;
+        padding: 25px 18px;
     }
-
 
     .contenido {
-        max-width: 100%;
+        width: 100%;
+        max-width: none;
     }
-
 
     .titulo {
         font-size: 20px;
@@ -404,32 +500,33 @@ select.campo option {
     }
 
 
-    .campo {
+    .campo-auto {
         height: 45px;
     }
-
 
     .marca-color {
         gap: 8px;
     }
 
-
     .campoColor {
-        width: 55px;
-        flex-shrink: 0;
+        width: 50px;
+        height: 45px;
     }
 
 
-    .botonRegistra {
+    .botonRegistra-auto {
         height: 50px;
     }
-
 }
 
 
-@media (max-width: 380px) {
+/* =========================
+   TABLET
+========================= */
 
-    .tarjeta {
+@media (min-width: 601px) and (max-width: 900px) {
+
+    .tarjeta-auto {
         padding: 25px 15px;
     }
 
@@ -438,135 +535,93 @@ select.campo option {
         font-size: 18px;
     }
 
-
-    .campoColor {
-        width: 50px;
+    .tarjetaArriba {
+        gap: 25px;
     }
-
 }
 /*---FIN-REGISTRAR-AUTO----*/
-.campo-cuenta {
+
+.tarjeta-registrar {
+    border: 1px solid darkslategray;
+    padding: 50px;
     width: 100%;
-    height: 45px;
-    padding: 0 15px;
+    max-width: 900px;
+    box-sizing: border-box;
+    margin: 90px auto 0;
+    background-color: #161a1d;
+    border-radius: 10px;
+    box-shadow: 1px 1px 10px rgb(83, 83, 83);
+     margin: 40px auto 0;
+}
 
-    background-color: transparent;
+.botonRegistra-registro {
+    width: 100%;
+    max-width: 450px;
+    height: 55px;
+    border-radius: 500px;
+    background-color: white;
+    font-weight: bold;
+    border: none;
+}
+
+.botonYaTengoCuenta {
+    width: 100%;
+    max-width: 300px;
+    height: 40px;
+    border-radius: 500px;
+    background: transparent;
     color: white;
+    font-weight: bold;
+    border: 2px solid white;
+}
 
+
+.campo-registro {
+    background: transparent;
     border: 1px solid gray;
     border-radius: 10px;
-
-    outline: none;
-}
-.boton-logout{
-background-color: transparent;
-    color: red  ;
-    border: 1px solid red;
-    border-radius: 25px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-    width: 450px;
-height: 50px;
-
-}
-.boton-logout:hover {
-    background-color: red ;
+    width: 100%;
+    max-width: 450px;
+    height: 45px;
+    box-sizing: border-box;
     color: white;
-    transform: scale(1.02); 
-} 
-
-.boton-guardar{
-background-color: transparent;
-    color: greenyellow  ;
-    border: 1px solid greenyellow;
-    border-radius: 25px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-    width: 450px;
-height: 50px;
-
-}
-.boton-guardar:hover {
-    background-color: greenyellow ;
-    color: black;
-    transform: scale(1.02); 
-} 
-.boton-vertical{
-background-color: #3c4146;
-color: white;
-padding: 10px 20px;
-border-radius: 25px;
-font-weight: bold;
-}
-.textoPrincipal-cuenta {
-            font-size: clamp(40px, 5vw, 70px);
-            font-weight: bold;
-            color: #f0e8d8;
-
-            margin: 0;
-            max-width: 700px;
 }
 
-        .tarjetaArriba-principal {
-            background-color: #181C1F;
-            width: 100%;
-            min-height: 60px;
+.formulario-registro {
+    width: 100%;
+    max-width: 450px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-sizing: border-box;
+}
 
-            display: flex;
-            justify-content: center;
-            align-items: center;
 
-            gap: 35px;
-            padding: 10px 20px;
+/*  Celulares */
+@media (max-width: 600px) {
 
-            flex-wrap: wrap;
-        }
+    body {
+        padding: 10px;
+    }
 
-          .textoBlanco-principal {
-            color: white;
-            margin: 0;
-            font-family: "Inter", sans-serif;
-            transition: 0.3s; 
-        }
+    .tarjeta-registrar {
+        padding: 25px 20px;
+        margin-top: 30px;
+    }
 
-        .textoBlanco-principal:hover {
-            color: #c7c7c7;
-        }
+    .botonRegistra-registro,
+    .campo-registro,
+    .formulario-registro {
+        width: 100%;
+    }
 
-                .tarjetaArriba-principal a {
-            text-decoration: none;
-            color: white;
-            margin: 0;
-        }
+    .botonRegistra-registro {
+        height: 50px;
+    }
 
-                .pagina-cuenta {
-                    display: block;
-                    align-items: initial;
-                    padding: 0;
-                }
+    .botonYaTengoCuenta {
+        width: 100%;
+    }
+}
 
-                .pagina-cuenta > .container-fluid {
-                    padding: 0;
-                }
-
-                @media (max-width: 576px) {
-                    .pagina-cuenta .tarjetaArriba-principal {
-                        flex-direction: column;
-                        gap: 12px;
-                        padding: 16px 10px;
-                    }
-
-                    .pagina-cuenta .tarjetaArriba-principal a {
-                        width: 100%;
-                        text-align: center;
-                        font-size: 14px;
-                    }
-                }
-
-         .seccionPrincipal {
-            min-height: calc(100vh - 60px);
-            display: flex;
-            align-items: center;
-        }
