@@ -10,13 +10,10 @@ if (!isset($_SESSION["usuario"])) {
 
 try {
 
-<<<<<<< Updated upstream
-    $sql = "SELECT * FROM usuarios WHERE nombreUsuario = :nombreUsuario";
-=======
-    // Buscar usuario
-    $sql = "SELECT * FROM usuario 
-            WHERE nombre_usuario = :nombreUsuario";
->>>>>>> Stashed changes
+
+
+    $sql = "SELECT * FROM usuario  WHERE nombre_usuario = :nombreUsuario";
+
 
     $stmt = $conexion->prepare($sql);
 
@@ -26,18 +23,8 @@ try {
 
     $fila = $stmt->fetch(PDO::FETCH_ASSOC);
 
-<<<<<<< Updated upstream
-    if ($fila) {
-
-
-    } else {
-        echo "No se encontró el usuario.";
-    }
-=======
-
     // Buscar auto
-    $sqlAuto = "SELECT * FROM automovil 
-                WHERE id_usuario = :idUsuario";
+    $sqlAuto = "SELECT * FROM automovil WHERE id_usuario = :idUsuario";
 
     $stmtAuto = $conexion->prepare($sqlAuto);
 
@@ -46,7 +33,7 @@ try {
     ]);
 
     $auto = $stmtAuto->fetch(PDO::FETCH_ASSOC);
->>>>>>> Stashed changes
+
 
 } catch (PDOException $e) {
 
@@ -68,25 +55,15 @@ try {
     <link rel="stylesheet" href="disenio.css">
     <title>Cuenta</title>
 </head>
-<<<<<<< Updated upstream
 <body class="pagina-cuenta">
     <div class="container-fluid">
          <nav class="tarjetaArriba-principal">
-=======
-<style>
-.img {
-  height: 150px;
-  width: 150px;
-  border-radius: 50%;
-  object-fit: cover;
-  background: #dfdfdf;
-}
-</style>
+
 <body>
     <div class="container-fluid p-0">
 
         <nav class="tarjetaArriba-cuenta">
->>>>>>> Stashed changes
+
 
             <a href="principal.html">
                 <p class="textoBlanco-principal">Página Principal</p>
@@ -108,24 +85,11 @@ try {
                 <p class="textoBlanco-principal">Cuenta</p>
             </a>
 
-<<<<<<< Updated upstream
+
         </nav>
         <br>
-        <center><h1>Tu cuenta</h1></center>
-        <br><br>
-            <center>  
-                <div class="textoBlanco-principal">
-              Nombre de usuario: <?php echo $fila['nombreUsuario']; ?>  <br>
-                Correo electrónico: <?php echo $fila['email'] ?><br> 
-                </div>
-
-                <button class="boton-logout"> logout </button> <button class="boton-guardar"> guardar y salir</button>
-        </center>
- 
-   
-        <br><br>
     
-=======
+
         </nav><br><br><br>
 <center>
         <h1>Tu cuenta</h1>
@@ -229,7 +193,6 @@ try {
             
         }
     </script>
->>>>>>> Stashed changes
 
 </body>
 </html>
