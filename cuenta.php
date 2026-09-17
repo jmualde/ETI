@@ -56,21 +56,11 @@ try {
     <title>Cuenta</title>
 </head>
 <body class="pagina-cuenta">
-    <div class="container-fluid">
-         <nav class="tarjetaArriba-principal">
-
-<body>
     <div class="container-fluid p-0">
 
-        <nav class="tarjetaArriba-cuenta">
-
-
+        <nav class="tarjetaArriba-principal">
             <a href="principal.html">
                 <p class="textoBlanco-principal">Página Principal</p>
-            </a>
-
-            <a href="#quienes_somos">
-                <p class="textoBlanco-principal">¿Quiénes somos?</p>
             </a>
 
             <a href="registra_auto.html">
@@ -84,14 +74,10 @@ try {
             <a href="cuenta.php">
                 <p class="textoBlanco-principal">Cuenta</p>
             </a>
-
-
         </nav>
-        <br>
-    
 
-        </nav><br><br><br>
-<center>
+        <br><br><br>
+        <center>
         <h1>Tu cuenta</h1>
         </center> 
 

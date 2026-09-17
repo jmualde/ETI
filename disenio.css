@@ -295,34 +295,57 @@ html, body {
 
 /* registra_auto.html y cuenta.php: navegación */
 .tarjetaArriba,
-.tarjetaArriba-cuenta {
+.tarjetaArriba-cuenta,
+.tarjetaArriba-principal {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 35px;
+    gap: 18px;
     flex-wrap: wrap;
-    width: 100%;
-    min-height: 60px;
-    padding: 10px 20px;
-    background-color: #181c1f;
+    width: fit-content;
+    max-width: calc(100% - 24px);
+    min-height: 62px;
+    margin: 18px auto 0;
+    padding: 10px 22px;
+    background: rgba(24, 28, 31, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+    backdrop-filter: blur(6px);
 }
 
 .tarjetaArriba a,
-.tarjetaArriba-cuenta a {
+.tarjetaArriba-cuenta a,
+.tarjetaArriba-principal a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: white;
     text-decoration: none;
+    border-radius: 999px;
+    transition: 0.25s ease;
+}
+
+.tarjetaArriba a:hover,
+.tarjetaArriba-cuenta a:hover,
+.tarjetaArriba-principal a:hover {
+    background: rgba(255, 255, 255, 0.06);
 }
 
 .textoBlanco,
-.textoBlanco-cuenta {
+.textoBlanco-cuenta,
+.textoBlanco-principal {
     margin: 0;
+    padding: 8px 12px;
     color: white;
+    border-radius: 999px;
     transition: 0.3s;
 }
 
 .textoBlanco:hover,
-.textoBlanco-cuenta:hover {
-    color: #c7c7c7;
+.textoBlanco-cuenta:hover,
+.textoBlanco-principal:hover {
+    color: #ffffff;
 }
 
 /* cuenta.php */
@@ -479,6 +502,33 @@ select.campo option {
 
 @media (max-width: 576px) {
 
+    .tarjetaArriba,
+    .tarjetaArriba-cuenta,
+    .tarjetaArriba-principal {
+        width: calc(100% - 20px);
+        min-height: auto;
+        margin-top: 12px;
+        padding: 16px 12px;
+        border-radius: 28px;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .tarjetaArriba a,
+    .tarjetaArriba-cuenta a,
+    .tarjetaArriba-principal a {
+        width: 100%;
+        font-size: 14px;
+    }
+
+    .textoBlanco,
+    .textoBlanco-cuenta,
+    .textoBlanco-principal {
+        width: 100%;
+        padding: 10px 12px;
+        text-align: center;
+    }
+
     .tarjeta-auto {
         width: 94%;
 
@@ -625,3 +675,5 @@ select.campo option {
     }
 }
 
+
+ 
