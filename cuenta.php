@@ -67,7 +67,7 @@ try {
                 <p class="textoBlanco-principal">Registrar vehículo</p>
             </a>
 
-            <a href="ocupar_lugar.html">
+            <a href="ocupar_lugar.php">
                 <p class="textoBlanco-principal">Ocupar lugar</p>
             </a>
 
