@@ -43,35 +43,52 @@ if (!isset($_SESSION["usuario"])) {
         }
 
         .tarjetaArriba-principal {
-            background-color: #181C1F;
-            width: 100%;
-            min-height: 60px;
+            background: rgba(24, 28, 31, 0.9);
+            width: fit-content;
+            max-width: calc(100% - 24px);
+            min-height: 62px;
+            margin: 18px auto 0;
 
             display: flex;
             justify-content: center;
             align-items: center;
 
-            gap: 35px;
-            padding: 10px 20px;
-
+            gap: 18px;
+            padding: 10px 22px;
             flex-wrap: wrap;
+
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 999px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+            backdrop-filter: blur(6px);
         }
 
         .tarjetaArriba-principal a {
             text-decoration: none;
             color: white;
             margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            transition: 0.25s ease;
+        }
+
+        .tarjetaArriba-principal a:hover {
+            background: rgba(255, 255, 255, 0.06);
         }
 
         .textoBlanco-principal {
             color: white;
             margin: 0;
+            padding: 8px 12px;
+            border-radius: 999px;
             font-family: "Inter", sans-serif;
             transition: 0.3s;
         }
 
         .textoBlanco-principal:hover {
-            color: #c7c7c7;
+            color: #ffffff;
         }
 
         /* =========================
@@ -228,16 +245,25 @@ if (!isset($_SESSION["usuario"])) {
         @media (max-width: 576px) {
 
             .tarjetaArriba-principal {
+                width: calc(100% - 20px);
                 min-height: auto;
+                border-radius: 28px;
 
                 flex-direction: column;
-                gap: 12px;
+                gap: 8px;
 
-                padding: 18px 10px;
+                padding: 16px 12px;
             }
 
             .tarjetaArriba-principal a {
+                width: 100%;
                 font-size: 14px;
+            }
+
+            .textoBlanco-principal {
+                width: 100%;
+                text-align: center;
+                padding: 10px 12px;
             }
 
             .seccionPrincipal {
@@ -297,7 +323,7 @@ if (!isset($_SESSION["usuario"])) {
 
         <nav class="tarjetaArriba-principal">
 
-            <a href="principal.php">
+            <a href="principal.html">
                 <p class="textoBlanco-principal">Página Principal</p>
             </a>
 
