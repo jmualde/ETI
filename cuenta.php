@@ -56,16 +56,10 @@ try {
     <title>Cuenta</title>
 </head>
 <body class="pagina-cuenta">
-    <div class="container-fluid">
-         <nav class="tarjetaArriba-principal">
-
-<body>
     <div class="container-fluid p-0">
 
-        <nav class="tarjetaArriba-cuenta">
-
-
-            <a href="principal.php">
+        <nav class="tarjetaArriba-principal">
+            <a href="principal.html">
                 <p class="textoBlanco-principal">Página Principal</p>
             </a>
 
@@ -80,14 +74,10 @@ try {
             <a href="cuenta.php">
                 <p class="textoBlanco-principal">Cuenta</p>
             </a>
-
-
         </nav>
-        <br>
-    
 
-        </nav><br><br><br>
-<center>
+        <br><br><br>
+        <center>
         <h1>Tu cuenta</h1>
         </center> 
 
@@ -151,8 +141,8 @@ try {
                     
                 </form>
                 
-                <form action="principal.php" method="post">
-                    <button class="btn btn-danger "style=" background-color: transparent; border-color: green; color: green;" type="submit">Menu principal</button>
+                <form action="principal.html" method="post">
+                    <button class="btn btn-danger "style=" background-color: transparent; border-color: green; color: green;" type="submit">menu principal</button>
                 </form> 
 
                  </div>
@@ -189,265 +179,6 @@ try {
             
         }
     </script>
-
-        <script>
-
-        const selectMarca =
-            document.getElementById("marca");
-
-
-        /* CARGAR MARCAS */
-
-        fetch("obtener_marcas.php")
-
-            .then(response => {
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        "Error HTTP: " + response.status
-                    );
-
-                }
-
-                return response.json();
-
-            })
-
-            .then(data => {
-
-                console.log(
-                    "Datos recibidos:",
-                    data
-                );
-
-
-                selectMarca.innerHTML = "";
-
-
-                const opcionInicial =
-                    document.createElement("option");
-
-
-                opcionInicial.value = "";
-
-                opcionInicial.textContent =
-                    "Seleccione una marca";
-
-                opcionInicial.disabled = true;
-
-                opcionInicial.selected = true;
-
-
-                selectMarca.appendChild(
-                    opcionInicial
-                );
-
-
-                data.data.forEach(marca => {
-
-                    const opcion =
-                        document.createElement("option");
-
-
-                    opcion.value =
-                        marca.name;
-
-                    opcion.textContent =
-                        marca.name;
-
-
-                    selectMarca.appendChild(
-                        opcion
-                    );
-
-                });
-
-            })
-
-
-            .catch(error => {
-
-                console.error(
-                    "Error al cargar las marcas:",
-                    error
-                );
-
-
-                selectMarca.innerHTML = "";
-
-
-                const opcionError =
-                    document.createElement("option");
-
-
-                opcionError.value = "";
-
-                opcionError.textContent =
-                    "No se pudieron cargar las marcas";
-
-
-                selectMarca.appendChild(
-                    opcionError
-                );
-
-            });
-
-
-        const selectModelo =
-            document.getElementById("modelo");
-
-
-        /* CARGAR MODELOS */
-
-        selectMarca.addEventListener(
-            "change",
-            function () {
-
-                const marcaSeleccionada =
-                    this.value;
-
-
-                selectModelo.innerHTML = "";
-
-
-                const cargando =
-                    document.createElement("option");
-
-
-                cargando.value = "";
-
-                cargando.textContent =
-                    "Cargando modelos...";
-
-
-                selectModelo.appendChild(
-                    cargando
-                );
-
-
-                fetch(
-                    "obtener_modelos.php?marca=" +
-                    encodeURIComponent(
-                        marcaSeleccionada
-                    )
-                )
-
-                    .then(response => {
-
-                        if (!response.ok) {
-
-                            throw new Error(
-                                "Error HTTP: " +
-                                response.status
-                            );
-
-                        }
-
-                        return response.json();
-
-                    })
-
-                    .then(data => {
-
-                        console.log(
-                            "Modelos recibidos:",
-                            data
-                        );
-
-
-                        selectModelo.innerHTML =
-                            "";
-
-
-                        const opcionInicial =
-                            document.createElement(
-                                "option"
-                            );
-
-
-                        opcionInicial.value =
-                            "";
-
-                        opcionInicial.textContent =
-                            "Seleccione un modelo";
-
-                        opcionInicial.disabled =
-                            true;
-
-                        opcionInicial.selected =
-                            true;
-
-
-                        selectModelo.appendChild(
-                            opcionInicial
-                        );
-
-
-                        data.data.forEach(
-                            modelo => {
-
-                                const opcion =
-                                    document.createElement(
-                                        "option"
-                                    );
-
-
-                                opcion.value =
-                                    modelo.name;
-
-                                opcion.textContent =
-                                    modelo.name;
-
-
-                                selectModelo.appendChild(
-                                    opcion
-                                );
-
-                            }
-                        );
-
-                    })
-
-
-                    .catch(error => {
-
-                        console.error(
-                            "Error al cargar los modelos:",
-                            error
-                        );
-
-
-                        selectModelo.innerHTML =
-                            "";
-
-
-                        const opcionError =
-                            document.createElement(
-                                "option"
-                            );
-
-
-                        opcionError.value =
-                            "";
-
-                        opcionError.textContent =
-                            "No se pudieron cargar los modelos";
-
-
-                        selectModelo.appendChild(
-                            opcionError
-                        );
-
-                    });
-
-            }
-        );
-
-    </script>
-
-
-
 
 </body>
 </html>
