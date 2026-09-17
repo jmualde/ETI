@@ -1,4 +1,11 @@
-
+<?php
+session_start();
+require_once("conexion.php");
+if (!isset($_SESSION["usuario"])) {
+    header("Location: login.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -290,7 +297,7 @@
 
         <nav class="tarjetaArriba-principal">
 
-            <a href="principal.html">
+            <a href="principal.php">
                 <p class="textoBlanco-principal">Página Principal</p>
             </a>
 
