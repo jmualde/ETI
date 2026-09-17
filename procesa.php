@@ -40,7 +40,7 @@ $fila2 = $stmt2->fetch(PDO::FETCH_ASSOC);
 if ($fila2) {
     $_SESSION["usuario"] = $user;
     $_SESSION['id_admin'] = $fila2['id'];
-    header("Location: principal_admin.html");
+    header("Location: principal_admin.php");
     exit();
 }
 
