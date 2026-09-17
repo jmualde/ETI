@@ -14,40 +14,71 @@
     body {
         background-color: #0e1113;
         color: white;
-        position: fixed;
-        width: 100%;
-        height: 100%;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
         font-family: 'Inter', sans-serif;
     }
 
+    .container {
+        width: 100%;
+        max-width: 1200px;
+    }
+
+    .row {
+        margin: 0;
+    }
 
     .tarjeta {
-        border: 1px;
-        padding: 50px;
-        margin: 100px;
-        width: 650px;
+        width: min(100%, 650px);
         background-color: #161a1d;
         border-radius: 10px;
         box-shadow: 1px 1px 10px rgb(83, 83, 83);
-        border-color: darkslategray;
-        height: 350px;
-        margin-left: auto ;
-        margin-top: 230px;
+        border: 1px solid darkslategray;
+        padding: clamp(25px, 5vw, 50px);
+        margin: 0 auto;
+        min-height: 350px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
+    form {
+        width: 100%;
+    }
 
+    .registrar {
+        width: 100%;
+    }
+
+    h5 {
+        margin: 0 0 20px;
+        font-size: clamp(1rem, 2vw, 1.5rem);
+        line-height: 1.5;
+        text-align: center;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
     }
 
     .botonRegistra {
-        width: 550px;
+        width: min(100%, 550px);
         height: 45px;
         border-radius: 50px;
         background-color: white;
         font-weight: bold;
         border: none;
+        display: block;
+        margin: 0 auto;
     }
 
     .botonYaTengoCuenta {
-        width: 550px;
+        width: min(100%, 550px);
         height: 45px;
         border-radius: 50px;
         background: transparent;
@@ -67,19 +98,58 @@
         font-weight: bold;
     }
 
-
     .campo {
         display: flex;
         background: #0e1113;
-        border: 5px solid gray;
+        border: 1px solid gray;
         border-radius: 10px;
-        width: 550px;
+        width: min(100%, 550px);
         height: 45px;
-        border-width: 1px;
         color: white;
+        padding: 0 15px;
+        margin-bottom: 20px;
     }
-    .registrar {
-      margin-left: 0px;
+
+    .campo:focus {
+        border-color: white;
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+    }
+
+    @media (max-width: 768px) {
+        body {
+            padding: 15px;
+        }
+
+        .tarjeta {
+            width: 100%;
+            min-height: auto;
+            padding: 25px 18px;
+        }
+
+        .campo,
+        .botonRegistra {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 480px) {
+        h5 {
+            font-size: 1rem;
+        }
+
+        .tarjeta {
+            border-radius: 12px;
+        }
+
+        .campo {
+            height: 42px;
+            font-size: 14px;
+        }
+
+        .botonRegistra {
+            height: 42px;
+        }
     }
 </style>
 

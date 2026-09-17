@@ -309,7 +309,7 @@ if (!isset($_SESSION["usuario"])) {
                 <p class="textoBlanco-principal">Registrar vehículo</p>
             </a>
 
-            <a href="ocupar_lugar.html">
+            <a href="ocupar_lugar.php">
                 <p class="textoBlanco-principal">Ocupar lugar</p>
             </a>
 
@@ -348,7 +348,7 @@ if (!isset($_SESSION["usuario"])) {
 
                             </button>
 </form>
-<form action="ocupar_lugar.html" method="post">
+<form action="ocupar_lugar.php" method="post">
                             <button
                                 class="botonOcupa"
                                 name="ocupa"

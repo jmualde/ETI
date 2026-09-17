@@ -73,7 +73,7 @@ try {
                 <p class="textoBlanco-principal">Registrar vehículo</p>
             </a>
 
-            <a href="ocupar_lugar.html">
+            <a href="ocupar_lugar.php">
                 <p class="textoBlanco-principal">Ocupar lugar</p>
             </a>
 
@@ -151,7 +151,7 @@ try {
                     
                 </form>
                 
-                <form action="principal.html" method="post">
+                <form action="principal.php" method="post">
                     <button class="btn btn-danger "style=" background-color: transparent; border-color: green; color: green;" type="submit">Menu principal</button>
                 </form> 
 
@@ -189,6 +189,265 @@ try {
             
         }
     </script>
+
+        <script>
+
+        const selectMarca =
+            document.getElementById("marca");
+
+
+        /* CARGAR MARCAS */
+
+        fetch("obtener_marcas.php")
+
+            .then(response => {
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Error HTTP: " + response.status
+                    );
+
+                }
+
+                return response.json();
+
+            })
+
+            .then(data => {
+
+                console.log(
+                    "Datos recibidos:",
+                    data
+                );
+
+
+                selectMarca.innerHTML = "";
+
+
+                const opcionInicial =
+                    document.createElement("option");
+
+
+                opcionInicial.value = "";
+
+                opcionInicial.textContent =
+                    "Seleccione una marca";
+
+                opcionInicial.disabled = true;
+
+                opcionInicial.selected = true;
+
+
+                selectMarca.appendChild(
+                    opcionInicial
+                );
+
+
+                data.data.forEach(marca => {
+
+                    const opcion =
+                        document.createElement("option");
+
+
+                    opcion.value =
+                        marca.name;
+
+                    opcion.textContent =
+                        marca.name;
+
+
+                    selectMarca.appendChild(
+                        opcion
+                    );
+
+                });
+
+            })
+
+
+            .catch(error => {
+
+                console.error(
+                    "Error al cargar las marcas:",
+                    error
+                );
+
+
+                selectMarca.innerHTML = "";
+
+
+                const opcionError =
+                    document.createElement("option");
+
+
+                opcionError.value = "";
+
+                opcionError.textContent =
+                    "No se pudieron cargar las marcas";
+
+
+                selectMarca.appendChild(
+                    opcionError
+                );
+
+            });
+
+
+        const selectModelo =
+            document.getElementById("modelo");
+
+
+        /* CARGAR MODELOS */
+
+        selectMarca.addEventListener(
+            "change",
+            function () {
+
+                const marcaSeleccionada =
+                    this.value;
+
+
+                selectModelo.innerHTML = "";
+
+
+                const cargando =
+                    document.createElement("option");
+
+
+                cargando.value = "";
+
+                cargando.textContent =
+                    "Cargando modelos...";
+
+
+                selectModelo.appendChild(
+                    cargando
+                );
+
+
+                fetch(
+                    "obtener_modelos.php?marca=" +
+                    encodeURIComponent(
+                        marcaSeleccionada
+                    )
+                )
+
+                    .then(response => {
+
+                        if (!response.ok) {
+
+                            throw new Error(
+                                "Error HTTP: " +
+                                response.status
+                            );
+
+                        }
+
+                        return response.json();
+
+                    })
+
+                    .then(data => {
+
+                        console.log(
+                            "Modelos recibidos:",
+                            data
+                        );
+
+
+                        selectModelo.innerHTML =
+                            "";
+
+
+                        const opcionInicial =
+                            document.createElement(
+                                "option"
+                            );
+
+
+                        opcionInicial.value =
+                            "";
+
+                        opcionInicial.textContent =
+                            "Seleccione un modelo";
+
+                        opcionInicial.disabled =
+                            true;
+
+                        opcionInicial.selected =
+                            true;
+
+
+                        selectModelo.appendChild(
+                            opcionInicial
+                        );
+
+
+                        data.data.forEach(
+                            modelo => {
+
+                                const opcion =
+                                    document.createElement(
+                                        "option"
+                                    );
+
+
+                                opcion.value =
+                                    modelo.name;
+
+                                opcion.textContent =
+                                    modelo.name;
+
+
+                                selectModelo.appendChild(
+                                    opcion
+                                );
+
+                            }
+                        );
+
+                    })
+
+
+                    .catch(error => {
+
+                        console.error(
+                            "Error al cargar los modelos:",
+                            error
+                        );
+
+
+                        selectModelo.innerHTML =
+                            "";
+
+
+                        const opcionError =
+                            document.createElement(
+                                "option"
+                            );
+
+
+                        opcionError.value =
+                            "";
+
+                        opcionError.textContent =
+                            "No se pudieron cargar los modelos";
+
+
+                        selectModelo.appendChild(
+                            opcionError
+                        );
+
+                    });
+
+            }
+        );
+
+    </script>
+
+
+
 
 </body>
 </html>

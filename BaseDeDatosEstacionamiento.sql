@@ -80,7 +80,7 @@ VALUES(1,'prof1','Felipe','Perez','felipe123@gmail.com','111');
 
 
 INSERT INTO usuario(id,nombre_usuario,nombre,apellido,email,contrasenia)
-VALUES(2,'prof2','Juaquin','Lorenzo''lorenzjuaqui@gmail.com','222');
+VALUES(2,'prof2','Juaquin','Lorenzo','lorenzjuaqui@gmail.com','222');
 
 INSERT INTO automovil(id, marca, modelo, color, id_usuario)
 VALUES(1,'Volkswagen','Vento','#F72F07',2);
