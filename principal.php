@@ -42,6 +42,13 @@ if (!isset($_SESSION["usuario"])) {
             overflow-x: hidden;
         }
 
+          .bienvenido {
+            margin-right: 50%;
+             font-family: "Inter", sans-serif;
+             font-weight: bold;
+
+        }
+
         .tarjetaArriba-principal {
             background: rgba(24, 28, 31, 0.9);
             width: fit-content;
@@ -323,7 +330,7 @@ if (!isset($_SESSION["usuario"])) {
 
         <nav class="tarjetaArriba-principal">
 
-            <a href="principal.html">
+            <a href="principal.php">
                 <p class="textoBlanco-principal">Página Principal</p>
             </a>
 
@@ -331,7 +338,7 @@ if (!isset($_SESSION["usuario"])) {
                 <p class="textoBlanco-principal">¿Quiénes somos?</p>
             </a>
 
-            <a href="registra_auto.html">
+            <a href="registra_auto.php">
                 <p class="textoBlanco-principal">Registrar vehículo</p>
             </a>
 
@@ -349,6 +356,10 @@ if (!isset($_SESSION["usuario"])) {
 
             <div class="container">
 
+                <h1 class="bienvenido">
+                        Bienvenido de nuevo, <?= htmlspecialchars($fila["nombre_usuario"]) ?>!
+                    </h1>
+
                 <div class="row align-items-center">
 
                     <!-- TEXTO -->
@@ -362,7 +373,7 @@ if (!isset($_SESSION["usuario"])) {
 
                         <div class="botones">
 
-<form action="registra_auto.html" method="post">
+<form action="registra_auto.php" method="post">
                             <button
                                 class="botonRegistraAuto"
                                 name="auto"
@@ -432,7 +443,7 @@ if (!isset($_SESSION["usuario"])) {
                     <div class="col-12 col-lg-8">
 
                         <p class="textoAbajo">
-                           "Nosotros somos E.T.I (Ethernet,Telecomunicaciones,Interface) un grupo del 
+                           "Nosotros somos E.T.I (Ethernet, Telecomunicaciones, Interface) un grupo del 
                             Liceo Logosofico compuesto por cuatro integrantes
                             (Pedro Joaquín Serra, Juan Manuel Ualde, Juan Pablo Trelles y Facundo Centurion) 
                             dedicado al desarrollo de software de páginas web."
