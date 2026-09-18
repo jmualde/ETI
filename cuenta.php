@@ -142,7 +142,7 @@ try {
                 </form>
                 
                 <form action="principal.html" method="post">
-                    <button class="btn btn-danger "style=" background-color: transparent; border-color: green; color: green;" type="submit">menu principal</button>
+                    <button class="btn btn-danger "style=" background-color: transparent; border-color: green; color: green;" type="submit">Menu principal</button>
                 </form> 
 
                  </div>
