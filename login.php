@@ -125,6 +125,15 @@ $resultado = $conexion->query($sql);
         </form>
 
     </div>
+    <script>
+        const error = "<?php echo $_GET['error']; ?>";
+
+        if (error == "1") {
+            alert("Usuario o contraseña incorrectos. Por favor, inténtelo de nuevo.");
+        }
+    </script>
+
+
 
 </div>
 

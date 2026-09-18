@@ -1,0 +1,477 @@
+<?php
+session_start();
+require_once("conexion.php");
+if (!isset($_SESSION["usuario"])) {
+    header("Location: login.php");
+    exit();
+}
+
+$sql = "SELECT * FROM usuario WHERE nombre_usuario = :nombreUsuario";
+$stmt = $conexion->prepare($sql);
+$stmt->execute([
+    ':nombreUsuario' => $_SESSION["usuario"]
+]);
+$fila = $stmt->fetch(PDO::FETCH_ASSOC);
+?>
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+        crossorigin="anonymous">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap"
+        rel="stylesheet">
+
+    <title>Pagina Principal</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #101214;
+            color: white;
+            font-family: "Inter", sans-serif;
+            overflow-x: hidden;
+        }
+
+        .tarjetaArriba-principal {
+            background-color: #181C1F;
+            width: 100%;
+            min-height: 60px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            gap: 35px;
+            padding: 10px 20px;
+
+            flex-wrap: wrap;
+        }
+
+        .tarjetaArriba-principal a {
+            text-decoration: none;
+            color: white;
+            margin: 0;
+        }
+
+        .textoBlanco-principal {
+            color: white;
+            margin: 0;
+            font-family: "Inter", sans-serif;
+            transition: 0.3s;
+        }
+
+        .textoBlanco-principal:hover {
+            color: #c7c7c7;
+        }
+
+        /* =========================
+           SECCIÓN PRINCIPAL
+        ========================= */
+
+        .seccionPrincipal {
+            min-height: calc(100vh - 60px);
+            display: flex;
+            align-items: center;
+        }
+
+        .textoPrincipal {
+            font-size: clamp(40px, 5vw, 70px);
+            font-weight: bold;
+            color: #f0e8d8;
+
+            margin: 0;
+            max-width: 700px;
+        }
+
+        .botones {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .botonRegistraAuto,
+        .botonOcupa {
+            width: 225px;
+            height: 55px;
+            border-radius: 500px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .botonRegistraAuto {
+            background-color: transparent;
+            border: 1px solid white;
+        }
+
+        .botonOcupa {
+            background-color: white;
+            border: none;
+            color: #101214;
+        }
+
+        /* =========================
+           TARJETA MAPA
+        ========================= */
+
+        .contenedorMapa {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .tarjeta-principal,
+        .tarjeta {
+            border: 1px solid darkslategray;
+            padding: 30px;
+
+            background-color: #161a1d;
+            border-radius: 10px;
+
+            box-shadow: 1px 1px 10px rgb(83, 83, 83);
+
+            width: 90%;
+            max-width: 650px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mapa {
+            border-radius: 10px;
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* =========================
+           SECCIÓN INFORMACIÓN
+        ========================= */
+
+        #quienes_somos {
+            padding: 100px 0;
+        }
+
+        .tituloAbajo {
+            font-size: clamp(35px, 5vw, 60px);
+            font-weight: bold;
+            color: #f0e8d8;
+            font-family: "Inter", sans-serif;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .textoAbajo {
+            color: white;
+            margin: 0 auto;
+
+            word-spacing: 4px;
+            line-height: 1.6;
+
+            font-size: clamp(16px, 1.5vw, 20px);
+
+            max-width: 800px;
+        }
+
+        .bienvenido {
+            margin-right: 50%;
+             font-family: "Inter", sans-serif;
+             font-weight: bold;
+
+        }
+
+
+        /* =========================
+           TABLET
+        ========================= */
+
+        @media (max-width: 991px) {
+
+            .tarjetaArriba-principal {
+                gap: 20px;
+            }
+
+            .seccionPrincipal {
+                padding-top: 70px;
+                padding-bottom: 70px;
+            }
+
+            .textoPrincipal {
+                text-align: center;
+                margin: 0 auto;
+            }
+
+            .botones {
+                justify-content: center;
+            }
+
+            .tarjeta {
+                width: 100%;
+                margin-top: 40px;
+            }
+
+            #quienes_somos {
+                padding: 70px 20px;
+            }
+
+
+
+        }
+
+        /* =========================
+           CELULAR
+        ========================= */
+
+        @media (max-width: 576px) {
+
+            .tarjetaArriba-principal {
+                min-height: auto;
+
+                flex-direction: column;
+                gap: 12px;
+
+                padding: 18px 10px;
+            }
+
+            .tarjetaArriba-principal a {
+                font-size: 14px;
+            }
+
+            .seccionPrincipal {
+                padding: 50px 15px;
+            }
+
+            .textoPrincipal {
+                font-size: 40px;
+                line-height: 1.1;
+            }
+
+            .botones {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+
+                margin-top: 30px;
+            }
+
+            .botonRegistraAuto,
+            .botonOcupa {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .tarjeta {
+                padding: 15px;
+                width: 100%;
+                margin-top: 30px;
+            }
+
+            #quienes_somos {
+                padding: 60px 15px;
+            }
+
+            .tituloAbajo {
+                font-size: 35px;
+                margin-bottom: 35px;
+            }
+
+            .textoAbajo {
+                font-size: 16px;
+                line-height: 1.6;
+                text-align: left;
+            }
+
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+    <div class="container-fluid p-0">
+
+
+        <nav class="tarjetaArriba-principal">
+
+            <a href="principal.php">
+                <p class="textoBlanco-principal">Página Principal</p>
+            </a>
+
+            <a href="#quienes_somos">
+                <p class="textoBlanco-principal">¿Quiénes somos?</p>
+            </a>
+
+            <a href="registra_auto.php">
+                <p class="textoBlanco-principal">Registrar vehículo</p>
+            </a>
+
+            <a href="ocupar_lugar.php">
+                <p class="textoBlanco-principal">Ocupar lugar</p>
+            </a>
+
+            <a href="cuenta.php">
+                <p class="textoBlanco-principal">Cuenta</p>
+            </a>
+
+        </nav>
+
+
+        <section class="seccionPrincipal">
+
+        
+
+            <div class="container">
+
+            <h1 class="bienvenido">
+                        Bienvenido de nuevo, <?= htmlspecialchars($fila["nombre_usuario"]) ?>!
+                    </h1>
+                  
+     
+                    
+
+                <div class="row align-items-center">
+
+                       
+
+                    <div class="col-12 col-lg-6">
+
+                        <h1 class="textoPrincipal">
+                            Estaciona en el caos
+                            y cobrá como capo.
+                        </h1>
+
+                        <div class="botones">
+
+<form action="registra_auto.php" method="post">
+                            <button
+                                class="botonRegistraAuto"
+                                name="auto"
+                                id="auto">
+
+                                <p class="textoBlanco-principal">
+                                    Registre su vehículo
+                                </p>
+
+                            </button>
+</form>
+<form action="ocupar_lugar.php" method="post">
+                            <button
+                                class="botonOcupa"
+                                name="ocupa"
+                                id="ocupa">
+
+                                Ocupar lugar
+
+                            </button>
+</form>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- MAPA -->
+
+                    <div class="col-12 col-lg-6">
+
+                        <div class="contenedorMapa">
+
+                            <div class="tarjeta">
+
+                                <img
+                                    class="mapa"
+                                    src="image.png"
+                                    alt="Mapa">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- QUIÉNES SOMOS -->
+
+        <section id="quienes_somos">
+
+            <div class="container">
+
+                <h2 class="tituloAbajo">
+                    ¿Quiénes somos?
+                </h2>
+
+
+                <div class="row justify-content-center">
+
+                    <div class="col-12 col-lg-8">
+
+                        <p class="textoAbajo">
+                           "Nosotros somos E.T.I (Ethernet, Telecomunicaciones, Interface) un grupo del 
+                            Liceo Logosofico compuesto por cuatro integrantes
+                            (Pedro Joaquín Serra, Juan Manuel Ualde, Juan Pablo Trelles y Facundo Centurion) 
+                            dedicado al desarrollo de software de páginas web."
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <h2 class="tituloAbajo mt-5">
+                    ¿Cómo funciona?
+                </h2>
+
+
+                <div class="row justify-content-center">
+
+                    <div class="col-12 col-lg-8">
+
+                        <p class="textoAbajo">
+                            "Nuestro proyecto es un sistema que consiste en 
+                            un metodo de organizacion para docentes/funcionarios del Colegio y Liceo Logosofico
+                            a la hora de buscar un lugar para estacionar.
+                            El funcionamiento del sistema se basa en reservas según las probabilidades con respecto
+                            a horario pico, calle transitada y espacios concurridos. 
+                            Una vez el usuario reserva la cuadra, debe seleccionar el horario que 
+                            va a ocupar el lugar y el lugar que va liberar"
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</body>
+
+</html>

@@ -23,7 +23,7 @@ $stmt->execute([
     ':modelo' => $modelo,
     ':color' => $color
 ]);
-header("Location: principal.html");
+header("Location: principal.php");
 exit;
 
 ?>

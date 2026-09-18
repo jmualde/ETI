@@ -49,7 +49,7 @@ if ($fila2) {
 if ($fila1) {
     $_SESSION["usuario"] = $user;
     $_SESSION['id_usuario'] = $fila1['id'];
-    header("Location: principal.html");
+    header("Location: principal.php");
     exit();
 }
 
