@@ -5,6 +5,14 @@ if (!isset($_SESSION["usuario"])) {
     header("Location: login.php");
     exit();
 }
+$sql = "SELECT * FROM usuario WHERE nombre_usuario = :nombreUsuario";
+$stmt = $conexion->prepare($sql);
+$stmt->execute([
+    ':nombreUsuario' => $_SESSION["usuario"]
+]);
+
+$fila = $stmt->fetch(PDO::FETCH_ASSOC);
+?>
 ?>
 <!DOCTYPE html>
 <html lang="es">
