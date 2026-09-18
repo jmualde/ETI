@@ -158,20 +158,8 @@ if (!isset($_SESSION["usuario"])) {
 
         <nav class="tarjetaArriba-principal">
 
-            <a href="principal_admin.html">
+            <a href="principal_admin.php">
                 <p class="textoBlanco-principal">Página Principal</p>
-            </a>
-
-            <a href="registra_auto.html">
-                <p class="textoBlanco-principal">Registrar vehículo</p>
-            </a>
-
-            <a href="ocupar_lugar.html">
-                <p class="textoBlanco-principal">Ocupar lugar</p>
-            </a>
-
-            <a href="cuenta.php">
-                <p class="textoBlanco-principal">Cuenta</p>
             </a>
 
             <a href="panel_admin.php">
