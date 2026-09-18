@@ -291,7 +291,12 @@ if (!isset($_SESSION["usuario"])) {
                                  
 
                 </div>
-
+                    
+                
+                    <form action="cerrar_sesion.php" method="post">
+                    <button class="btn btn-danger "style=" background-color: transparent; border-color: #dc3545; color: #dc3545;" type="submit">Cerrar sesión</button>
+                    </form>
+                    
             </div>
 
 
