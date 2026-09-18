@@ -13,7 +13,7 @@ $stmt->execute([
 
 $fila = $stmt->fetch(PDO::FETCH_ASSOC);
 ?>
-?>
+
 <!DOCTYPE html>
 <html lang="es">
 
