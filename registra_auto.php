@@ -8,6 +8,7 @@ if (!isset($_SESSION["usuario"])) {
 }
 
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -21,7 +22,7 @@ if (!isset($_SESSION["usuario"])) {
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="disenio.css?v=20260912">
+    <link rel="stylesheet" href="disenio.css?v=<?= filemtime(__DIR__ . '/disenio.css') ?>">
 </head>
 
 <body>
@@ -33,11 +34,11 @@ if (!isset($_SESSION["usuario"])) {
             <h6 class="textoBlanco">Página Principal</h6>
         </a>
 
-        <a href="registra_auto.html">
+        <a href="registra_auto.php">
             <h6 class="textoBlanco">Registrar vehículo</h6>
         </a>
 
-        <a href="ocupar_lugar.html">
+        <a href="ocupar_lugar.php">
             <h6 class="textoBlanco">Ocupar lugar</h6>
         </a>
 
@@ -46,22 +47,22 @@ if (!isset($_SESSION["usuario"])) {
         </a>
 
     </nav>
-    <br><br><br><br>
+    <br><br>
     
          <center>
                 <h1 >Ingrese los datos del vehículo  </h1>
             </center>
-            <br><br><br>
+            <br>
             <div class="row justify-content-center">
 
                    
             <div class="col-12 col-md-6 col-lg-4">
 
-            <form action="guardar_auto.php" method="POST">
+            <form id="form-auto" action="guardar_auto.php" method="POST">
 
                 <!-- MARCA -->
 
-                <div class="mb-3">
+                <div class="mb-3" id="campo-marca">
 
                     <label for="marca" class="textoBlanco">
                         Marca
@@ -85,23 +86,24 @@ if (!isset($_SESSION["usuario"])) {
 
                 <div class="mb-3">
 
-                    <label for="modelo" class="textoBlanco">
-                        Modelo
-                    </label>
-
                     <div class="marca-color">
 
-                        <select
-                            class="campo form-control"
-                            id="modelo"
-                            name="modelo"
-                            required>
+                        <div id="campo-modelo" class="flex-grow-1">
+                            <label for="modelo" class="textoBlanco">
+                                Modelo
+                            </label>
+                            <select
+                                class="campo form-control"
+                                id="modelo"
+                                name="modelo"
+                                required>
 
-                            <option value="">
-                                Primero seleccione marca
-                            </option>
+                                <option value="">
+                                    Primero seleccione marca
+                                </option>
 
-                        </select>
+                            </select>
+                        </div>
 
 
                         <input
@@ -114,6 +116,7 @@ if (!isset($_SESSION["usuario"])) {
 
                 </div>
 
+                <div id="campos-marca-modelo-manual"></div>
 
                 <!-- BOTÓN -->
 
@@ -126,8 +129,19 @@ if (!isset($_SESSION["usuario"])) {
                 </button>
 
             </form>
-                        </div>
-                </div>
+            <br><br>
+            <center>
+                <button
+                    type="button"
+                    id="btn_no_disponible"
+                    name="btn_no_disponible"
+                    class="botonmarcanoDisponible"
+                    onclick="editarMarcaModelo()">
+                    ¿Falta tu marca/modelo?
+                </button>
+            </center>
+            </div>
+
         </div>
 </div>
 
@@ -386,6 +400,39 @@ if (!isset($_SESSION["usuario"])) {
 
             }
         );
+
+        function editarMarcaModelo() {
+            const campoMarca = document.getElementById("campo-marca");
+            const campoModelo = document.getElementById("campo-modelo");
+            const selectMarca = document.getElementById("marca");
+            const selectModelo = document.getElementById("modelo");
+            const contenedorManual = document.getElementById("campos-marca-modelo-manual");
+
+            if (contenedorManual.childElementCount > 0) {
+                return;
+            }
+
+            campoMarca.hidden = true;
+            campoModelo.hidden = true;
+            selectMarca.disabled = true;
+            selectModelo.disabled = true;
+
+            const inputMarca = document.createElement("input");
+            inputMarca.type = "text";
+            inputMarca.classList.add("campo", "form-control", "mb-3");
+            inputMarca.name = "marca";
+            inputMarca.placeholder = "Ingrese la marca";
+            inputMarca.required = true;
+
+            const inputModelo = document.createElement("input");
+            inputModelo.type = "text";
+            inputModelo.classList.add("campo", "form-control", "mb-3");
+            inputModelo.name = "modelo";
+            inputModelo.placeholder = "Ingrese el modelo";
+            inputModelo.required = true;
+
+            contenedorManual.append(inputMarca, inputModelo);
+        }
 
     </script>
 
