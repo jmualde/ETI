@@ -41,4 +41,69 @@ try {
 }
 
 ?>
-A futuro...
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+          crossorigin="anonymous">
+
+    <title>Ocupar Lugar</title>
+    <link rel="stylesheet" href="disenio.css">
+</head>
+<body>
+<div class="container-fluid p-0">
+
+    <nav class="tarjetaArriba-cuenta">
+
+        <a href="principal.php">
+            <p class="textoBlanco-principal">Página Principal</p>
+        </a>
+
+        <a href="registra_auto.php">
+            <p class="textoBlanco-principal">Registrar vehículo</p>
+        </a>
+
+        <a href="ocupar_lugar.php">
+            <p class="textoBlanco-principal">Ocupar lugar</p>
+        </a>
+
+        <a href="cuenta.php">
+            <p class="textoBlanco-principal">Cuenta</p>
+        </a>
+
+    </nav>
+    <br><br><br>
+    <div class="row justify-content-center">
+        <center>
+        <h1>Ocupar Lugar</h1>
+        </center>
+        
+    <div class="col-12 col-md-6 col-lg-4">
+        <br><br>
+        <form action="">
+        <label >Ingrese hora que desea ocupar </label>
+        <input type="time" class="form-control campo-cuenta" id="hora" name="hora" required>
+        <br><br>
+        <label >Ingrese vehiculo con el que desea ocupar el lugar </label>
+        <select class="form-control campo-cuenta" id="vehiculo" name="vehiculo" required>
+            <?php if ($auto): ?>
+                <option value="<?php echo $auto['id']; ?>"><?php echo $auto['marca'] . ' ' . $auto['modelo']; ?></option>
+            <?php else: ?>
+                <option value="">No hay vehículos registrados</option>
+            <?php endif; ?>
+        </select>
+        <br><br>
+        <button type="submit" class="botonRegistra" onclick="ocupaLugar()">Ocupar Lugar</button>
+        </form>
+    </div>
+    <div class="col-12 col-md-6 col-lg-4">
+        
+    </div>
+</div>
+</body>
+</html>
