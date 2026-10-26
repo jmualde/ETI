@@ -12,7 +12,169 @@
      - cuenta.php: .tarjetaArriba-cuenta, .textoBlanco-cuenta,
          .titulo-cuenta, .seccionPrincipal, .contenido  .campo-cuenta y .textoPrincipal.
 */
+ 
 
+html[data-theme="dark"],
+body[data-theme="dark"] {
+    --ui-page-background: #101214;
+    --ui-text: #ffffff;
+    --ui-heading: #f0e8d8;
+    --ui-nav-background: rgba(24, 28, 31, 0.9);
+    --ui-nav-border: rgba(255, 255, 255, 0.12);
+    --ui-nav-hover: rgba(255, 255, 255, 0.06);
+    --ui-card-background: #161a1d;
+    --ui-card-border: darkslategray;
+    --ui-field-background: #161a1d;
+    --ui-field-border: #ffffff;
+    --ui-button-background: #ffffff;
+    --ui-button-text: #101214;
+}
+
+html[data-theme="light"],
+body[data-theme="light"] {
+    --ui-page-background: #f4f6f8;
+    --ui-text: #212529;
+    --ui-heading: #243447;
+    --ui-nav-background: rgba(255, 255, 255, 0.92);
+    --ui-nav-border: rgba(33, 37, 41, 0.14);
+    --ui-nav-hover: rgba(33, 37, 41, 0.08);
+    --ui-card-background: #ffffff;
+    --ui-card-border: #ced4da;
+    --ui-field-background: #ffffff;
+    --ui-field-border: #495057;
+    --ui-button-background: #212529;
+    --ui-button-text: #ffffff;
+}
+
+html[data-theme],
+body[data-theme] {
+    background-color: var(--ui-page-background);
+}
+
+body[data-theme] {
+    color: var(--ui-text);
+    transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+body[data-theme] h1,
+body[data-theme] h2,
+body[data-theme] h3,
+body[data-theme] h4,
+body[data-theme] h5,
+body[data-theme] h6 {
+    color: var(--ui-heading);
+}
+
+body[data-theme] .tarjetaArriba,
+body[data-theme] .tarjetaArriba-cuenta {
+    background: var(--ui-nav-background);
+    border-color: var(--ui-nav-border);
+}
+
+body[data-theme] .tarjetaArriba a,
+body[data-theme] .tarjetaArriba-cuenta a,
+body[data-theme] .textoBlanco,
+body[data-theme] .textoBlanco-cuenta,
+body[data-theme].pagina-cuenta .textoBlanco-principal,
+body[data-theme] label {
+    color: var(--ui-text);
+}
+
+body[data-theme] .tarjetaArriba a:hover,
+body[data-theme] .tarjetaArriba-cuenta a:hover {
+    background: var(--ui-nav-hover);
+}
+
+body[data-theme] .botonTema {
+    padding: 9px 14px;
+    border: 1px solid var(--ui-nav-border);
+    border-radius: 999px;
+    background: var(--ui-nav-hover);
+    color: var(--ui-text);
+    font: inherit;
+    cursor: pointer;
+}
+
+body[data-theme] .botonTema:focus-visible {
+    outline: 2px solid var(--ui-heading);
+    outline-offset: 3px;
+}
+
+body[data-theme] .tarjeta-auto,
+body[data-theme] .tarjeta_registrar_auto,
+body[data-theme] .tarjeta-registrar,
+body[data-theme] .seccionPrincipal .contenido {
+    background-color: var(--ui-card-background);
+    border-color: var(--ui-card-border);
+}
+
+body[data-theme] .campo,
+body[data-theme] .campo-cuenta,
+body[data-theme] .campo-registro {
+    color: var(--ui-text);
+}
+
+body[data-theme="light"] select.campo,
+body[data-theme="light"] select.campo option {
+    background-color: var(--ui-field-background);
+    color: var(--ui-text);
+}
+
+body[data-theme="light"] .botonRegistra,
+body[data-theme="light"] .botonmarcanoDisponible,
+body[data-theme="light"] .botonYaTengoCuenta {
+    border-color: var(--ui-button-background);
+    color: var(--ui-text);
+}
+
+body[data-theme="light"] .botonRegistra {
+    background-color: var(--ui-button-background);
+    color: var(--ui-button-text);
+}
+
+body[data-theme="light"] .botonTema:hover {
+    background: var(--ui-nav-hover);
+}
+
+body[data-theme="dark"].pagina-cuenta .boton-editar,
+body[data-theme="dark"].pagina-cuenta .boton-editar:hover,
+body[data-theme="dark"].pagina-cuenta .boton-editar:focus,
+body[data-theme="dark"].pagina-cuenta .boton-editar:active,
+body[data-theme="dark"].pagina-cuenta .boton-elegir,
+body[data-theme="dark"].pagina-cuenta .boton-elegir:hover,
+body[data-theme="dark"].pagina-cuenta .boton-elegir:focus,
+body[data-theme="dark"].pagina-cuenta .boton-elegir:active {
+    max-height: 40px;
+    background-color: #ffffff !important;
+    border-color: #ffffff !important;
+    color: #000000 !important;
+}
+
+body[data-theme="light"].pagina-cuenta .boton-editar,
+body[data-theme="light"].pagina-cuenta .boton-editar:hover,
+body[data-theme="light"].pagina-cuenta .boton-editar:focus,
+body[data-theme="light"].pagina-cuenta .boton-editar:active,
+body[data-theme="light"].pagina-cuenta .boton-elegir,
+body[data-theme="light"].pagina-cuenta .boton-elegir:hover,
+body[data-theme="light"].pagina-cuenta .boton-elegir:focus,
+body[data-theme="light"].pagina-cuenta .boton-elegir:active {
+    max-height: 40px;
+    background-color: #000000 !important;
+    border-color: #000000 !important;
+    color: #ffffff !important;
+}
+
+body[data-theme="light"].pagina-cuenta input:disabled,
+body[data-theme="light"].pagina-cuenta select:disabled {
+    color: var(--ui-text) !important;
+    border-color: var(--ui-field-border) !important;
+}
+
+@media (max-width: 576px) {
+    body[data-theme] .botonTema {
+        width: 100%;
+    }
+}
 /* login.php */
 
 html, body {
@@ -423,6 +585,36 @@ select.campo {
 select.campo option {
     background-color: #161a1d;
     color: white;
+}
+
+.selectorMarca {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.botonmarcanoDisponible {
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+    border-radius: 50px;
+    background-color: transparent;
+    color: white;
+    font-weight: bold;
+    width: 100%;
+    max-width: 100%;
+    height: 55px;
+    max-height: 100%;
+}
+
+.botonmarcanoDisponible:hover {
+    border-color: white;
+    background-color: transparent;
+    color: white;
+}
+
+.botonmarcanoDisponible:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 2px;
 }
 
 
