@@ -75,6 +75,32 @@
         .boton:hover .oliva {
             color: black;
         }
+
+        @media (max-width: 576px) {
+            body {
+                overflow-x: hidden;
+            }
+
+            .contenido-flex {
+                padding: 1rem;
+            }
+
+            .titulo {
+                width: 100%;
+                font-size: clamp(30px, 10vw, 52px);
+                overflow-wrap: break-word;
+            }
+
+            .subtitulo {
+                font-size: clamp(24px, 7vw, 36px);
+            }
+
+            .boton {
+                width: min(350px, 90vw);
+                height: 60px;
+                font-size: 18px;
+            }
+        }
     </style>
 </head> 
 

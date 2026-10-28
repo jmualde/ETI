@@ -1,5 +1,12 @@
 <?php
 require_once ("conexion.php");
+session_start();
+require_once("conexion.php");
+if (!isset($_SESSION["usuario"])) {
+    header("Location: login.php");
+    exit();
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -151,20 +158,8 @@ require_once ("conexion.php");
 
         <nav class="tarjetaArriba-principal">
 
-            <a href="principal_admin.html">
+            <a href="principal_admin.php">
                 <p class="textoBlanco-principal">Página Principal</p>
-            </a>
-
-            <a href="registra_auto.html">
-                <p class="textoBlanco-principal">Registrar vehículo</p>
-            </a>
-
-            <a href="ocupar_lugar.html">
-                <p class="textoBlanco-principal">Ocupar lugar</p>
-            </a>
-
-            <a href="cuenta.php">
-                <p class="textoBlanco-principal">Cuenta</p>
             </a>
 
             <a href="panel_admin.php">
@@ -296,7 +291,12 @@ require_once ("conexion.php");
                                  
 
                 </div>
-
+                    
+                
+                    <form action="cerrar_sesion.php" method="post">
+                    <button class="btn btn-danger "style=" background-color: transparent; border-color: #dc3545; color: #dc3545;" type="submit">Cerrar sesión</button>
+                    </form>
+                    
             </div>
 
 
