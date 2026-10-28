@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mapa de Estacionamiento</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+
+    <link rel="stylesheet" href="map.css" />
+</head>
+
+<body>
+
+    <div class="app-layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3 class="sidebar-title">Estacionamientos</h3>
+                <input type="text" id="searchInput" class="search-input" placeholder="Buscar cochera..." />
+            </div>
+            <div class="sidebar-content" id="sidebarContent">
+                <!-- Generado por JS -->
+            </div>
+        </aside>
+
+        <!-- Mapa -->
+        <main class="map-wrapper">
+            <button class="menu-btn" id="menuBtn" title="Abrir menú">☰</button>
+            <div id="map"></div>
+        </main>
+
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script src="map.js"></script>
+</body>
+
+</html>

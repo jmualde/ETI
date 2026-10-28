@@ -1,0 +1,2 @@
+-- Ejecutar una sola vez en la base de datos estacionamiento ya existente.
+-- Añade los datos necesarios para registrar hora, calle y coordenadas del mapa.

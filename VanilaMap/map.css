@@ -1,0 +1,359 @@
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    height: 100vh;
+    overflow: hidden;
+    background: #1a1a2e;
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.app-layout {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+.sidebar {
+    width: 300px;
+    min-width: 300px;
+    background: #16213e;
+    color: #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    border-right: 2px solid #0f3460;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+}
+
+.sidebar.hidden {
+    transform: translateX(-100%);
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+}
+
+.sidebar-header {
+    padding: 1.25rem 1rem 0.75rem;
+    border-bottom: 1px solid #0f3460;
+    background: #0f3460;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+.sidebar-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #e2b96f;
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.5px;
+    text-align: center;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #0f3460;
+    border-radius: 8px;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.search-input:focus {
+    border-color: #e2b96f;
+}
+
+.search-input::placeholder {
+    color: #7a7a9a;
+}
+
+.sidebar-content {
+    overflow-y: auto;
+    flex: 1;
+    padding: 0.75rem;
+    scrollbar-width: thin;
+    scrollbar-color: #e2b96f #1a1a2e;
+}
+
+.sidebar-content::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sidebar-content::-webkit-scrollbar-thumb {
+    background: #e2b96f;
+    border-radius: 4px;
+}
+
+/* Categoría */
+.category-block {
+    margin-bottom: 0.5rem;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #0f3460;
+}
+
+.category-btn {
+    width: 100%;
+    background: #0f3460;
+    color: #e0e0e0;
+    border: none;
+    padding: 0.65rem 1rem;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.category-btn:hover {
+    background: #1a3a6e;
+}
+
+.category-color-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.category-arrow {
+    margin-left: auto;
+    transition: transform 0.25s;
+    font-size: 0.8rem;
+}
+
+.category-arrow.open {
+    transform: rotate(180deg);
+}
+
+.category-points {
+    display: none;
+    flex-direction: column;
+    background: #1a1a2e;
+}
+
+.category-points.open {
+    display: flex;
+}
+
+.point-btn {
+    background: none;
+    border: none;
+    border-top: 1px solid #0f3460;
+    padding: 0.6rem 1rem;
+    color: #c5c5d8;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.85rem;
+    transition: background 0.15s, color 0.15s;
+}
+
+.point-btn:hover {
+    background: #0f3460;
+    color: #fff;
+}
+
+.status-badge {
+    padding: 0.15rem 0.5rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-left: auto;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-badge.disponible {
+    background: #1faa52;
+    color: #fff;
+}
+
+.status-badge.ocupado {
+    background: #d63031;
+    color: #fff;
+}
+
+/* ============================================================
+   MAPA
+   ============================================================ */
+.map-wrapper {
+    flex: 1;
+    position: relative;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+}
+
+/* Botón menú (visible en pantallas pequeñas) */
+.menu-btn {
+    display: none;
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 1100;
+    background: #0f3460;
+    color: #e2b96f;
+    border: none;
+    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    font-size: 1.3rem;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    transition: background 0.2s;
+}
+
+.menu-btn:hover {
+    background: #1a3a6e;
+}
+
+/* ============================================================
+   MARCADOR PERSONALIZADO
+   ============================================================ */
+.marker-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+}
+
+/* Globo de cómic */
+.speech-bubble {
+    position: relative;
+    padding: 5px 11px;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #fff;
+    white-space: nowrap;
+    box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.55);
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    /* Efecto borde negro tipo cómic */
+    outline: 2px solid rgba(0, 0, 0, 0.35);
+    outline-offset: 0px;
+    font-family: 'Segoe UI', 'Comic Sans MS', sans-serif;
+    user-select: none;
+    margin-bottom: 2px;
+    transition: transform 0.15s;
+}
+
+.speech-bubble:hover {
+    transform: scale(1.08);
+}
+
+/* Cola / flecha del globo apuntando hacia abajo (al pin) */
+.speech-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+}
+
+/* Sombra de la flecha (borde negro) */
+.speech-bubble::before {
+    content: '';
+    position: absolute;
+    bottom: -11px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    z-index: -1;
+}
+
+/* Verde - Disponible */
+.speech-bubble.disponible {
+    background: linear-gradient(135deg, #27ae60, #1faa52);
+}
+
+.speech-bubble.disponible::after {
+    border-top: 9px solid #1faa52;
+}
+
+.speech-bubble.disponible::before {
+    border-top: 12px solid rgba(0, 0, 0, 0.45);
+}
+
+/* Rojo - Ocupado */
+.speech-bubble.ocupado {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+.speech-bubble.ocupado::after {
+    border-top: 9px solid #c0392b;
+}
+
+.speech-bubble.ocupado::before {
+    border-top: 12px solid rgba(0, 0, 0, 0.45);
+}
+
+/* Pin / marcador SVG */
+.marker-pin {
+    width: 22px;
+    height: 32px;
+    flex-shrink: 0;
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.5));
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 700px) {
+    .sidebar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}

@@ -37,7 +37,7 @@ html, body {
         /* TARJETA */
         .tarjeta {
             width: 100%;
-            min-height: 450px;
+            min-height: 300px;
             padding: 40px;
             display: flex;
             align-items: center;
@@ -306,6 +306,7 @@ html, body {
     max-width: calc(100% - 24px);
     min-height: 62px;
     margin: 18px auto 0;
+    margin-top: -20px;
     padding: 10px 22px;
     background: rgba(24, 28, 31, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.12);
@@ -675,5 +676,50 @@ select.campo option {
     }
 }
 
+/* Nueva sección: Guía de colores */
 
- 
+.tarjeta-guia-colores {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 250px;
+}
+
+.guia-colores {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    width: 100%;
+}
+
+.fila-color {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    list-style: none;
+}
+
+.fila-color img {
+    width: 20px;
+    height: 20px;
+    display: block;
+    flex-shrink: 0;
+}
+
+.fila-color label {
+    margin: 0;
+    font-weight: bold;
+    display: inline-block;
+}
+
+
+

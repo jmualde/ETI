@@ -71,3 +71,22 @@ CREATE TABLE ocupa(
     FOREIGN KEY (id_automovil) REFERENCES automovil(id),
     FOREIGN KEY (coordenadaX, coordenadaY) REFERENCES lugar(coordenadaX, coordenadaY)
 );
+
+INSERT INTO admin(id,nombre_admin,contrasenia)
+VALUES(1,'admin','admin');
+
+INSERT INTO usuario(id,nombre_usuario,nombre,apellido,email,contrasenia)
+VALUES(1,'prof1','Felipe','Perez','felipe123@gmail.com','111');
+
+
+INSERT INTO usuario(id,nombre_usuario,nombre,apellido,email,contrasenia)
+VALUES(2,'prof2','Juaquin','Lorenzo','lorenzjuaqui@gmail.com','222');
+
+INSERT INTO automovil(id, marca, modelo, color, id_usuario)
+VALUES(1,'Volkswagen','Vento','#F72F07',2);
+
+INSERT INTO automovil(id, marca, modelo, color, id_usuario)
+VALUES(2,'Ferrari','LaFerrari','#000000',1);
+
+INSERT INTO automovil(id, marca, modelo, color, id_usuario)
+VALUES(3,'Lancia','Delta Integrale HF','#C9C9C9',1);
