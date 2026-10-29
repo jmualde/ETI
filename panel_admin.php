@@ -255,12 +255,13 @@ if (!isset($_SESSION["usuario"])) {
                         <thead>
                             <tr>
                                 <th scope="col">ID</th>
-                                <th scope="col">CoordenadaX</th>
-                                <th scope="col">CoordenadaY</th>
                                 <th scope="col">ID Usuario</th>
-                                <th scope="col">Fecha_inicio</th>
-                                <th scope="col">Fecha_fin</th>
                                 <th scope="col">ID Automovil</th>
+                                <th scope="col">Calle</th>
+                                <th scope="col">Hora de ocupacion</th>
+                                <th scope="col">Hora de liberacion</th>
+                                <th scope="col">Latitud</th>
+                                <th scope="col">Longitud</th>                               
                                 <th scope="col"></th>
                                 <th scope="col"></th>
                             </tr>
@@ -274,12 +275,13 @@ if (!isset($_SESSION["usuario"])) {
                             while ($fila3 = $resultado3->fetch(PDO::FETCH_ASSOC)) {
                                 echo "<tr>";
                                 echo "<td>" . $fila3['id'] . "</td>";
-                                echo "<td>" . $fila3['coordenadaX'] . "</td>";
-                                echo "<td>" . $fila3['coordenadaY'] . "</td>";
                                 echo "<td>" . $fila3['id_usuario'] . "</td>";
-                                echo "<td>" . $fila3['fecha_inicio'] . "</td>";
-                                echo "<td>" . $fila3['fecha_fin'] . "</td>";
                                 echo "<td>" . $fila3['id_automovil'] . "</td>";
+                                echo "<td>" . $fila3['calle'] . "</td>";
+                                echo "<td>" . $fila3['hora_estacionamiento'] . "</td>";
+                                echo "<td>" . $fila3['hora_liberacion'] . "</td>";
+                                echo "<td>" . $fila3['latitud'] . "</td>";
+                                echo "<td>" . $fila3['longitud'] . "</td>";
                                 echo "<td><button class='boton' onclick='editar_ocupa(" . $fila3['id'] . ")'>Editar</button></td>";
                                 echo "<td><button class='boton' onclick='eliminar_ocupa(" . $fila3['id'] . ")'>Eliminar</button></td>";
                                 echo "</tr>";

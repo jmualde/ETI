@@ -57,20 +57,20 @@ CREATE TABLE registra(
     FOREIGN KEY (id_automovil) REFERENCES automovil(id)
 );
 
-
-CREATE TABLE ocupa(
+CREATE TABLE ocupa (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    coordenadaX INT,
-    coordenadaY INT,
-    id_usuario INT,
-    fecha_inicio DATE,
-    fecha_fin DATE,
-    id_automovil INT,
+    id_usuario INT NOT NULL,
+    id_automovil INT NOT NULL,
+    hora_estacionamiento TIME NOT NULL,
+    hora_liberacion TIME NOT NULL,
+    calle VARCHAR(150) NOT NULL,
+    latitud DECIMAL(10,7),
+    longitud DECIMAL(10,7),
 
     FOREIGN KEY (id_usuario) REFERENCES usuario(id),
-    FOREIGN KEY (id_automovil) REFERENCES automovil(id),
-    FOREIGN KEY (coordenadaX, coordenadaY) REFERENCES lugar(coordenadaX, coordenadaY)
+    FOREIGN KEY (id_automovil) REFERENCES automovil(id)
 );
+
 
 INSERT INTO admin(id,nombre_admin,contrasenia)
 VALUES(1,'admin','admin');

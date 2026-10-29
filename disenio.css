@@ -721,5 +721,46 @@ select.campo option {
     display: inline-block;
 }
 
+/*CSS de ocupar lugar experimental*/
 
 
+/* ===== FIX REAL: textos de las tarjetas de Ocupar lugar ===== */
+
+section.panel-ocupar {
+    color: #212529 !important;
+    background-color: #ffffff !important;
+}
+
+section.panel-ocupar h4,
+section.panel-ocupar p,
+section.panel-ocupar label,
+section.panel-ocupar .form-text,
+section.panel-ocupar .leyenda,
+section.panel-ocupar .leyenda span,
+section.panel-ocupar .estado-mapa {
+    color: #212529 !important;
+}
+
+/* Campos del formulario */
+section.panel-ocupar input.form-control,
+section.panel-ocupar select.form-select {
+    color: #212529 !important;
+    background-color: #ffffff !important;
+    border: 1px solid #ced4da;
+}
+
+/* Texto de ejemplo dentro de los campos */
+section.panel-ocupar input::placeholder {
+    color: #6c757d !important;
+    opacity: 1;
+}
+
+/* Mantener el mensaje de error en rojo */
+section.panel-ocupar .text-danger {
+    color: #dc3545 !important;
+}
+
+/* Mantener el texto de la nota de demostración */
+section.panel-ocupar .nota-demo {
+    color: #755b18 !important;
+}
