@@ -27,7 +27,6 @@ $lng = ($_POST['longitud'] ?? '') !== ''
     ? filter_var($_POST['longitud'], FILTER_VALIDATE_FLOAT)
     : null;
 
-// Validar ambas horas
 $patronHora = '/^([01]\d|2[0-3]):[0-5]\d$/';
 
 if (
@@ -35,13 +34,15 @@ if (
     !preg_match($patronHora, $horaLiberacion) ||
     !$idAuto ||
     $calle === '' ||
-    mb_strlen($calle) > 150
+    mb_strlen($calle) > 150 ||
+    $lat === false ||
+    $lng === false
 ) {
     volver('Revisá las horas, el vehículo y la calle seleccionada.');
 }
 
 try {
-    // Buscar al usuario que inició sesión
+    // Buscar usuario
     $s = $conexion->prepare(
         'SELECT id FROM usuario WHERE nombre_usuario = :usuario'
     );
@@ -52,7 +53,7 @@ try {
         volver('No se encontró tu usuario. Volvé a iniciar sesión.');
     }
 
-    // Verificar que el vehículo pertenezca al usuario
+    // Verificar que el auto pertenezca al usuario
     $s = $conexion->prepare(
         'SELECT id FROM automovil
          WHERE id = :auto AND id_usuario = :usuario'
@@ -66,14 +67,61 @@ try {
         volver('El vehículo seleccionado no está asignado a tu usuario.');
     }
 
-    // Guardar la ocupación con las dos horas
+    // Buscar la última ocupación de ese usuario y automóvil
+    $sql2 = 'SELECT id, hora_estacionamiento
+             FROM ocupa
+             WHERE id_automovil = :id_automovil
+               AND id_usuario = :id_usuario
+             ORDER BY hora_estacionamiento DESC, id DESC
+             LIMIT 1';
+
+    $s2 = $conexion->prepare($sql2);
+    $s2->execute([
+        ':id_automovil' => $idAuto,
+        ':id_usuario' => $usuario['id']
+    ]);
+
+    $fila = $s2->fetch(PDO::FETCH_ASSOC);
+
+    if ($fila) {
+        // Solo actualizar si la hora nueva es más reciente
+        if ($hora <= substr($fila['hora_estacionamiento'], 0, 5)) {
+            volver(
+                'La nueva hora debe ser posterior a la última ocupación.'
+            );
+        }
+
+        // Actualizar exactamente la fila anterior por su ID
+        $sqlUpdate = 'UPDATE ocupa
+                      SET longitud = :lng,
+                          latitud = :lat,
+                          calle = :calle,
+                          hora_estacionamiento = :hora,
+                          hora_liberacion = :hora_liberacion
+                      WHERE id = :id';
+
+        $stmtUpdate = $conexion->prepare($sqlUpdate);
+
+        $stmtUpdate->execute([
+            ':lng' => $lng,
+            ':lat' => $lat,
+            ':calle' => $calle,
+            ':hora' => $hora,
+            ':hora_liberacion' => $horaLiberacion,
+            ':id' => $fila['id']
+        ]);
+
+        volver('La ocupación anterior se actualizó correctamente.');
+    }
+
+    // Si no existe ninguna ocupación anterior, insertar una nueva
     $s = $conexion->prepare(
         'INSERT INTO ocupa
-        (id_usuario, id_automovil, hora_estacionamiento,
-         hora_liberacion, calle, latitud, longitud)
-        VALUES
-        (:usuario, :auto, :hora, :hora_liberacion,
-         :calle, :lat, :lng)'
+         (id_usuario, id_automovil, hora_estacionamiento,
+          hora_liberacion, calle, latitud, longitud)
+         VALUES
+         (:usuario, :auto, :hora, :hora_liberacion,
+          :calle, :lat, :lng)'
     );
 
     $s->execute([

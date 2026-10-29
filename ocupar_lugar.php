@@ -616,41 +616,63 @@ try {
             'Calles cargadas. Seleccioná una línea para elegirla.';
     }
 
-    async function obtenerCalles() {
-        const servidores = [
-            'https://overpass-api.de/api/interpreter?data=',
-            'https://overpass.kumi.systems/api/interpreter?data=',
-            'https://overpass.nchc.org.tw/api/interpreter?data='
-        ];
+    
+async function obtenerCalles() {
+    const servidores = [
+        'https://overpass.private.coffee/api/interpreter',
+        'https://overpass-api.de/api/interpreter',
+        'https://overpass.kumi.systems/api/interpreter'
+    ];
 
-        let ultimoError = null;
+    let ultimoError = null;
 
-        for (const servidor of servidores) {
-            try {
-                const respuesta = await fetch(
-                    servidor + encodeURIComponent(query),
-                    {signal: AbortSignal.timeout(30000)}
+    for (const servidor of servidores) {
+        try {
+            console.log('Intentando cargar calles desde:', servidor);
+
+            const respuesta = await fetch(servidor, {
+                method: 'POST',
+                headers: {
+                    'Content-Type':
+                        'application/x-www-form-urlencoded;charset=UTF-8'
+                },
+                body: 'data=' + encodeURIComponent(query),
+                signal: AbortSignal.timeout(60000)
+            });
+
+            if (!respuesta.ok) {
+                throw new Error(
+                    `Error HTTP ${respuesta.status}`
                 );
-
-                if (!respuesta.ok) {
-                    throw new Error('Servidor de calles no disponible');
-                }
-
-                const data = await respuesta.json();
-
-                if (!data || !Array.isArray(data.elements)) {
-                    throw new Error('La respuesta del mapa no es válida');
-                }
-
-                return data;
-            } catch (error) {
-                ultimoError = error;
-                console.warn('Falló el servidor de calles:', servidor, error);
             }
-        }
 
-        throw ultimoError || new Error('No se pudieron obtener las calles');
+            const data = await respuesta.json();
+
+            if (!data || !Array.isArray(data.elements)) {
+                throw new Error('Respuesta inválida de Overpass');
+            }
+
+            console.log(
+                'Calles recibidas correctamente:',
+                data.elements.length
+            );
+
+            return data;
+
+        } catch (error) {
+            ultimoError = error;
+
+            console.warn(
+                'Falló el servidor de calles:',
+                servidor,
+                error
+            );
+        }
     }
+
+    throw ultimoError ||
+        new Error('No se pudieron obtener las calles');
+}
 
     async function cargarCalles(forzarConsulta = false) {
         let guardado = null;
