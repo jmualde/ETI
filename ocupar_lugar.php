@@ -3,6 +3,9 @@
 session_start();
 require_once 'conexion.php';
 
+date_default_timezone_set('America/Montevideo');
+$horaActual = date('H:i');
+
 if (!isset($_SESSION['usuario'])) {
     header('Location: login.php');
     exit();
@@ -254,12 +257,20 @@ try {
                       method="post"
                       id="form-ocupar">
 
-                    <label for="hora">Hora a la que vas a estacionar</label>
-                    <input type="time"
-                           class="form-control"
-                           id="hora"
-                           name="hora"
-                           required>
+                    <label for="hora">Hora de estacionamiento</label>
+
+                        <input type="time"
+                            class="form-control"
+                            id="hora"
+                            name="hora"
+                            value="<?= htmlspecialchars($horaActual, ENT_QUOTES, 'UTF-8') ?>"
+                            readonly
+                            required
+                            style="background-color: #343a40; color: #adb5bd; cursor: not-allowed;">
+
+                        <p class="text-secondary mt-1">
+                            La hora se establece automáticamente.
+                        </p>
 
                     <label for="hora_liberacion">Hora de liberación</label>
                     <input type="time"
@@ -382,13 +393,17 @@ try {
         .addTo(mapa)
         .bindPopup('<strong>Liceo Logosófico</strong><br>Av. Dr. Manuel Albo 2707');
 
-    const estado = document.getElementById('estado-mapa');
-    const calleInput = document.getElementById('calle');
-    const latInput = document.getElementById('latitud');
-    const lngInput = document.getElementById('longitud');
+const estado = document.getElementById('estado-mapa');
+const calleInput = document.getElementById('calle');
+const latInput = document.getElementById('latitud');
+const lngInput = document.getElementById('longitud');
 
-    let seleccionado = null;
-    let capaCalles = null;
+let seleccionado = null;
+let capaCalles = null;
+
+let temporizadorBusqueda = null;
+let marcadorManual = null;
+let numeroBusqueda = 0;
 
     const colores = [
         {min: 80, color: '#16a34a', nombre: 'Alta'},
@@ -406,6 +421,105 @@ try {
             "'": '&#39;'
         })[caracter]);
     }
+
+    async function buscarCoordenadas(calle, busquedaActual) {
+    const url = new URL(
+        'https://nominatim.openstreetmap.org/search'
+    );
+
+    url.searchParams.set('format', 'jsonv2');
+    url.searchParams.set('q', calle + ', Montevideo, Uruguay');
+    url.searchParams.set('limit', '5');
+    url.searchParams.set('countrycodes', 'uy');
+    url.searchParams.set('viewbox', '-56.1653,-34.8862,-56.1544,-34.8952');
+    url.searchParams.set('bounded', '1');
+
+    estado.textContent = 'Buscando la ubicación de la calle...';
+
+    try {
+        const respuesta = await fetch(url);
+
+        if (!respuesta.ok) {
+            throw new Error('No se pudo consultar OpenStreetMap.');
+        }
+
+        const resultados = await respuesta.json();
+
+        // Evitar que una búsqueda anterior sobrescriba la más reciente.
+        if (busquedaActual !== numeroBusqueda) {
+            return;
+        }
+
+        if (!resultados.length) {
+            latInput.value = '';
+            lngInput.value = '';
+
+            estado.textContent =
+                'No se encontró esa calle dentro de la zona del mapa.';
+            return;
+        }
+
+        // Buscar un resultado que esté dentro de los límites del mapa.
+        const resultado = resultados.find(r => {
+            const punto = L.latLng(
+                Number(r.lat),
+                Number(r.lon)
+            );
+
+            return limites.contains(punto);
+        });
+
+        if (!resultado) {
+            latInput.value = '';
+            lngInput.value = '';
+
+            estado.textContent =
+                'La calle no se encuentra dentro de la zona permitida.';
+            return;
+        }
+
+        const lat = Number(resultado.lat);
+        const lng = Number(resultado.lon);
+
+        latInput.value = lat.toFixed(7);
+        lngInput.value = lng.toFixed(7);
+
+        // Eliminar el marcador manual anterior.
+        if (marcadorManual) {
+            mapa.removeLayer(marcadorManual);
+        }
+
+        const punto = L.latLng(lat, lng);
+
+        marcadorManual = L.marker(punto)
+            .addTo(mapa)
+            .bindPopup(`
+                <strong>${escaparHTML(calle)}</strong>
+                <p>Ubicación encontrada para el estacionamiento.</p>
+            `);
+
+        mapa.setView(punto, 18);
+        marcadorManual.openPopup();
+
+        estado.textContent =
+            'Ubicación encontrada. Ya podés confirmar la ocupación.';
+
+    } catch (error) {
+        if (busquedaActual !== numeroBusqueda) {
+            return;
+        }
+
+        console.error('Error buscando la calle:', error);
+
+        latInput.value = '';
+        lngInput.value = '';
+
+        estado.textContent =
+            'No se pudo buscar la calle. Intentá nuevamente.';
+    }
+}
+
+
 
     function clasificar(id, tags) {
         const restringido = Object.entries(tags || {}).some(([k, v]) =>
@@ -458,6 +572,14 @@ try {
 
         function elegirCalle() {
             let ll;
+            
+            clearTimeout(temporizadorBusqueda);
+            numeroBusqueda++;
+            
+            if (marcadorManual) {
+                mapa.removeLayer(marcadorManual);
+                marcadorManual = null;
+            }
 
             if (typeof layer.getBounds === 'function') {
                 ll = layer.getBounds().getCenter();
@@ -616,41 +738,63 @@ try {
             'Calles cargadas. Seleccioná una línea para elegirla.';
     }
 
-    async function obtenerCalles() {
-        const servidores = [
-            'https://overpass-api.de/api/interpreter?data=',
-            'https://overpass.kumi.systems/api/interpreter?data=',
-            'https://overpass.nchc.org.tw/api/interpreter?data='
-        ];
+    
+async function obtenerCalles() {
+    const servidores = [
+        'https://overpass.private.coffee/api/interpreter',
+        'https://overpass-api.de/api/interpreter',
+        'https://overpass.kumi.systems/api/interpreter'
+    ];
 
-        let ultimoError = null;
+    let ultimoError = null;
 
-        for (const servidor of servidores) {
-            try {
-                const respuesta = await fetch(
-                    servidor + encodeURIComponent(query),
-                    {signal: AbortSignal.timeout(30000)}
+    for (const servidor of servidores) {
+        try {
+            console.log('Intentando cargar calles desde:', servidor);
+
+            const respuesta = await fetch(servidor, {
+                method: 'POST',
+                headers: {
+                    'Content-Type':
+                        'application/x-www-form-urlencoded;charset=UTF-8'
+                },
+                body: 'data=' + encodeURIComponent(query),
+                signal: AbortSignal.timeout(60000)
+            });
+
+            if (!respuesta.ok) {
+                throw new Error(
+                    `Error HTTP ${respuesta.status}`
                 );
-
-                if (!respuesta.ok) {
-                    throw new Error('Servidor de calles no disponible');
-                }
-
-                const data = await respuesta.json();
-
-                if (!data || !Array.isArray(data.elements)) {
-                    throw new Error('La respuesta del mapa no es válida');
-                }
-
-                return data;
-            } catch (error) {
-                ultimoError = error;
-                console.warn('Falló el servidor de calles:', servidor, error);
             }
-        }
 
-        throw ultimoError || new Error('No se pudieron obtener las calles');
+            const data = await respuesta.json();
+
+            if (!data || !Array.isArray(data.elements)) {
+                throw new Error('Respuesta inválida de Overpass');
+            }
+
+            console.log(
+                'Calles recibidas correctamente:',
+                data.elements.length
+            );
+
+            return data;
+
+        } catch (error) {
+            ultimoError = error;
+
+            console.warn(
+                'Falló el servidor de calles:',
+                servidor,
+                error
+            );
+        }
     }
+
+    throw ultimoError ||
+        new Error('No se pudieron obtener las calles');
+}
 
     async function cargarCalles(forzarConsulta = false) {
         let guardado = null;
@@ -740,19 +884,49 @@ try {
 
     cargarCalles();
 
-    // Si se modifica manualmente la calle, borrar coordenadas anteriores.
-    calleInput.addEventListener('input', () => {
-        latInput.value = '';
-        lngInput.value = '';
-    });
+// Buscar las coordenadas cuando se escribe una calle manualmente.
+calleInput.addEventListener('input', () => {
+    clearTimeout(temporizadorBusqueda);
 
-    document.getElementById('form-ocupar').addEventListener('submit', e => {
-        if (!calleInput.value.trim()) {
-            e.preventDefault();
-            calleInput.focus();
-            alert('Ingresá una calle o seleccioná una en el mapa.');
-        }
-    });
+    numeroBusqueda++;
+
+    latInput.value = '';
+    lngInput.value = '';
+
+    if (marcadorManual) {
+        mapa.removeLayer(marcadorManual);
+        marcadorManual = null;
+    }
+
+    const calle = calleInput.value.trim();
+
+    if (calle.length < 4) {
+        estado.textContent =
+            'Escribí al menos 4 caracteres para buscar la calle.';
+        return;
+    }
+
+    const busquedaActual = numeroBusqueda;
+
+    // Esperar un segundo para no consultar por cada tecla.
+    temporizadorBusqueda = setTimeout(() => {
+        buscarCoordenadas(calle, busquedaActual);
+    }, 1000);
+});
+
+document.getElementById('form-ocupar').addEventListener('submit', e => {
+    if (!calleInput.value.trim()) {
+        e.preventDefault();
+        calleInput.focus();
+        alert('Ingresá una calle o seleccioná una en el mapa.');
+        return;
+    }
+
+    if (!latInput.value || !lngInput.value) {
+        e.preventDefault();
+        alert('Esperá a que se encuentre la ubicación de la calle antes de confirmar.');
+    }
+});
 
 })();
 </script>
