@@ -1,8 +1,8 @@
 /*
      MAPA DE CLASES POR ARCHIVO
      - login.php: .contenedor, .tarjeta, .columna-formulario,
-         .columna-imagen, .campo, .gris, .azul, .botonIniciar,
-         .botonAyuda, .imagenauto, .registro y .botonRegistra.
+         .campo, .gris, .azul, .botonIniciar, .botonAyuda,
+         .registro y .botonRegistra.
      - olvidoContrasenia.html: .tarjeta, .campo y .botonRegistra.
      - registra_auto.html: .tarjetaArriba, .textoBlanco,
          .tarjeta_registrar_auto, .contenido, .titulo, .campo,
@@ -190,10 +190,24 @@ html, body {
             padding: 30px 15px;
         }
 
+        body.pagina-login {
+            background-image:
+                linear-gradient(rgba(7, 15, 20, 0.32), rgba(7, 15, 20, 0.32)),
+                url("prueba2000.jpg");
+            background-position: center;
+            background-size: cover;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+
         .contenedor {
             width: 100%;
             max-width: 1000px;
             margin: 0 auto;
+        }
+
+        .pagina-login .contenedor {
+            max-width: 560px;
         }
 
         /* TARJETA */
@@ -211,11 +225,38 @@ html, body {
             box-shadow: 1px 1px 10px rgb(83, 83, 83);
         }
 
+        .pagina-login .tarjeta {
+            min-height: 0;
+            justify-content: center;
+            background-color: rgba(8, 15, 20, 0.45);
+            border: 1px solid rgba(139, 179, 199, 0.65);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+            backdrop-filter: blur(2px);
+        }
+
         /* COLUMNAS */
-        .columna-formulario,
-        .columna-imagen {
+        .columna-formulario {
             width: 50%;
             padding: 20px;
+        }
+
+        .pagina-login .columna-formulario {
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .pagina-login h3,
+        .pagina-login .registro h5,
+        .pagina-login .form-label,
+        .pagina-login .botonAyuda {
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.95);
+        }
+
+        .pagina-login .gris,
+        .pagina-login .azul,
+        .pagina-login .botonAyuda .gris {
+            color: #ffffff;
         }
 
       
@@ -243,10 +284,25 @@ html, body {
             box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
         }
 
+        .pagina-login .campo {
+            background-color: rgba(5, 12, 17, 0.88);
+            color: #ffffff;
+            border: 1px solid rgba(190, 207, 218, 0.55);
+        }
+
+        .pagina-login .campo:focus {
+            border-color: #8bb9d0;
+            box-shadow: 0 0 0 3px rgba(139, 185, 208, 0.25);
+        }
+
         .campo::placeholder {
             color: #999;
         }
 
+        .pagina-login .campo::placeholder {
+            color: #d6dee4;
+            opacity: 1;
+        }
         
         .gris {
             color: #C7D1DB;
@@ -302,19 +358,29 @@ html, body {
             transition: 0.3s;
         }
 
+        .pagina-login .botonIniciar {
+            background-color: #ffffff;
+            color: #101820;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+        }
 
-        
-        .imagenauto {
-            display: block;
+        .pagina-login .botonRegistra {
+            background-color: #ffffff;
+            color: #101820;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+        }
 
-            width: 100%;
-            max-width: 450px;
-            height: 350px;
+        .pagina-login .botonRegistra:hover {
+            background-color: #d8d8d8;
+            transform: scale(1.02);
+        }
 
-            object-fit: cover;
-            border-radius: 10px;
-
-            margin: 0 auto;
+        .pagina-login .botonIniciar:focus-visible,
+        .pagina-login .botonRegistra:focus-visible,
+        .pagina-login .botonAyuda:focus-visible {
+            outline: 3px solid #ffffff;
+            outline-offset: 3px;
         }
 
         
@@ -328,6 +394,11 @@ html, body {
 
         .botonAyuda:hover {
             color: black;
+        }
+
+        .pagina-login .botonAyuda:hover {
+            color: #ffffff;
+            text-decoration: underline;
         }
 
         
@@ -352,20 +423,11 @@ html, body {
                 padding: 25px;
             }
 
-            .columna-formulario,
-            .columna-imagen {
+            .columna-formulario {
                 width: 100%;
                 padding: 15px;
             }
 
-            .columna-imagen {
-                order: -1;
-            }
-
-            .imagenauto {
-                height: 250px;
-                max-width: 100%;
-            }
         }
 
        
@@ -381,18 +443,13 @@ html, body {
                 border-radius: 12px;
             }
 
-            .columna-formulario,
-            .columna-imagen {
+            .columna-formulario {
                 padding: 10px 5px;
             }
 
             h3 {
                 font-size: 24px;
                 margin-bottom: 25px;
-            }
-
-            .imagenauto {
-                height: 180px;
             }
 
             .campo {

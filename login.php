@@ -12,11 +12,11 @@ $resultado = $conexion->query($sql);
     <title>Iniciar sesión</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="disenio.css">
+    <link rel="stylesheet" type="text/css" href="disenio.css?v=<?= filemtime(__DIR__ . '/disenio.css') ?>">
         
 </head>
 
-<body>
+<body class="pagina-login">
 
 <div class="contenedor">
 
@@ -93,15 +93,6 @@ $resultado = $conexion->query($sql);
         </div>
 
         
-        <div class="columna-imagen">
-
-            <img
-                src="pexels-kaue-barbier-710715348-30233581.jpg"
-                class="imagenauto"
-            >
-
-        </div>
-
     </div>
 
     
