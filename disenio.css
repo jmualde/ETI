@@ -506,27 +506,37 @@ select.campo option {
     .tarjetaArriba-cuenta,
     .tarjetaArriba-principal {
         width: calc(100% - 20px);
-        min-height: auto;
+        min-height: 62px;
         margin-top: 12px;
-        padding: 16px 12px;
-        border-radius: 28px;
-        flex-direction: column;
-        gap: 8px;
+        padding: 10px 12px;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        gap: 4px;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    .tarjetaArriba::-webkit-scrollbar,
+    .tarjetaArriba-cuenta::-webkit-scrollbar,
+    .tarjetaArriba-principal::-webkit-scrollbar {
+        display: none;
     }
 
     .tarjetaArriba a,
     .tarjetaArriba-cuenta a,
     .tarjetaArriba-principal a {
-        width: 100%;
+        flex: 0 0 auto;
         font-size: 14px;
     }
 
     .textoBlanco,
     .textoBlanco-cuenta,
     .textoBlanco-principal {
-        width: 100%;
-        padding: 10px 12px;
+        width: auto;
+        padding: 8px 10px;
         text-align: center;
+        white-space: nowrap;
     }
 
     .tarjeta-auto {
@@ -674,6 +684,40 @@ select.campo option {
         width: 100%;
     }
 }
+
+    @media (max-width: 576px) {
+        .nav-registro-auto {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            justify-content: stretch;
+            gap: 2px;
+            padding: 8px 6px;
+            overflow: visible;
+        }
+
+        .nav-registro-auto a {
+            width: 100%;
+            min-width: 0;
+            font-size: 11px;
+        }
+
+        .nav-registro-auto .textoBlanco {
+            width: 100%;
+            max-width: 100%;
+            padding: 6px 2px;
+            font-size: 11px;
+            line-height: 1.15;
+            white-space: normal;
+            word-break: normal;
+            text-align: center;
+        }
+    }
+
+    @media (max-width: 380px) {
+        .nav-registro-auto {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
 
 
  
