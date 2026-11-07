@@ -111,7 +111,7 @@ $resultado = $conexion->query($sql);
             ¿Tu primera vez en nuestra web?
         </h5>
 
-        <form method="POST" action="registra.html">
+        <form method="POST" action="registra.php">
 
             <button
                 type="submit"
@@ -125,6 +125,7 @@ $resultado = $conexion->query($sql);
         </form>
 
     </div>
+
     <script>
         const error = "<?php echo $_GET['error']; ?>";
 
@@ -132,8 +133,6 @@ $resultado = $conexion->query($sql);
             alert("Usuario o contraseña incorrectos. Por favor, inténtelo de nuevo.");
         }
     </script>
-
-
 
 </div>
 
