@@ -365,7 +365,7 @@ $fila = $stmt->fetch(PDO::FETCH_ASSOC);
 
                         <div class="botones">
 
-<form action="registra_auto.html" method="post">
+<form action="registra_auto.php" method="post">
                             <button
                                 class="botonRegistraAuto"
                                 name="auto"
