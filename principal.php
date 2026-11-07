@@ -31,7 +31,7 @@ $fila = $stmt->fetch(PDO::FETCH_ASSOC);
 
     <title>Pagina Principal</title>
 
-    <style>
+     <style>
 
         * {
             box-sizing: border-box;
@@ -50,15 +50,33 @@ $fila = $stmt->fetch(PDO::FETCH_ASSOC);
             overflow-x: hidden;
         }
 
-          .bienvenido {
-            margin-right: 50%;
-             font-family: "Inter", sans-serif;
-             font-weight: bold;
+        .container-fluid {
+            position: relative;
+            isolation: isolate;
+            display: flow-root;
+        }
 
+        .container-fluid::before {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            pointer-events: none;
+            background:
+                linear-gradient(
+                    to bottom,
+                    rgba(16, 18, 20, 0.3) 0,
+                    rgba(16, 18, 20, 0.3) 65%,
+                    #101214 100%
+                ),
+                url("pexels-whileopenmind-12973827.jpg") center center / cover no-repeat;
         }
 
         .tarjetaArriba-principal {
-            background: rgba(24, 28, 31, 0.9);
+            background: rgba(16, 18, 20, 0.58);
             width: fit-content;
             max-width: calc(100% - 24px);
             min-height: 62px;
@@ -72,10 +90,10 @@ $fila = $stmt->fetch(PDO::FETCH_ASSOC);
             padding: 10px 22px;
             flex-wrap: wrap;
 
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 999px;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
-            backdrop-filter: blur(6px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+            backdrop-filter: blur(8px);
         }
 
         .tarjetaArriba-principal a {
@@ -114,12 +132,14 @@ $fila = $stmt->fetch(PDO::FETCH_ASSOC);
             min-height: calc(100vh - 60px);
             display: flex;
             align-items: center;
+            
         }
 
         .textoPrincipal {
             font-size: clamp(40px, 5vw, 70px);
             font-weight: bold;
-            color: #f0e8d8;
+            color: whitesmoke;
+            text-shadow: 2px 3px 8px rgba(0, 0, 0, 0.9);
 
             margin: 0;
             max-width: 700px;
@@ -150,42 +170,6 @@ $fila = $stmt->fetch(PDO::FETCH_ASSOC);
             background-color: white;
             border: none;
             color: #101214;
-        }
-
-        /* =========================
-           TARJETA MAPA
-        ========================= */
-
-        .contenedorMapa {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-        }
-
-        .tarjeta-principal,
-        .tarjeta {
-            border: 1px solid darkslategray;
-            padding: 30px;
-
-            background-color: #161a1d;
-            border-radius: 10px;
-
-            box-shadow: 1px 1px 10px rgb(83, 83, 83);
-
-            width: 90%;
-            max-width: 650px;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .mapa {
-            border-radius: 10px;
-            width: 100%;
-            max-width: 100%;
-            height: auto;
         }
 
         /* =========================
@@ -261,24 +245,28 @@ $fila = $stmt->fetch(PDO::FETCH_ASSOC);
 
             .tarjetaArriba-principal {
                 width: calc(100% - 20px);
-                min-height: auto;
-                border-radius: 28px;
-
-                flex-direction: column;
-                gap: 8px;
-
-                padding: 16px 12px;
+                min-height: 62px;
+                position: static;
+                display: grid;
+                grid-template-columns: repeat(5, minmax(0, 1fr));
+                gap: 2px;
+                padding: 8px 6px;
+                margin: 12px auto 0;
             }
 
             .tarjetaArriba-principal a {
                 width: 100%;
-                font-size: 14px;
+                font-size: 11px;
             }
 
             .textoBlanco-principal {
                 width: 100%;
+                max-width: 100%;
                 text-align: center;
-                padding: 10px 12px;
+                padding: 6px 2px;
+                font-size: 11px;
+                line-height: 1.15;
+                word-break: normal;
             }
 
             .seccionPrincipal {
@@ -304,12 +292,6 @@ $fila = $stmt->fetch(PDO::FETCH_ASSOC);
                 max-width: 300px;
             }
 
-            .tarjeta {
-                padding: 15px;
-                width: 100%;
-                margin-top: 30px;
-            }
-
             #quienes_somos {
                 padding: 60px 15px;
             }
@@ -325,6 +307,12 @@ $fila = $stmt->fetch(PDO::FETCH_ASSOC);
                 text-align: left;
             }
 
+
+        @media (max-width: 380px) {
+            .tarjetaArriba-principal {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
         }
 
     </style>
@@ -364,10 +352,6 @@ $fila = $stmt->fetch(PDO::FETCH_ASSOC);
 
             <div class="container">
 
-                <h1 class="bienvenido">
-                        Bienvenido de nuevo, <?= htmlspecialchars($fila["nombre_usuario"]) ?>!
-                    </h1>
-
                 <div class="row align-items-center">
 
                     <!-- TEXTO -->
@@ -381,7 +365,7 @@ $fila = $stmt->fetch(PDO::FETCH_ASSOC);
 
                         <div class="botones">
 
-<form action="registra_auto.php" method="post">
+<form action="registra_auto.html" method="post">
                             <button
                                 class="botonRegistraAuto"
                                 name="auto"
@@ -409,25 +393,6 @@ $fila = $stmt->fetch(PDO::FETCH_ASSOC);
                     </div>
 
 
-                    <!-- MAPA -->
-
-                    <div class="col-12 col-lg-6">
-
-                        <div class="contenedorMapa">
-
-                            <div class="tarjeta">
-
-                                <img
-                                    class="mapa"
-                                    src="image.png"
-                                    alt="Mapa">
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
                 </div>
 
             </div>
@@ -451,7 +416,7 @@ $fila = $stmt->fetch(PDO::FETCH_ASSOC);
                     <div class="col-12 col-lg-8">
 
                         <p class="textoAbajo">
-                           "Nosotros somos E.T.I (Ethernet, Telecomunicaciones, Interface) un grupo del 
+                           "Nosotros somos E.T.I (Ethernet,Telecomunicaciones,Interface) un grupo del 
                             Liceo Logosofico compuesto por cuatro integrantes
                             (Pedro Joaquín Serra, Juan Manuel Ualde, Juan Pablo Trelles y Facundo Centurion) 
                             dedicado al desarrollo de software de páginas web."

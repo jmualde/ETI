@@ -251,9 +251,10 @@ html, body {
             }
         }
 
-/* Fin de login.php */
 
+        /* Fin de login.php */
 
+/* registra_auto.html: tarjeta principal */
 /* registra_auto.html: tarjeta principal */
 
 .tarjeta-auto {
@@ -306,7 +307,6 @@ html, body {
     max-width: calc(100% - 24px);
     min-height: 62px;
     margin: 18px auto 0;
-    margin-top: -20px;
     padding: 10px 22px;
     background: rgba(24, 28, 31, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.12);
@@ -485,6 +485,7 @@ select.campo option {
 
     cursor: pointer;
 }
+
 
 
 /* registra_auto.html: vista celular */
