@@ -14,13 +14,17 @@
 */
 
 /* login.php */
-
 html, body {
             margin: 0;
             padding: 0;
             min-height: 100%;
             background-color: #101214;
             color: white;
+        }
+
+        body {
+            min-height: 100vh;
+            padding: 30px 15px;
         }
 
         body.pagina-login {
@@ -39,6 +43,10 @@ html, body {
             margin: 0 auto;
         }
 
+        .pagina-login .contenedor {
+            max-width: 560px;
+        }
+
         /* TARJETA */
         .tarjeta {
             width: 100%;
@@ -53,8 +61,7 @@ html, body {
 
             box-shadow: 1px 1px 10px rgb(83, 83, 83);
         }
-       
-       
+
         .pagina-login .tarjeta {
             min-height: 0;
             justify-content: center;
@@ -63,10 +70,9 @@ html, body {
             box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
             backdrop-filter: blur(2px);
         }
-       
+
         /* COLUMNAS */
-        .columna-formulario,
-        .columna-imagen {
+        .columna-formulario {
             width: 50%;
             padding: 20px;
         }
@@ -89,6 +95,7 @@ html, body {
         .pagina-login .botonAyuda .gris {
             color: #ffffff;
         }
+
       
         h3 {
             margin-bottom: 30px;
@@ -113,7 +120,7 @@ html, body {
             border-color: white;
             box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
         }
-        
+
         .pagina-login .campo {
             background-color: rgba(5, 12, 17, 0.88);
             color: #ffffff;
@@ -124,6 +131,7 @@ html, body {
             border-color: #8bb9d0;
             box-shadow: 0 0 0 3px rgba(139, 185, 208, 0.25);
         }
+
         .campo::placeholder {
             color: #999;
         }
@@ -131,7 +139,7 @@ html, body {
         .pagina-login .campo::placeholder {
             color: #d6dee4;
             opacity: 1;
-        }        
+        }
         
         .gris {
             color: #C7D1DB;
@@ -212,7 +220,6 @@ html, body {
             outline-offset: 3px;
         }
 
-
         
         .botonAyuda {
             background: none;
@@ -230,7 +237,6 @@ html, body {
             color: #ffffff;
             text-decoration: underline;
         }
-
 
         
         .registro {
@@ -258,6 +264,7 @@ html, body {
                 width: 100%;
                 padding: 15px;
             }
+
         }
 
        
@@ -300,8 +307,7 @@ html, body {
             }
         }
 
-
-        /* Fin de login.php */
+/* Fin de login.php */
 
 
 /* registra_auto.html: tarjeta principal */
