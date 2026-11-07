@@ -96,7 +96,7 @@ $resultado = $conexion->query($sql);
         <div class="columna-imagen">
 
             <img
-                src="pexels-kaue-barbier-710715348-30233581.jpg"
+                src="Imagenes-Videos/pexels-kaue-barbier-710715348-30233581.jpg"
                 class="imagenauto"
             >
 

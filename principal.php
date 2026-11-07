@@ -72,7 +72,7 @@ $fila = $stmt->fetch(PDO::FETCH_ASSOC);
                     rgba(16, 18, 20, 0.3) 65%,
                     #101214 100%
                 ),
-                url("pexels-whileopenmind-12973827.jpg") center center / cover no-repeat;
+                url("Imagenes-Videos/pexels-whileopenmind-12973827.jpg") center center / cover no-repeat;
         }
 
         .tarjetaArriba-principal {

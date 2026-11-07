@@ -116,7 +116,7 @@ if (!isset($_SESSION["usuario"])) {
 
         .registro-auto-image {
             position: relative;
-            background: url("cdmx.jpg") center 78% / cover no-repeat;
+            background: url("Imagenes-Videos/cdmx.jpg") center 78% / cover no-repeat;
         }
 
         .registro-auto-image::before {
