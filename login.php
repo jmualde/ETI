@@ -102,7 +102,7 @@ $resultado = $conexion->query($sql);
             ¿Tu primera vez en nuestra web?
         </h5>
 
-        <form method="POST" action="registra.html">
+        <form method="POST" action="registra.php">
 
             <button
                 type="submit"

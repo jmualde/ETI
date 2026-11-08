@@ -55,6 +55,17 @@
         </div>
     </div> 
     </div>
+    <br><br>
+    <?php
+    $error = $_GET['error'] ?? null;
+    if ($error == 1) {
+        echo '<div class="alert alert-danger" role="alert">
+                El nombre de usuario o el correo electrónico ya están en uso. Por favor, elige otro.
+              </div>';
+    }
+?>
+
 
 </body>
+
 </html>
