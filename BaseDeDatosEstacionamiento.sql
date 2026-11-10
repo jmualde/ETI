@@ -60,17 +60,22 @@ CREATE TABLE registra(
 
 CREATE TABLE ocupa(
     id INT PRIMARY KEY AUTO_INCREMENT,
-    coordenadaX INT,
-    coordenadaY INT,
+    latitud DOUBLE,
+    longitud DOUBLE,
     id_usuario INT,
-    fecha_inicio DATE,
-    fecha_fin DATE,
+    hora_liberacion TIME,
+    hora_estacionamiento TIME,
     id_automovil INT,
+    calle VARCHAR(200)
 
     FOREIGN KEY (id_usuario) REFERENCES usuario(id),
     FOREIGN KEY (id_automovil) REFERENCES automovil(id),
-    FOREIGN KEY (coordenadaX, coordenadaY) REFERENCES lugar(coordenadaX, coordenadaY)
 );
+
+CREATE TABLE calles_prohibidas (
+    id_osm INT PRIMARY KEY
+);
+
 
 INSERT INTO admin(id,nombre_admin,contrasenia)
 VALUES(1,'admin','admin');
@@ -90,3 +95,10 @@ VALUES(2,'Ferrari','LaFerrari','#000000',1);
 
 INSERT INTO automovil(id, marca, modelo, color, id_usuario)
 VALUES(3,'Lancia','Delta Integrale HF','#C9C9C9',1);
+
+INSERT INTO calles_prohibidas(id_osm)
+VALUES 
+(818075623),
+(951586232),
+(995423484),
+(178813176)
