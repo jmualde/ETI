@@ -16,6 +16,7 @@ unset($_SESSION['mensaje_ocupar']);
 
 $autos = [];
 $ocupaciones = [];
+$tramosNoDisponibles = [];
 $usuario = ['id' => 0];
 
 try {
@@ -98,6 +99,19 @@ try {
     $ocupaciones = [];
     $usuario = ['id' => 0];
     $mensaje = 'No se pudieron cargar los datos.';
+}
+
+// Cargar los ID de los tramos marcados manualmente como no disponibles.
+// Esta consulta es independiente para que un error en esta tabla
+// no impida cargar los vehículos ni las ocupaciones.
+try {
+    $stmtTramos = $conexion->query(
+        'SELECT id_tramo FROM tramos_no_disponibles'
+    );
+    $tramosNoDisponibles = $stmtTramos->fetchAll(PDO::FETCH_COLUMN);
+} catch (PDOException $e) {
+    error_log('Error cargando tramos no disponibles: ' . $e->getMessage());
+    $tramosNoDisponibles = [];
 }
 ?>
 <!DOCTYPE html>
@@ -521,22 +535,29 @@ let numeroBusqueda = 0;
 
 
 
-    function clasificar(id, tags) {
-        const restringido = Object.entries(tags || {}).some(([k, v]) =>
-            /parking:lane/.test(k) &&
-            /no_parking|no_stopping/.test(String(v))
-        );
+    // ID de los tramos que se marcaron como no disponibles en MySQL.
+    // PDO puede devolverlos como texto, por eso los convertimos a Number.
+    const tramosNoDisponibles = new Set(
+        (<?= json_encode(
+            $tramosNoDisponibles,
+            JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT
+        ) ?: '[]' ?>).map(Number)
+    );
 
-        if (restringido) {
+    function clasificar(id, tags) {
+        const idTramo = Number(id);
+
+        // La restricción manual tiene prioridad sobre los colores ilustrativos.
+        if (tramosNoDisponibles.has(idTramo)) {
             return {
                 color: '#2563eb',
                 nombre: 'No disponible',
-                texto: 'La cartografía indica una restricción'
+                texto: 'Este tramo está marcado manualmente como no disponible'
             };
         }
 
         const n = Math.abs(
-            Math.sin(Number(id) * 12.9898) * 43758.5453
+            Math.sin(idTramo * 12.9898) * 43758.5453
         ) % 100;
 
         const nivel = colores.find(c => n >= c.min) || colores[3];
@@ -562,6 +583,7 @@ let numeroBusqueda = 0;
         popup.innerHTML = `
             <strong>${escaparHTML(nombre)}</strong><br>
             Disponibilidad: ${escaparHTML(c.nombre)}<br>
+            <small>ID del tramo OSM: ${escaparHTML(props.id)}</small><br>
             <small>${escaparHTML(c.texto)}</small><br>
             <button type="button" class="btn btn-sm btn-primary mt-2">
                 Elegir esta calle
