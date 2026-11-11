@@ -259,27 +259,27 @@ try {
         <div class="ocupar-grid">
 
             <section class="panel-ocupar">
-                <h4>Datos del estacionamiento</h4>
+                <h4 style="color: black;">Datos del estacionamiento</h4>
 
                 <form action="guardar_ocupacion.php"
                       method="post"
                       id="form-ocupar">
 
-                    <label for="hora">Hora a la que vas a estacionar</label>
+                    <label for="hora" style="color: black;">Hora a la que vas a estacionar</label>
                     <input type="time"
                            class="form-control"
                            id="hora"
                            name="hora"
                            readonly>
 
-                    <label for="hora_liberacion">Hora de liberación</label>
+                    <label for="hora_liberacion" style="color: black;">Hora de liberación</label>
                     <input type="time"
                            id="hora_liberacion"
                            name="hora_liberacion"
                            class="form-control"
                            required>
 
-                    <label for="vehiculo">Vehículo</label>
+                    <label for="vehiculo" style="color: black;">Vehículo</label>
                     <select class="form-select"
                             id="vehiculo"
                             name="vehiculo"
@@ -308,7 +308,7 @@ try {
                         </div>
                     <?php endif; ?>
 
-                    <label for="calle">Calle seleccionada</label>
+                    <label for="calle" style="color: black;">Calle seleccionada</label>
                     <input type="text"
                            class="form-control"
                            id="calle"
@@ -339,7 +339,7 @@ try {
             </section>
 
             <section class="panel-ocupar">
-                <h4>Elegí una calle en el mapa</h4>
+                <h4 style="color: black;">Elegí una calle en el mapa</h4>
                 <p class="text-muted mb-2">
                     Zona alrededor del Liceo Logosófico,
                     Av. Dr. Manuel Albo 2707, Montevideo.
@@ -353,11 +353,11 @@ try {
                 </div>
 
                 <div class="leyenda" aria-label="Leyenda de disponibilidad">
-                    <span><i class="muestra" style="background:#16a34a"></i>Alta (75–100%)</span>
-                    <span><i class="muestra" style="background:#eab308"></i>Media (50–74%)</span>
-                    <span><i class="muestra" style="background:#f97316"></i>Media-baja (30–49%)</span>
-                    <span><i class="muestra" style="background:#dc2626"></i>Baja (0–29%)</span>
-                    <span><i class="muestra" style="background:#2563eb"></i>Prohibida</span>
+                    <span style="color: black;"><i class="muestra" style="background:#16a34a;"></i>Alta (75–100%)</span>
+                    <span style="color: black;"><i class="muestra" style="background:#eab308"></i>Media (50–74%)</span>
+                    <span style="color: black;"><i class="muestra" style="background:#f97316"></i>Media-baja (30–49%)</span>
+                    <span style="color: black;"><i class="muestra" style="background:#dc2626"></i>Baja (0–29%)</span>
+                    <span style="color: black;"><i class="muestra" style="background:#2563eb"></i>Prohibida</span>
                 </div>
             </section>
 
