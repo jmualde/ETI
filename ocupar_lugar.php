@@ -3,9 +3,6 @@
 session_start();
 require_once 'conexion.php';
 
-date_default_timezone_set('America/Montevideo');
-$horaActual = date('H:i');
-
 if (!isset($_SESSION['usuario'])) {
     header('Location: login.php');
     exit();
@@ -16,7 +13,7 @@ unset($_SESSION['mensaje_ocupar']);
 
 $autos = [];
 $ocupaciones = [];
-$tramosNoDisponibles = [];
+$callesProhibidas = [];
 $usuario = ['id' => 0];
 
 try {
@@ -31,6 +28,13 @@ try {
         header('Location: cerrar_sesion.php');
         exit();
     }
+
+    // Obtener las calles marcadas como prohibidas.
+    $sql = "SELECT id_osm FROM calles_prohibidas";
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute();
+
+    $callesProhibidas = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
     // Vehículos del usuario.
     $stmtAuto = $conexion->prepare(
@@ -95,23 +99,13 @@ try {
 
 } catch (PDOException $e) {
     error_log('Error en ocupar_lugar.php: ' . $e->getMessage());
+
     $autos = [];
     $ocupaciones = [];
+    $callesProhibidas = [];
     $usuario = ['id' => 0];
-    $mensaje = 'No se pudieron cargar los datos.';
-}
 
-// Cargar los ID de los tramos marcados manualmente como no disponibles.
-// Esta consulta es independiente para que un error en esta tabla
-// no impida cargar los vehículos ni las ocupaciones.
-try {
-    $stmtTramos = $conexion->query(
-        'SELECT id_tramo FROM tramos_no_disponibles'
-    );
-    $tramosNoDisponibles = $stmtTramos->fetchAll(PDO::FETCH_COLUMN);
-} catch (PDOException $e) {
-    error_log('Error cargando tramos no disponibles: ' . $e->getMessage());
-    $tramosNoDisponibles = [];
+    $mensaje = 'No se pudieron cargar los datos.';
 }
 ?>
 <!DOCTYPE html>
@@ -271,20 +265,12 @@ try {
                       method="post"
                       id="form-ocupar">
 
-                    <label for="hora">Hora de estacionamiento</label>
-
-                        <input type="time"
-                            class="form-control"
-                            id="hora"
-                            name="hora"
-                            value="<?= htmlspecialchars($horaActual, ENT_QUOTES, 'UTF-8') ?>"
-                            readonly
-                            required
-                            style="background-color: #343a40; color: #adb5bd; cursor: not-allowed;">
-
-                        <p class="text-secondary mt-1">
-                            La hora se establece automáticamente.
-                        </p>
+                    <label for="hora">Hora a la que vas a estacionar</label>
+                    <input type="time"
+                           class="form-control"
+                           id="hora"
+                           name="hora"
+                           readonly>
 
                     <label for="hora_liberacion">Hora de liberación</label>
                     <input type="time"
@@ -367,11 +353,11 @@ try {
                 </div>
 
                 <div class="leyenda" aria-label="Leyenda de disponibilidad">
-                    <span><i class="muestra" style="background:#16a34a"></i>Alta (80–100%)</span>
-                    <span><i class="muestra" style="background:#eab308"></i>Media (50–79%)</span>
+                    <span><i class="muestra" style="background:#16a34a"></i>Alta (75–100%)</span>
+                    <span><i class="muestra" style="background:#eab308"></i>Media (50–74%)</span>
                     <span><i class="muestra" style="background:#f97316"></i>Media-baja (30–49%)</span>
-                    <span><i class="muestra" style="background:#dc2626"></i>Baja (1–29%)</span>
-                    <span><i class="muestra" style="background:#2563eb"></i>No disponible</span>
+                    <span><i class="muestra" style="background:#dc2626"></i>Baja (0–29%)</span>
+                    <span><i class="muestra" style="background:#2563eb"></i>Prohibida</span>
                 </div>
             </section>
 
@@ -382,6 +368,13 @@ try {
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
+        const ahora = new Date();
+
+    const hora = String(ahora.getHours()).padStart(2, '0');
+    const minutos = String(ahora.getMinutes()).padStart(2, '0');
+
+    document.getElementById("hora").value = `${hora}:${minutos}`;
+    
 (() => {
     const centro = [-34.89071, -56.15986];
 
@@ -407,24 +400,36 @@ try {
         .addTo(mapa)
         .bindPopup('<strong>Liceo Logosófico</strong><br>Av. Dr. Manuel Albo 2707');
 
-const estado = document.getElementById('estado-mapa');
-const calleInput = document.getElementById('calle');
-const latInput = document.getElementById('latitud');
-const lngInput = document.getElementById('longitud');
+    const estado = document.getElementById('estado-mapa');
+    const calleInput = document.getElementById('calle');
+    const latInput = document.getElementById('latitud');
+    const lngInput = document.getElementById('longitud');
 
-let seleccionado = null;
-let capaCalles = null;
+    let seleccionado = null;
+    let capaCalles = null;
+    let lugaresDemanda = [];
 
-let temporizadorBusqueda = null;
-let marcadorManual = null;
-let numeroBusqueda = 0;
+    // ==========================================
+    // CONFIGURACIÓN DE CACHÉ
+    // ==========================================
 
-    const colores = [
-        {min: 80, color: '#16a34a', nombre: 'Alta'},
-        {min: 50, color: '#eab308', nombre: 'Media'},
-        {min: 30, color: '#f97316', nombre: 'Media-baja'},
-        {min: 0, color: '#dc2626', nombre: 'Baja'}
-    ];
+    const claveCache = 'calles_mapa_estacionamiento_v3';
+    const duracionCache = 30 * 60 * 1000;
+
+    // ==========================================
+    // CALLES PROHIBIDAS
+    // ==========================================
+
+    const callesProhibidas = new Set(
+        <?= json_encode(
+            $callesProhibidas,
+            JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT
+        ) ?: '[]' ?>.map(Number)
+    );
+
+    // ==========================================
+    // FUNCIONES AUXILIARES
+    // ==========================================
 
     function escaparHTML(valor) {
         return String(valor ?? '').replace(/[&<>"']/g, caracter => ({
@@ -436,156 +441,224 @@ let numeroBusqueda = 0;
         })[caracter]);
     }
 
-    async function buscarCoordenadas(calle, busquedaActual) {
-    const url = new URL(
-        'https://nominatim.openstreetmap.org/search'
-    );
+    function distanciaMetros(lat1, lon1, lat2, lon2) {
+        const R = 6371000;
+        const rad = grados => grados * Math.PI / 180;
 
-    url.searchParams.set('format', 'jsonv2');
-    url.searchParams.set('q', calle + ', Montevideo, Uruguay');
-    url.searchParams.set('limit', '5');
-    url.searchParams.set('countrycodes', 'uy');
-    url.searchParams.set('viewbox', '-56.1653,-34.8862,-56.1544,-34.8952');
-    url.searchParams.set('bounded', '1');
+        const dLat = rad(lat2 - lat1);
+        const dLon = rad(lon2 - lon1);
 
-    estado.textContent = 'Buscando la ubicación de la calle...';
+        const a =
+            Math.sin(dLat / 2) ** 2 +
+            Math.cos(rad(lat1)) *
+            Math.cos(rad(lat2)) *
+            Math.sin(dLon / 2) ** 2;
 
-    try {
-        const respuesta = await fetch(url);
-
-        if (!respuesta.ok) {
-            throw new Error('No se pudo consultar OpenStreetMap.');
-        }
-
-        const resultados = await respuesta.json();
-
-        // Evitar que una búsqueda anterior sobrescriba la más reciente.
-        if (busquedaActual !== numeroBusqueda) {
-            return;
-        }
-
-        if (!resultados.length) {
-            latInput.value = '';
-            lngInput.value = '';
-
-            estado.textContent =
-                'No se encontró esa calle dentro de la zona del mapa.';
-            return;
-        }
-
-        // Buscar un resultado que esté dentro de los límites del mapa.
-        const resultado = resultados.find(r => {
-            const punto = L.latLng(
-                Number(r.lat),
-                Number(r.lon)
-            );
-
-            return limites.contains(punto);
-        });
-
-        if (!resultado) {
-            latInput.value = '';
-            lngInput.value = '';
-
-            estado.textContent =
-                'La calle no se encuentra dentro de la zona permitida.';
-            return;
-        }
-
-        const lat = Number(resultado.lat);
-        const lng = Number(resultado.lon);
-
-        latInput.value = lat.toFixed(7);
-        lngInput.value = lng.toFixed(7);
-
-        // Eliminar el marcador manual anterior.
-        if (marcadorManual) {
-            mapa.removeLayer(marcadorManual);
-        }
-
-        const punto = L.latLng(lat, lng);
-
-        marcadorManual = L.marker(punto)
-            .addTo(mapa)
-            .bindPopup(`
-                <strong>${escaparHTML(calle)}</strong>
-                <p>Ubicación encontrada para el estacionamiento.</p>
-            `);
-
-        mapa.setView(punto, 18);
-        marcadorManual.openPopup();
-
-        estado.textContent =
-            'Ubicación encontrada. Ya podés confirmar la ocupación.';
-
-    } catch (error) {
-        if (busquedaActual !== numeroBusqueda) {
-            return;
-        }
-
-        console.error('Error buscando la calle:', error);
-
-        latInput.value = '';
-        lngInput.value = '';
-
-        estado.textContent =
-            'No se pudo buscar la calle. Intentá nuevamente.';
+        return R * 2 * Math.atan2(
+            Math.sqrt(a),
+            Math.sqrt(1 - a)
+        );
     }
-}
 
+    // ==========================================
+    // DEMANDA SEGÚN HORARIO
+    // ==========================================
 
+    function obtenerDemandaHorario(tipo, fecha) {
+        const hora = fecha.getHours();
+        const minutos = fecha.getMinutes();
+        const dia = fecha.getDay();
 
-    // ID de los tramos que se marcaron como no disponibles en MySQL.
-    // PDO puede devolverlos como texto, por eso los convertimos a Number.
-    const tramosNoDisponibles = new Set(
-        (<?= json_encode(
-            $tramosNoDisponibles,
-            JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT
-        ) ?: '[]' ?>).map(Number)
-    );
+        const horario = hora + minutos / 60;
+        const diaLaboral = dia >= 1 && dia <= 5;
+        const sabado = dia === 6;
 
-    function clasificar(id, tags) {
-        const idTramo = Number(id);
+        switch (tipo) {
 
-        // La restricción manual tiene prioridad sobre los colores ilustrativos.
-        if (tramosNoDisponibles.has(idTramo)) {
+            case 'school':
+            case 'college':
+            case 'university':
+            case 'kindergarten':
+
+                if (!diaLaboral) return 10;
+
+                if (
+                    (horario >= 7 && horario <= 9) ||
+                    (horario >= 11.5 && horario <= 14) ||
+                    (horario >= 16 && horario <= 18)
+                ) {
+                    return 90;
+                }
+
+                return 15;
+
+            case 'hospital':
+                return 85;
+
+            case 'clinic':
+            case 'doctors':
+                return horario >= 8 && horario <= 19 ? 70 : 25;
+
+            case 'commercial':
+            case 'marketplace':
+            case 'restaurant':
+            case 'fast_food':
+
+                if (diaLaboral && horario >= 9 && horario <= 20) {
+                    return 70;
+                }
+
+                if (sabado && horario >= 10 && horario <= 22) {
+                    return 80;
+                }
+
+                return 25;
+
+            case 'bus_station':
+                return 65;
+
+            default:
+                return 20;
+        }
+    }
+
+    // ==========================================
+    // CALCULAR DISPONIBILIDAD DE CADA CALLE
+    // ==========================================
+
+    function clasificar(feature) {
+
+        const idOSM = Number(feature.properties.id);
+
+        // Si el tramo está prohibido, siempre será azul.
+        if (callesProhibidas.has(idOSM)) {
             return {
                 color: '#2563eb',
-                nombre: 'No disponible',
-                texto: 'Este tramo está marcado manualmente como no disponible'
+                nombre: 'Prohibida',
+                disponibilidad: 0,
+                prohibida: true
             };
         }
 
-        const n = Math.abs(
-            Math.sin(idTramo * 12.9898) * 43758.5453
-        ) % 100;
+        const coordenadas = feature.geometry.coordinates;
 
-        const nivel = colores.find(c => n >= c.min) || colores[3];
+        const lat = coordenadas.reduce(
+            (suma, p) => suma + p[1], 0
+        ) / coordenadas.length;
+
+        const lng = coordenadas.reduce(
+            (suma, p) => suma + p[0], 0
+        ) / coordenadas.length;
+
+        const ahora = new Date();
+
+        let demandaTotal = 0;
+        let pesoTotal = 0;
+
+        lugaresDemanda.forEach(lugar => {
+
+            const distancia = distanciaMetros(
+                lat,
+                lng,
+                lugar.lat,
+                lugar.lng
+            );
+
+            if (distancia > 500) return;
+
+            const demanda = obtenerDemandaHorario(
+                lugar.tipo,
+                ahora
+            );
+
+            const influencia = 1 - distancia / 500;
+
+            demandaTotal += demanda * influencia;
+            pesoTotal += influencia;
+        });
+
+        // Promedio ponderado en lugar de sumar todas las demandas.
+        let demandaPromedio = pesoTotal > 0
+            ? demandaTotal / pesoTotal
+            : 20;
+
+        // Reducir la influencia general para evitar saturación.
+        demandaPromedio = demandaPromedio * 0.65;
+
+        const disponibilidad = 100 - demandaPromedio;
+
+        if (disponibilidad >= 75) {
+            return {
+                color: '#16a34a',
+                nombre: 'Alta',
+                disponibilidad
+            };
+        }
+
+        if (disponibilidad >= 50) {
+            return {
+                color: '#eab308',
+                nombre: 'Media',
+                disponibilidad
+            };
+        }
+
+        if (disponibilidad >= 30) {
+            return {
+                color: '#f97316',
+                nombre: 'Media-baja',
+                disponibilidad
+            };
+        }
 
         return {
-            ...nivel,
-            texto: 'Probabilidad ilustrativa de la maqueta'
+            color: '#dc2626',
+            nombre: 'Baja',
+            disponibilidad
         };
     }
 
+    // ==========================================
+    // SELECCIONAR UNA CALLE
+    // ==========================================
+
     function seleccionar(feature, layer) {
+
         const props = feature.properties || {};
         const tags = props.tags || {};
 
-        const nombre = tags.name ||
+        const nombre =
+            tags.name ||
             props.name ||
             tags['name:es'] ||
             'Calle seleccionada (sin nombre en OSM)';
 
-        const c = clasificar(props.id || 1, tags);
+        const idOSM = Number(props.id);
+        const c = clasificar(feature);
 
         const popup = document.createElement('div');
+
         popup.innerHTML = `
             <strong>${escaparHTML(nombre)}</strong><br>
-            Disponibilidad: ${escaparHTML(c.nombre)}<br>
-            <small>ID del tramo OSM: ${escaparHTML(props.id)}</small><br>
-            <small>${escaparHTML(c.texto)}</small><br>
-            <button type="button" class="btn btn-sm btn-primary mt-2">
+
+            <strong>ID OpenStreetMap:</strong> ${idOSM}<br>
+
+            <strong>Estado:</strong>
+            ${c.prohibida
+                ? 'Prohibida para estacionar'
+                : 'Sin restricción registrada en el sistema'
+            }<br>
+
+            <strong>Disponibilidad:</strong>
+            ${escaparHTML(c.nombre)}<br>
+
+            <small>
+                Disponibilidad estimada:
+                ${c.disponibilidad.toFixed(0)}%
+            </small><br>
+
+            <button type="button"
+                    class="btn btn-sm btn-primary mt-2">
                 Elegir esta calle
             </button>
         `;
@@ -593,21 +666,12 @@ let numeroBusqueda = 0;
         layer.bindPopup(popup);
 
         function elegirCalle() {
-            let ll;
-            
-            clearTimeout(temporizadorBusqueda);
-            numeroBusqueda++;
-            
-            if (marcadorManual) {
-                mapa.removeLayer(marcadorManual);
-                marcadorManual = null;
-            }
 
-            if (typeof layer.getBounds === 'function') {
-                ll = layer.getBounds().getCenter();
-            } else {
+            if (typeof layer.getBounds !== 'function') {
                 return;
             }
+
+            const ll = layer.getBounds().getCenter();
 
             calleInput.value = nombre;
             latInput.value = ll.lat.toFixed(7);
@@ -619,20 +683,30 @@ let numeroBusqueda = 0;
 
             seleccionado = layer;
 
-            if (layer.setStyle) {
-                layer.setStyle({weight: 8, color: '#111827'});
-            }
+            // Mantener el color original del tramo.
+            const estilo = clasificar(feature);
+
+            layer.setStyle({
+                weight: 8,
+                color: estilo.color
+            });
         }
 
         layer.on('click', elegirCalle);
 
         layer.on('popupopen', () => {
             const boton = popup.querySelector('button');
-            if (boton) boton.onclick = elegirCalle;
+
+            if (boton) {
+                boton.onclick = elegirCalle;
+            }
         });
     }
 
-    // Ocupaciones activas recibidas desde PHP.
+    // ==========================================
+    // OCUPACIONES ACTIVAS
+    // ==========================================
+
     const ocupaciones = <?= json_encode(
         $ocupaciones,
         JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT
@@ -644,35 +718,50 @@ let numeroBusqueda = 0;
     ];
 
     function crearIconoAuto(color) {
+
         const dibujo = `
             <svg xmlns="http://www.w3.org/2000/svg"
                  width="42" height="48" viewBox="0 0 42 48">
+
                 <ellipse cx="21" cy="24" rx="19" ry="22"
                          fill="#fff" opacity="0.95"/>
+
                 <g stroke="#1f2937" stroke-width="1.5"
                    stroke-linejoin="round">
+
                     <rect x="5" y="13" width="6" height="10"
                           rx="2" fill="#111827"/>
+
                     <rect x="31" y="13" width="6" height="10"
                           rx="2" fill="#111827"/>
+
                     <rect x="5" y="28" width="6" height="10"
                           rx="2" fill="#111827"/>
+
                     <rect x="31" y="28" width="6" height="10"
                           rx="2" fill="#111827"/>
+
                     <path d="M13 5 Q21 2 29 5 L34 13 L35 35
                              L29 43 Q21 46 13 43 L7 35 L8 13 Z"
                           fill="${color}"/>
+
                     <path d="M13 10 Q21 7 29 10 L31 17 L11 17 Z"
                           fill="#bfdbfe"/>
+
                     <path d="M11 20 L31 20 L31 30 L11 30 Z"
                           fill="#dbeafe"/>
+
                     <path d="M11 32 L31 32 L29 39
                              Q21 42 13 39 Z"
                           fill="#bfdbfe"/>
+
                     <path d="M9 12 L12 10 M30 10 L33 12"
-                          fill="none" stroke="#fef3c7" stroke-width="2.5"/>
+                          fill="none" stroke="#fef3c7"
+                          stroke-width="2.5"/>
+
                     <path d="M9 36 L12 38 M30 38 L33 36"
-                          fill="none" stroke="#ef4444" stroke-width="2.5"/>
+                          fill="none" stroke="#ef4444"
+                          stroke-width="2.5"/>
                 </g>
             </svg>
         `;
@@ -686,8 +775,8 @@ let numeroBusqueda = 0;
         });
     }
 
-    // Dibujar únicamente las ocupaciones que devolvió la consulta SQL.
     ocupaciones.forEach(auto => {
+
         const lat = Number(auto.latitud);
         const lng = Number(auto.longitud);
 
@@ -706,10 +795,18 @@ let numeroBusqueda = 0;
             <div class="popup-auto">
                 <strong>${escaparHTML(marcaModelo || 'Automóvil')}</strong>
                 <hr>
-                <div><strong>Color:</strong> ${escaparHTML(auto.color || 'No especificado')}</div>
-                <div><strong>Calle:</strong> ${escaparHTML(auto.calle || 'No especificada')}</div>
-                <div><strong>Estacionado:</strong> ${escaparHTML(String(auto.hora_estacionamiento).substring(0, 5))}</div>
-                <div><strong>Se libera:</strong> ${escaparHTML(String(auto.hora_liberacion).substring(0, 5))}</div>
+                <div><strong>Color:</strong>
+                    ${escaparHTML(auto.color || 'No especificado')}
+                </div>
+                <div><strong>Calle:</strong>
+                    ${escaparHTML(auto.calle || 'No especificada')}
+                </div>
+                <div><strong>Estacionado:</strong>
+                    ${escaparHTML(String(auto.hora_estacionamiento).substring(0, 5))}
+                </div>
+                <div><strong>Se libera:</strong>
+                    ${escaparHTML(String(auto.hora_liberacion).substring(0, 5))}
+                </div>
             </div>
         `;
 
@@ -722,29 +819,54 @@ let numeroBusqueda = 0;
         .bindPopup(popup);
     });
 
-    // Consulta de calles de OpenStreetMap mediante Overpass.
+    // ==========================================
+    // CONSULTA A OPENSTREETMAP
+    // ==========================================
+
     const query =
         '[out:json][timeout:25];' +
+
+        // Calles dentro de los límites del mapa.
         'way["highway"~' +
         '"^(residential|tertiary|secondary|primary|unclassified|living_street|service)$"]' +
-        '(-34.8952,-56.1653,-34.8862,-56.1544);out geom tags;';
+        '(-34.8952,-56.1653,-34.8862,-56.1544);' +
+        'out geom tags;' +
 
-    const claveCache = 'calles_mapa_estacionamiento_v1';
-    const duracionCache = 30 * 60 * 1000;
+        // Lugares de interés: área ampliada unos 500 metros.
+        '(' +
 
-    function dibujarCalles(features) {
+        'nwr["amenity"~"school|hospital|clinic|doctors|university|college|kindergarten|marketplace|restaurant|fast_food|bus_station"]' +
+        '(-34.9002,-56.1708,-34.8812,-56.1489);' +
+
+        // Limitar los comercios para reducir la carga de Overpass.
+        'nwr["shop"~"supermarket|convenience|mall"]' +
+        '(-34.9002,-56.1708,-34.8812,-56.1489);' +
+
+        ');' +
+
+        'out center tags;';
+
+    // ==========================================
+    // DIBUJAR CALLES
+    // ==========================================
+
+    function dibujarCalles(features, lugares = []) {
+
+        lugaresDemanda = lugares;
+
         if (capaCalles) {
             mapa.removeLayer(capaCalles);
         }
 
         capaCalles = L.geoJSON(
-            {type: 'FeatureCollection', features},
+            {
+                type: 'FeatureCollection',
+                features
+            },
             {
                 style: feature => {
-                    const c = clasificar(
-                        feature.properties.id,
-                        feature.properties.tags
-                    );
+
+                    const c = clasificar(feature);
 
                     return {
                         color: c.color,
@@ -752,6 +874,7 @@ let numeroBusqueda = 0;
                         opacity: 0.88
                     };
                 },
+
                 onEachFeature: seleccionar
             }
         ).addTo(mapa);
@@ -760,73 +883,87 @@ let numeroBusqueda = 0;
             'Calles cargadas. Seleccioná una línea para elegirla.';
     }
 
-    
-async function obtenerCalles() {
-    const servidores = [
-        'https://overpass.private.coffee/api/interpreter',
-        'https://overpass-api.de/api/interpreter',
-        'https://overpass.kumi.systems/api/interpreter'
-    ];
+    // ==========================================
+    // OBTENER DATOS DE OVERPASS
+    // ==========================================
 
-    let ultimoError = null;
+    async function obtenerCalles() {
 
-    for (const servidor of servidores) {
-        try {
-            console.log('Intentando cargar calles desde:', servidor);
+        const servidores = [
+            'https://overpass.private.coffee/api/interpreter',
+            'https://overpass-api.de/api/interpreter',
+            'https://overpass.kumi.systems/api/interpreter'
+        ];
 
-            const respuesta = await fetch(servidor, {
-                method: 'POST',
-                headers: {
-                    'Content-Type':
-                        'application/x-www-form-urlencoded;charset=UTF-8'
-                },
-                body: 'data=' + encodeURIComponent(query),
-                signal: AbortSignal.timeout(60000)
-            });
+        let ultimoError = null;
 
-            if (!respuesta.ok) {
-                throw new Error(
-                    `Error HTTP ${respuesta.status}`
+        for (const servidor of servidores) {
+
+            try {
+
+                console.log('Intentando cargar datos:', servidor);
+
+                const respuesta = await fetch(servidor, {
+                    method: 'POST',
+
+                    headers: {
+                        'Content-Type':
+                            'application/x-www-form-urlencoded;charset=UTF-8'
+                    },
+
+                    body: 'data=' + encodeURIComponent(query),
+                    signal: AbortSignal.timeout(45000)
+                });
+
+                if (!respuesta.ok) {
+                    throw new Error(`Error HTTP ${respuesta.status}`);
+                }
+
+                const data = await respuesta.json();
+
+                if (!data || !Array.isArray(data.elements)) {
+                    throw new Error('Respuesta inválida de Overpass');
+                }
+
+                console.log(
+                    'Elementos recibidos:',
+                    data.elements.length
+                );
+
+                return data;
+
+            } catch (error) {
+
+                ultimoError = error;
+
+                console.warn(
+                    'Falló el servidor:',
+                    servidor,
+                    error
                 );
             }
-
-            const data = await respuesta.json();
-
-            if (!data || !Array.isArray(data.elements)) {
-                throw new Error('Respuesta inválida de Overpass');
-            }
-
-            console.log(
-                'Calles recibidas correctamente:',
-                data.elements.length
-            );
-
-            return data;
-
-        } catch (error) {
-            ultimoError = error;
-
-            console.warn(
-                'Falló el servidor de calles:',
-                servidor,
-                error
-            );
         }
+
+        throw ultimoError ||
+            new Error('No se pudieron obtener los datos');
     }
 
-    throw ultimoError ||
-        new Error('No se pudieron obtener las calles');
-}
+    // ==========================================
+    // CARGAR CALLES Y LUGARES
+    // ==========================================
 
     async function cargarCalles(forzarConsulta = false) {
+
         let guardado = null;
 
         try {
+
             guardado = JSON.parse(
                 localStorage.getItem(claveCache) || 'null'
             );
+
         } catch (error) {
-            console.warn('No se pudo leer la caché del mapa.');
+            console.warn('No se pudo leer la caché.');
         }
 
         const cacheValida =
@@ -834,121 +971,163 @@ async function obtenerCalles() {
             Array.isArray(guardado.features) &&
             guardado.features.length > 0;
 
-        if (
-            !forzarConsulta &&
-            cacheValida &&
-            Date.now() - guardado.fecha < duracionCache
-        ) {
-            dibujarCalles(guardado.features);
-            return;
+        // Cargar datos guardados.
+        if (!forzarConsulta && cacheValida) {
+
+            dibujarCalles(
+                guardado.features,
+                guardado.lugares || []
+            );
+
+            if (Date.now() - guardado.fecha < duracionCache) {
+                return;
+            }
+
+            estado.textContent =
+                'Calles guardadas cargadas; actualizando...';
         }
 
-        estado.textContent = 'Cargando calles...';
+        if (!cacheValida || forzarConsulta) {
+            estado.textContent = 'Cargando calles...';
+        }
 
         try {
+
             const data = await obtenerCalles();
 
-            const features = data.elements
-                .filter(e =>
-                    e.type === 'way' &&
-                    Array.isArray(e.geometry) &&
-                    e.geometry.length > 1
-                )
-                .map(e => ({
-                    type: 'Feature',
-                    properties: {
-                        id: e.id,
-                        tags: e.tags || {}
-                    },
-                    geometry: {
-                        type: 'LineString',
-                        coordinates: e.geometry.map(p => [p.lon, p.lat])
-                    }
-                }));
+            // Separar las calles.
+            const elementosCalles = data.elements.filter(e =>
+                e.type === 'way' &&
+                Array.isArray(e.geometry) &&
+                e.geometry.length > 1 &&
+                e.tags?.highway
+            );
+
+            // Obtener hospitales, liceos y comercios.
+            const nuevosLugares = data.elements
+                .filter(e => {
+
+                    const tags = e.tags || {};
+
+                    return (
+                        tags.amenity ||
+                        tags.shop
+                    ) && (
+                        e.lat !== undefined ||
+                        e.center?.lat !== undefined
+                    );
+                })
+                .map(e => {
+
+                    const tags = e.tags || {};
+
+                    return {
+                        lat: Number(e.lat ?? e.center.lat),
+                        lng: Number(e.lon ?? e.center.lon),
+                        tipo: tags.amenity || 'commercial'
+                    };
+                })
+                .filter(l =>
+                    Number.isFinite(l.lat) &&
+                    Number.isFinite(l.lng)
+                );
+
+            // Convertir las calles a GeoJSON.
+            const features = elementosCalles.map(e => ({
+
+                type: 'Feature',
+
+                properties: {
+                    id: e.id,
+                    tags: e.tags || {}
+                },
+
+                geometry: {
+                    type: 'LineString',
+
+                    coordinates: e.geometry.map(p => [
+                        p.lon,
+                        p.lat
+                    ])
+                }
+            }));
 
             if (!features.length) {
                 throw new Error('No se encontraron calles.');
             }
 
-            dibujarCalles(features);
+            // Dibujar calles y lugares.
+            dibujarCalles(features, nuevosLugares);
 
-            try {
-                localStorage.setItem(
-                    claveCache,
-                    JSON.stringify({
-                        fecha: Date.now(),
-                        features
-                    })
-                );
-            } catch (error) {
-                console.warn('No se pudo guardar la caché.');
-            }
+            // Guardar todo en la caché.
+            localStorage.setItem(
+                claveCache,
+                JSON.stringify({
+                    fecha: Date.now(),
+                    features,
+                    lugares: nuevosLugares
+                })
+            );
+
+            console.log('Calles:', features.length);
+            console.log('Lugares de demanda:', nuevosLugares.length);
 
         } catch (error) {
+
             console.error('Error al cargar calles:', error);
 
-            // Si falla la conexión, intentar usar calles guardadas previamente.
             if (cacheValida) {
-                dibujarCalles(guardado.features);
+
+                dibujarCalles(
+                    guardado.features,
+                    guardado.lugares || []
+                );
+
                 estado.textContent =
-                    'Calles cargadas desde la caché. No se pudo actualizar el mapa.';
+                    'Calles cargadas desde caché. No se pudo actualizar.';
+
             } else {
+
                 estado.textContent =
                     'No se pudieron cargar las calles. Revisá la conexión e intentá recargar.';
             }
         }
     }
 
-    // Permitir volver a intentar la carga de calles haciendo clic en el estado.
+    // ==========================================
+    // RECARGAR MAPA
+    // ==========================================
+
     estado.style.cursor = 'pointer';
     estado.title = 'Hacé clic para volver a cargar las calles';
-    estado.addEventListener('click', () => cargarCalles(true));
+
+    estado.addEventListener('click', () => {
+        cargarCalles(true);
+    });
 
     cargarCalles();
 
-// Buscar las coordenadas cuando se escribe una calle manualmente.
-calleInput.addEventListener('input', () => {
-    clearTimeout(temporizadorBusqueda);
+    // ==========================================
+    // VALIDAR CALLE SELECCIONADA
+    // ==========================================
 
-    numeroBusqueda++;
+    calleInput.addEventListener('input', () => {
+        latInput.value = '';
+        lngInput.value = '';
+    });
 
-    latInput.value = '';
-    lngInput.value = '';
+    document.getElementById('form-ocupar')
+        .addEventListener('submit', e => {
 
-    if (marcadorManual) {
-        mapa.removeLayer(marcadorManual);
-        marcadorManual = null;
-    }
+            if (!calleInput.value.trim()) {
+                e.preventDefault();
+                calleInput.focus();
 
-    const calle = calleInput.value.trim();
-
-    if (calle.length < 4) {
-        estado.textContent =
-            'Escribí al menos 4 caracteres para buscar la calle.';
-        return;
-    }
-
-    const busquedaActual = numeroBusqueda;
-
-    // Esperar un segundo para no consultar por cada tecla.
-    temporizadorBusqueda = setTimeout(() => {
-        buscarCoordenadas(calle, busquedaActual);
-    }, 1000);
-});
-
-document.getElementById('form-ocupar').addEventListener('submit', e => {
-    if (!calleInput.value.trim()) {
-        e.preventDefault();
-        calleInput.focus();
-        alert('Ingresá una calle o seleccioná una en el mapa.');
-        return;
-    }
-
-    if (!latInput.value || !lngInput.value) {
-        e.preventDefault();
-        alert('Esperá a que se encuentre la ubicación de la calle antes de confirmar.');
-    }
-});
+                alert(
+                    'Ingresá una calle o seleccioná una en el mapa.'
+                );
+            }
+        });
 
 })();
 </script>
