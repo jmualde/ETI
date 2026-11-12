@@ -2,6 +2,8 @@
 session_start();
 require_once 'conexion.php';
 
+date_default_timezone_set('America/Montevideo');
+
 if (!isset($_SESSION['usuario'])) {
     header('Location: login.php');
     exit();
@@ -13,7 +15,10 @@ function volver($mensaje) {
     exit();
 }
 
-$hora = $_POST['hora'] ?? '';
+// La hora de estacionamiento la define el SERVIDOR (no el formulario),
+// así nadie puede manipularla desde el navegador.
+$hora = date('H:i');
+
 $horaLiberacion = $_POST['hora_liberacion'] ?? '';
 $idAuto = filter_input(INPUT_POST, 'vehiculo', FILTER_VALIDATE_INT);
 $calle = trim($_POST['calle'] ?? '');
@@ -26,39 +31,35 @@ $lng = ($_POST['longitud'] ?? '') !== ''
     ? filter_var($_POST['longitud'], FILTER_VALIDATE_FLOAT)
     : null;
 
+// Validar formato de la hora de liberación (HH:MM)
 $patronHora = '/^([01]\d|2[0-3]):[0-5]\d$/';
 
-$errores = [];
-
-if (!preg_match($patronHora, $hora)) {
-    $errores[] = "Hora incorrecta: " . $hora;
+if (
+    !preg_match($patronHora, $horaLiberacion) ||
+    !$idAuto ||
+    $calle === '' ||
+    mb_strlen($calle) > 150 ||
+    $lat === false ||
+    $lng === false ||
+    $lat === null ||
+    $lng === null ||
+    $lat < -90 ||
+    $lat > 90 ||
+    $lng < -180 ||
+    $lng > 180
+) {
+    volver('Revisá la hora de liberación, el vehículo, la calle y las coordenadas.');
 }
 
-if (!preg_match($patronHora, $horaLiberacion)) {
-    $errores[] = "Hora de liberación incorrecta: " . $horaLiberacion;
-}
-
-if (!$idAuto) {
-    $errores[] = "Vehículo incorrecto: " . ($_POST['vehiculo'] ?? 'VACÍO');
-}
-
-if ($calle === '') {
-    $errores[] = "No llegó el nombre de la calle.";
-}
-
-if ($lat === false || $lng === false) {
-    $errores[] = "Latitud o longitud incorrectas.";
-}
-
-if (mb_strlen($calle) > 150) {
-    $errores[] = "El nombre de la calle supera los 150 caracteres.";
-}
-
-if (!empty($errores)) {
-    volver(implode(" | ", $errores));
+// Horas iguales = duración cero (no tendría sentido).
+// Si la liberación es menor que la hora actual se interpreta como
+// "mañana" (cruza la medianoche), y eso está permitido.
+if ($horaLiberacion === $hora) {
+    volver('La hora de liberación no puede ser igual a la hora actual.');
 }
 
 try {
+
     // Buscar usuario
     $s = $conexion->prepare(
         'SELECT id FROM usuario WHERE nombre_usuario = :usuario'
@@ -70,7 +71,7 @@ try {
         volver('No se encontró tu usuario. Volvé a iniciar sesión.');
     }
 
-    // Verificar que el auto pertenezca al usuario
+    // Verificar que el vehículo pertenezca al usuario
     $s = $conexion->prepare(
         'SELECT id FROM automovil
          WHERE id = :auto AND id_usuario = :usuario'
@@ -84,15 +85,30 @@ try {
         volver('El vehículo seleccionado no está asignado a tu usuario.');
     }
 
-    // Buscar la última ocupación de ese usuario y automóvil
-    $sql2 = 'SELECT id, hora_estacionamiento
-             FROM ocupa
-             WHERE id_automovil = :id_automovil
-               AND id_usuario = :id_usuario
-             ORDER BY hora_estacionamiento DESC, id DESC
-             LIMIT 1';
+    // Rechazar calles marcadas como no disponibles (tramos en azul).
+    $idTramo = filter_input(INPUT_POST, 'id_tramo', FILTER_VALIDATE_INT);
 
-    $s2 = $conexion->prepare($sql2);
+    if ($idTramo) {
+        $s = $conexion->prepare(
+            'SELECT 1 FROM tramos_no_disponibles
+             WHERE id_tramo = :tramo LIMIT 1'
+        );
+        $s->execute([':tramo' => $idTramo]);
+
+        if ($s->fetch()) {
+            volver('Esa calle está marcada como no disponible y no se puede ocupar.');
+        }
+    }
+
+    // Buscar la ocupación existente de ese usuario y automóvil
+    $s2 = $conexion->prepare(
+        'SELECT id
+         FROM ocupa
+         WHERE id_automovil = :id_automovil
+           AND id_usuario = :id_usuario
+         ORDER BY id DESC
+         LIMIT 1'
+    );
     $s2->execute([
         ':id_automovil' => $idAuto,
         ':id_usuario' => $usuario['id']
@@ -101,23 +117,17 @@ try {
     $fila = $s2->fetch(PDO::FETCH_ASSOC);
 
     if ($fila) {
-        // Solo actualizar si la hora nueva es más reciente
-        if ($hora <= substr($fila['hora_estacionamiento'], 0, 5)) {
-            volver(
-                'La nueva hora debe ser posterior a la última ocupación.'
-            );
-        }
 
-        // Actualizar exactamente la fila anterior por su ID
-        $sqlUpdate = 'UPDATE ocupa
-                      SET longitud = :lng,
-                          latitud = :lat,
-                          calle = :calle,
-                          hora_estacionamiento = :hora,
-                          hora_liberacion = :hora_liberacion
-                      WHERE id = :id';
-
-        $stmtUpdate = $conexion->prepare($sqlUpdate);
+        // Actualizar la ocupación existente
+        $stmtUpdate = $conexion->prepare(
+            'UPDATE ocupa
+             SET longitud = :lng,
+                 latitud = :lat,
+                 calle = :calle,
+                 hora_estacionamiento = :hora,
+                 hora_liberacion = :hora_liberacion
+             WHERE id = :id'
+        );
 
         $stmtUpdate->execute([
             ':lng' => $lng,
@@ -128,10 +138,10 @@ try {
             ':id' => $fila['id']
         ]);
 
-        volver('La ocupación anterior se actualizó correctamente.');
+        volver('La ocupación se actualizó correctamente.');
     }
 
-    // Si no existe ninguna ocupación anterior, insertar una nueva
+    // Si no existe una ocupación anterior, insertar una nueva
     $s = $conexion->prepare(
         'INSERT INTO ocupa
          (id_usuario, id_automovil, hora_estacionamiento,
@@ -154,6 +164,10 @@ try {
     volver('La ocupación se guardó correctamente.');
 
 } catch (PDOException $e) {
+
     error_log('Error al guardar ocupación: ' . $e->getMessage());
-    volver('No se pudo guardar la ocupación. Revisá la estructura de la tabla ocupa.');
+
+    volver(
+        'No se pudo guardar la ocupación. Revisá la estructura de la tabla ocupa.'
+    );
 }

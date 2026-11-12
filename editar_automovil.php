@@ -22,7 +22,6 @@ $fila = $stmt->fetch(PDO::FETCH_ASSOC);
         rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
         crossorigin="anonymous">
-        <link rel="stylesheet" href="disenio.css">
 </head>
 <body>
     <h1>Ingrese datos del vehiculo a editar</h1>

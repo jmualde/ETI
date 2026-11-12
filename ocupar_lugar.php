@@ -1,7 +1,9 @@
-
 <?php
 session_start();
 require_once 'conexion.php';
+
+date_default_timezone_set('America/Montevideo');
+$horaActual = date('H:i');
 
 if (!isset($_SESSION['usuario'])) {
     header('Location: login.php');
@@ -11,9 +13,13 @@ if (!isset($_SESSION['usuario'])) {
 $mensaje = $_SESSION['mensaje_ocupar'] ?? '';
 unset($_SESSION['mensaje_ocupar']);
 
+// Liberar el bloqueo de la sesión para no frenar otras páginas.
+// ($_SESSION sigue pudiéndose leer; solo deja de guardarse.)
+session_write_close();
+
 $autos = [];
 $ocupaciones = [];
-$callesProhibidas = [];
+$tramosNoDisponibles = [];
 $usuario = ['id' => 0];
 
 try {
@@ -28,13 +34,6 @@ try {
         header('Location: cerrar_sesion.php');
         exit();
     }
-
-    // Obtener las calles marcadas como prohibidas.
-    $sql = "SELECT id_osm FROM calles_prohibidas";
-    $stmt = $conexion->prepare($sql);
-    $stmt->execute();
-
-    $callesProhibidas = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
     // Vehículos del usuario.
     $stmtAuto = $conexion->prepare(
@@ -99,13 +98,76 @@ try {
 
 } catch (PDOException $e) {
     error_log('Error en ocupar_lugar.php: ' . $e->getMessage());
-
     $autos = [];
     $ocupaciones = [];
-    $callesProhibidas = [];
     $usuario = ['id' => 0];
-
     $mensaje = 'No se pudieron cargar los datos.';
+}
+
+// Cargar los ID de los tramos marcados manualmente como no disponibles.
+// Esta consulta es independiente para que un error en esta tabla
+// no impida cargar los vehículos ni las ocupaciones.
+try {
+    $stmtTramos = $conexion->query(
+        'SELECT id_tramo FROM tramos_no_disponibles'
+    );
+    $tramosNoDisponibles = $stmtTramos->fetchAll(PDO::FETCH_COLUMN);
+} catch (PDOException $e) {
+    error_log('Error cargando tramos no disponibles: ' . $e->getMessage());
+    $tramosNoDisponibles = [];
+}
+
+// Minutos que un lugar liberado se muestra en el mapa.
+const MINUTOS_LIBERADO = 5;
+
+$misOcupaciones = [];
+$liberados = [];
+
+// Consulta independiente: si falta la tabla, el resto de la página sigue andando.
+try {
+    $condicionActiva = "
+        o.latitud IS NOT NULL
+        AND o.longitud IS NOT NULL
+        AND o.hora_estacionamiento IS NOT NULL
+        AND o.hora_liberacion IS NOT NULL
+        AND o.hora_estacionamiento <> o.hora_liberacion
+        AND (
+            (o.hora_estacionamiento < o.hora_liberacion
+             AND CURTIME() >= o.hora_estacionamiento
+             AND CURTIME() <  o.hora_liberacion)
+            OR
+            (o.hora_estacionamiento > o.hora_liberacion
+             AND (CURTIME() >= o.hora_estacionamiento
+                  OR CURTIME() <  o.hora_liberacion))
+        )";
+
+    // Ocupaciones activas del usuario (para el botón "Liberé mi lugar").
+    if (!empty($usuario['id'])) {
+        $stmtMis = $conexion->prepare("
+            SELECT o.id, o.calle, o.hora_liberacion, a.marca, a.modelo
+            FROM ocupa o
+            INNER JOIN automovil a ON a.id = o.id_automovil
+            WHERE o.id_usuario = :usuario AND $condicionActiva
+            ORDER BY o.id DESC
+        ");
+        $stmtMis->execute([':usuario' => $usuario['id']]);
+        $misOcupaciones = $stmtMis->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Lugares liberados recientemente (de todos los usuarios).
+    $stmtLib = $conexion->prepare("
+        SELECT id, calle, latitud, longitud,
+               TIMESTAMPDIFF(MINUTE, liberado_en, NOW()) AS minutos
+        FROM lugares_liberados
+        WHERE liberado_en >= NOW() - INTERVAL " . (int)MINUTOS_LIBERADO . " MINUTE
+        ORDER BY liberado_en DESC
+        LIMIT 100
+    ");
+    $stmtLib->execute();
+    $liberados = $stmtLib->fetchAll(PDO::FETCH_ASSOC);
+
+} catch (PDOException $e) {
+    error_log('Error cargando lugares liberados: ' . $e->getMessage());
 }
 ?>
 <!DOCTYPE html>
@@ -134,6 +196,7 @@ try {
             grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
             gap: 22px;
             align-items: start;
+            color: black;
         }
 
         .panel-ocupar {
@@ -141,6 +204,10 @@ try {
             border-radius: 14px;
             padding: 22px;
             box-shadow: 0 4px 18px #00000012;
+
+            h4{
+                color: black;
+            }
         }
 
         .panel-ocupar label {
@@ -150,6 +217,12 @@ try {
 
         .panel-ocupar .form-control {
             margin-bottom: 8px;
+
+
+
+            label{
+                color: black;
+            }
         }
 
         #mapa-estacionamiento {
@@ -214,6 +287,64 @@ try {
             margin: 6px 0;
         }
 
+        .mis-lugares {
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid #0000001f;
+        }
+
+        .mis-lugares .item-lugar {
+            background: #f3f4f6;
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-top: 8px;
+            font-size: .9rem;
+        }
+
+        .icono-liberado {
+            background: transparent;
+            border: none;
+        }
+
+        .liberado-pin {
+            position: relative;
+            width: 44px;
+            height: 44px;
+        }
+
+        .liberado-pin .pulso {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: #22c55e;
+            opacity: .6;
+            animation: pulso-liberado 1.6s ease-out infinite;
+        }
+
+        .liberado-pin .centro {
+            position: absolute;
+            inset: 7px;
+            border-radius: 50%;
+            background: #16a34a;
+            border: 3px solid #fff;
+            box-shadow: 0 2px 10px #0000006b;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 16px;
+        }
+
+        @keyframes pulso-liberado {
+            0%   { transform: scale(.55); opacity: .85; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .liberado-pin .pulso { animation: none; opacity: .35; }
+        }
+
         @media (max-width: 900px) {
             .ocupar-grid {
                 grid-template-columns: 1fr;
@@ -259,27 +390,33 @@ try {
         <div class="ocupar-grid">
 
             <section class="panel-ocupar">
-                <h4 style="color: black;">Datos del estacionamiento</h4>
+                <h4>Datos del estacionamiento</h4>
 
-                <form action="guardar_ocupacion.php"
-                      method="post"
-                      id="form-ocupar">
+                <form action="guardar_ocupacion.php" method="post" id="form-ocupar" class="form-control">
 
-                    <label for="hora" style="color: black;">Hora a la que vas a estacionar</label>
+                    <label for="hora">Hora de estacionamiento</label>
+
                     <input type="time"
                            class="form-control"
                            id="hora"
                            name="hora"
-                           readonly>
+                           value="<?= htmlspecialchars($horaActual, ENT_QUOTES, 'UTF-8') ?>"
+                           readonly
+                           required
+                           disabled>
 
-                    <label for="hora_liberacion" style="color: black;">Hora de liberación</label>
+                    <p class="text-secondary mt-1">
+                        La hora se establece automáticamente.
+                    </p>
+
+                    <label for="hora_liberacion">Hora de liberación</label>
                     <input type="time"
                            id="hora_liberacion"
                            name="hora_liberacion"
                            class="form-control"
                            required>
 
-                    <label for="vehiculo" style="color: black;">Vehículo</label>
+                    <label for="vehiculo">Vehículo</label>
                     <select class="form-select"
                             id="vehiculo"
                             name="vehiculo"
@@ -308,7 +445,7 @@ try {
                         </div>
                     <?php endif; ?>
 
-                    <label for="calle" style="color: black;">Calle seleccionada</label>
+                    <label for="calle">Calle seleccionada</label>
                     <input type="text"
                            class="form-control"
                            id="calle"
@@ -323,6 +460,7 @@ try {
 
                     <input type="hidden" id="latitud" name="latitud">
                     <input type="hidden" id="longitud" name="longitud">
+                    <input type="hidden" id="id_tramo" name="id_tramo">
 
                     <button type="submit"
                             class="btn btn-primary btn-ocupar"
@@ -331,15 +469,48 @@ try {
                     </button>
                 </form>
 
+                <div class="mis-lugares">
+                    <h5>Liberé mi lugar</h5>
+
+                    <?php if (!count($misOcupaciones)): ?>
+                        <p class="text-muted mb-0" style="font-size:.9rem">
+                            No tenés ningún lugar ocupado ahora.
+                        </p>
+                    <?php else: ?>
+                        <p class="text-muted mb-1" style="font-size:.85rem">
+                            Si ya te vas, avisá para que otros vean el lugar libre.
+                        </p>
+
+                        <?php foreach ($misOcupaciones as $mi): ?>
+                            <form action="guardar_liberacion.php"
+                                  method="post"
+                                  class="item-lugar">
+                                <div>
+                                    <strong><?= htmlspecialchars($mi['marca'] . ' ' . $mi['modelo'], ENT_QUOTES, 'UTF-8') ?></strong><br>
+                                    <?= htmlspecialchars($mi['calle'], ENT_QUOTES, 'UTF-8') ?>
+                                    · hasta <?= htmlspecialchars(substr($mi['hora_liberacion'], 0, 5), ENT_QUOTES, 'UTF-8') ?>
+                                </div>
+                                <input type="hidden"
+                                       name="id_ocupacion"
+                                       value="<?= (int)$mi['id'] ?>">
+                                <button type="submit"
+                                        class="btn btn-success btn-sm mt-2 w-100">
+                                    Avisar que liberé este lugar
+                                </button>
+                            </form>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+
                 <div class="nota-demo">
                     <strong>Importante:</strong>
-                    los colores de disponibilidad son ilustrativos y no representan
-                    datos reales de estacionamiento.
+                    los colores de disponibilidad son estimaciones y pueden
+                    no coincidir con la situación real de la calle.
                 </div>
             </section>
 
             <section class="panel-ocupar">
-                <h4 style="color: black;">Elegí una calle en el mapa</h4>
+                <h4>Elegí una calle en el mapa</h4>
                 <p class="text-muted mb-2">
                     Zona alrededor del Liceo Logosófico,
                     Av. Dr. Manuel Albo 2707, Montevideo.
@@ -353,11 +524,13 @@ try {
                 </div>
 
                 <div class="leyenda" aria-label="Leyenda de disponibilidad">
-                    <span style="color: black;"><i class="muestra" style="background:#16a34a;"></i>Alta (75–100%)</span>
-                    <span style="color: black;"><i class="muestra" style="background:#eab308"></i>Media (50–74%)</span>
-                    <span style="color: black;"><i class="muestra" style="background:#f97316"></i>Media-baja (30–49%)</span>
-                    <span style="color: black;"><i class="muestra" style="background:#dc2626"></i>Baja (0–29%)</span>
-                    <span style="color: black;"><i class="muestra" style="background:#2563eb"></i>Prohibida</span>
+                    <span><i class="muestra" style="background:#16a34a"></i>Alta (80–100%)</span>
+                    <span><i class="muestra" style="background:#eab308"></i>Media (50–79%)</span>
+                    <span><i class="muestra" style="background:#f97316"></i>Media-baja (30–49%)</span>
+                    <span><i class="muestra" style="background:#dc2626"></i>Baja (1–29%)</span>
+                    <span><i class="muestra" style="background:#2563eb"></i>No disponible</span>
+                    <span><i class="muestra" style="background:#9ca3af"></i>Sin datos</span>
+                    <span><i style="display:inline-block;width:14px;height:14px;border-radius:50%;background:#16a34a;border:2px solid #fff;box-shadow:0 0 0 2px #22c55e"></i>Lugar recientemente liberado</span>
                 </div>
             </section>
 
@@ -368,19 +541,15 @@ try {
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-        const ahora = new Date();
-
-    const hora = String(ahora.getHours()).padStart(2, '0');
-    const minutos = String(ahora.getMinutes()).padStart(2, '0');
-
-    document.getElementById("hora").value = `${hora}:${minutos}`;
-    
 (() => {
     const centro = [-34.89071, -56.15986];
 
+    // [sur, oeste] y [norte, este]
+    const BBOX = [-34.8952, -56.1653, -34.8862, -56.1544];
+
     const limites = L.latLngBounds(
-        [-34.8952, -56.1653],
-        [-34.8862, -56.1544]
+        [BBOX[0], BBOX[1]],
+        [BBOX[2], BBOX[3]]
     );
 
     const mapa = L.map('mapa-estacionamiento', {
@@ -404,32 +573,31 @@ try {
     const calleInput = document.getElementById('calle');
     const latInput = document.getElementById('latitud');
     const lngInput = document.getElementById('longitud');
+    const tramoInput = document.getElementById('id_tramo');
+
+    // Cancela todos los pedidos en curso cuando el usuario se va de la página.
+    const controladorPagina = new AbortController();
+    window.addEventListener('pagehide', () => controladorPagina.abort());
 
     let seleccionado = null;
     let capaCalles = null;
-    let lugaresDemanda = [];
 
-    // ==========================================
-    // CONFIGURACIÓN DE CACHÉ
-    // ==========================================
+    let temporizadorBusqueda = null;
+    let marcadorManual = null;
+    let numeroBusqueda = 0;
 
-    const claveCache = 'calles_mapa_estacionamiento_v3';
-    const duracionCache = 30 * 60 * 1000;
+    // Probabilidades reales devueltas por calcular_probabilidades.php
+    // Formato: { idTramo: 0..100 }
+    let probabilidadesTramos = {};
+    let fallaronProbabilidades = false;
+    let ultimaFuente = 'servidor'; // de dónde vinieron las últimas calles
 
-    // ==========================================
-    // CALLES PROHIBIDAS
-    // ==========================================
-
-    const callesProhibidas = new Set(
-        <?= json_encode(
-            $callesProhibidas,
-            JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT
-        ) ?: '[]' ?>.map(Number)
-    );
-
-    // ==========================================
-    // FUNCIONES AUXILIARES
-    // ==========================================
+    const colores = [
+        {min: 80, color: '#16a34a', nombre: 'Alta'},
+        {min: 50, color: '#eab308', nombre: 'Media'},
+        {min: 30, color: '#f97316', nombre: 'Media-baja'},
+        {min: 0, color: '#dc2626', nombre: 'Baja'}
+    ];
 
     function escaparHTML(valor) {
         return String(valor ?? '').replace(/[&<>"']/g, caracter => ({
@@ -441,241 +609,252 @@ try {
         })[caracter]);
     }
 
-    function distanciaMetros(lat1, lon1, lat2, lon2) {
-        const R = 6371000;
-        const rad = grados => grados * Math.PI / 180;
-
-        const dLat = rad(lat2 - lat1);
-        const dLon = rad(lon2 - lon1);
-
-        const a =
-            Math.sin(dLat / 2) ** 2 +
-            Math.cos(rad(lat1)) *
-            Math.cos(rad(lat2)) *
-            Math.sin(dLon / 2) ** 2;
-
-        return R * 2 * Math.atan2(
-            Math.sqrt(a),
-            Math.sqrt(1 - a)
+    async function buscarCoordenadas(calle, busquedaActual) {
+        const url = new URL(
+            'https://nominatim.openstreetmap.org/search'
         );
-    }
 
-    // ==========================================
-    // DEMANDA SEGÚN HORARIO
-    // ==========================================
+        url.searchParams.set('format', 'jsonv2');
+        url.searchParams.set('q', calle + ', Montevideo, Uruguay');
+        url.searchParams.set('limit', '5');
+        url.searchParams.set('countrycodes', 'uy');
+        url.searchParams.set('viewbox', '-56.1653,-34.8862,-56.1544,-34.8952');
+        url.searchParams.set('bounded', '1');
 
-    function obtenerDemandaHorario(tipo, fecha) {
-        const hora = fecha.getHours();
-        const minutos = fecha.getMinutes();
-        const dia = fecha.getDay();
+        estado.textContent = 'Buscando la ubicación de la calle...';
 
-        const horario = hora + minutos / 60;
-        const diaLaboral = dia >= 1 && dia <= 5;
-        const sabado = dia === 6;
+        try {
+            const respuesta = await fetch(url);
 
-        switch (tipo) {
+            if (!respuesta.ok) {
+                throw new Error('No se pudo consultar OpenStreetMap.');
+            }
 
-            case 'school':
-            case 'college':
-            case 'university':
-            case 'kindergarten':
+            const resultados = await respuesta.json();
 
-                if (!diaLaboral) return 10;
+            // Evitar que una búsqueda anterior sobrescriba la más reciente.
+            if (busquedaActual !== numeroBusqueda) {
+                return;
+            }
 
-                if (
-                    (horario >= 7 && horario <= 9) ||
-                    (horario >= 11.5 && horario <= 14) ||
-                    (horario >= 16 && horario <= 18)
-                ) {
-                    return 90;
-                }
+            if (!resultados.length) {
+                latInput.value = '';
+                lngInput.value = '';
 
-                return 15;
+                estado.textContent =
+                    'No se encontró esa calle dentro de la zona del mapa.';
+                return;
+            }
 
-            case 'hospital':
-                return 85;
+            // Buscar un resultado que esté dentro de los límites del mapa.
+            const resultado = resultados.find(r => {
+                const punto = L.latLng(
+                    Number(r.lat),
+                    Number(r.lon)
+                );
 
-            case 'clinic':
-            case 'doctors':
-                return horario >= 8 && horario <= 19 ? 70 : 25;
+                return limites.contains(punto);
+            });
 
-            case 'commercial':
-            case 'marketplace':
-            case 'restaurant':
-            case 'fast_food':
+            if (!resultado) {
+                latInput.value = '';
+                lngInput.value = '';
 
-                if (diaLaboral && horario >= 9 && horario <= 20) {
-                    return 70;
-                }
+                estado.textContent =
+                    'La calle no se encuentra dentro de la zona permitida.';
+                return;
+            }
 
-                if (sabado && horario >= 10 && horario <= 22) {
-                    return 80;
-                }
+            const lat = Number(resultado.lat);
+            const lng = Number(resultado.lon);
 
-                return 25;
+            // Verificar que el punto no caiga en un tramo no disponible.
+            const cercano = tramoMasCercano(L.latLng(lat, lng));
 
-            case 'bus_station':
-                return 65;
+            if (cercano && estaBloqueado(cercano.id)) {
+                latInput.value = '';
+                lngInput.value = '';
+                tramoInput.value = '';
+                estado.textContent = MENSAJE_BLOQUEADO;
+                return;
+            }
 
-            default:
-                return 20;
+            tramoInput.value = cercano ? cercano.id : '';
+
+            latInput.value = lat.toFixed(7);
+            lngInput.value = lng.toFixed(7);
+
+            // Eliminar el marcador manual anterior.
+            if (marcadorManual) {
+                mapa.removeLayer(marcadorManual);
+            }
+
+            const punto = L.latLng(lat, lng);
+
+            marcadorManual = L.marker(punto)
+                .addTo(mapa)
+                .bindPopup(`
+                    <strong>${escaparHTML(calle)}</strong>
+                    <p>Ubicación encontrada para el estacionamiento.</p>
+                `);
+
+            mapa.setView(punto, 18);
+            marcadorManual.openPopup();
+
+            estado.textContent =
+                'Ubicación encontrada. Ya podés confirmar la ocupación.';
+
+        } catch (error) {
+            if (busquedaActual !== numeroBusqueda) {
+                return;
+            }
+
+            console.error('Error buscando la calle:', error);
+
+            latInput.value = '';
+            lngInput.value = '';
+
+            estado.textContent =
+                'No se pudo buscar la calle. Intentá nuevamente.';
         }
     }
 
-    // ==========================================
-    // CALCULAR DISPONIBILIDAD DE CADA CALLE
-    // ==========================================
+    // ID de los tramos que se marcaron como no disponibles en MySQL.
+    // PDO puede devolverlos como texto, por eso los convertimos a Number.
+    const tramosNoDisponibles = new Set(
+        (<?= json_encode(
+            $tramosNoDisponibles,
+            JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT
+        ) ?: '[]' ?>).map(Number)
+    );
 
-    function clasificar(feature) {
+    function clasificar(id, tags) {
+        const idTramo = Number(id);
 
-        const idOSM = Number(feature.properties.id);
-
-        // Si el tramo está prohibido, siempre será azul.
-        if (callesProhibidas.has(idOSM)) {
+        // La restricción manual tiene prioridad.
+        if (tramosNoDisponibles.has(idTramo)) {
             return {
                 color: '#2563eb',
-                nombre: 'Prohibida',
-                disponibilidad: 0,
-                prohibida: true
+                nombre: 'No disponible',
+                texto: 'Este tramo está marcado manualmente como no disponible'
             };
         }
 
-        const coordenadas = feature.geometry.coordinates;
+        const p = probabilidadesTramos[idTramo];
 
-        const lat = coordenadas.reduce(
-            (suma, p) => suma + p[1], 0
-        ) / coordenadas.length;
-
-        const lng = coordenadas.reduce(
-            (suma, p) => suma + p[0], 0
-        ) / coordenadas.length;
-
-        const ahora = new Date();
-
-        let demandaTotal = 0;
-        let pesoTotal = 0;
-
-        lugaresDemanda.forEach(lugar => {
-
-            const distancia = distanciaMetros(
-                lat,
-                lng,
-                lugar.lat,
-                lugar.lng
-            );
-
-            if (distancia > 500) return;
-
-            const demanda = obtenerDemandaHorario(
-                lugar.tipo,
-                ahora
-            );
-
-            const influencia = 1 - distancia / 500;
-
-            demandaTotal += demanda * influencia;
-            pesoTotal += influencia;
-        });
-
-        // Promedio ponderado en lugar de sumar todas las demandas.
-        let demandaPromedio = pesoTotal > 0
-            ? demandaTotal / pesoTotal
-            : 20;
-
-        // Reducir la influencia general para evitar saturación.
-        demandaPromedio = demandaPromedio * 0.65;
-
-        const disponibilidad = 100 - demandaPromedio;
-
-        if (disponibilidad >= 75) {
+        if (typeof p !== 'number' || !Number.isFinite(p)) {
             return {
-                color: '#16a34a',
-                nombre: 'Alta',
-                disponibilidad
+                color: '#9ca3af',
+                nombre: 'Sin datos',
+                texto: 'Todavía no hay datos suficientes'
             };
         }
 
-        if (disponibilidad >= 50) {
-            return {
-                color: '#eab308',
-                nombre: 'Media',
-                disponibilidad
-            };
-        }
-
-        if (disponibilidad >= 30) {
-            return {
-                color: '#f97316',
-                nombre: 'Media-baja',
-                disponibilidad
-            };
-        }
+        const nivel = colores.find(c => p >= c.min) || colores[3];
 
         return {
-            color: '#dc2626',
-            nombre: 'Baja',
-            disponibilidad
+            ...nivel,
+            texto: `Probabilidad estimada: ${Math.round(p)}%`
         };
     }
 
-    // ==========================================
-    // SELECCIONAR UNA CALLE
-    // ==========================================
+    function estaBloqueado(id) {
+        return tramosNoDisponibles.has(Number(id));
+    }
+
+    const MENSAJE_BLOQUEADO =
+        'Esa calle está marcada como no disponible y no se puede ocupar.';
+
+    // Busca el tramo dibujado más cercano a un punto (máx. 30 m).
+    function tramoMasCercano(latlng) {
+        if (!capaCalles) return null;
+
+        const zoom = 18;
+        const p = mapa.project(latlng, zoom);
+        const metrosPorPixel =
+            156543.03 * Math.cos(latlng.lat * Math.PI / 180) / Math.pow(2, zoom);
+
+        let mejor = null;
+
+        capaCalles.eachLayer(layer => {
+            if (typeof layer.getLatLngs !== 'function' || !layer.feature) return;
+
+            const pts = layer.getLatLngs().map(ll => mapa.project(ll, zoom));
+
+            for (let i = 1; i < pts.length; i++) {
+                const d = L.LineUtil.pointToSegmentDistance(p, pts[i - 1], pts[i]) *
+                    metrosPorPixel;
+
+                if (d <= 30 && (!mejor || d < mejor.distancia)) {
+                    mejor = {id: layer.feature.properties.id, distancia: d};
+                }
+            }
+        });
+
+        return mejor;
+    }
 
     function seleccionar(feature, layer) {
-
         const props = feature.properties || {};
         const tags = props.tags || {};
 
-        const nombre =
-            tags.name ||
+        const nombre = tags.name ||
             props.name ||
             tags['name:es'] ||
             'Calle seleccionada (sin nombre en OSM)';
 
-        const idOSM = Number(props.id);
-        const c = clasificar(feature);
+        const c = clasificar(props.id || 1, tags);
 
         const popup = document.createElement('div');
-
         popup.innerHTML = `
             <strong>${escaparHTML(nombre)}</strong><br>
-
-            <strong>ID OpenStreetMap:</strong> ${idOSM}<br>
-
-            <strong>Estado:</strong>
-            ${c.prohibida
-                ? 'Prohibida para estacionar'
-                : 'Sin restricción registrada en el sistema'
-            }<br>
-
-            <strong>Disponibilidad:</strong>
-            ${escaparHTML(c.nombre)}<br>
-
-            <small>
-                Disponibilidad estimada:
-                ${c.disponibilidad.toFixed(0)}%
-            </small><br>
-
-            <button type="button"
-                    class="btn btn-sm btn-primary mt-2">
-                Elegir esta calle
-            </button>
+            Disponibilidad: ${escaparHTML(c.nombre)}<br>
+            <small>ID del tramo OSM: ${escaparHTML(props.id)}</small><br>
+            <small>${escaparHTML(c.texto)}</small><br>
+            ${estaBloqueado(props.id)
+                ? '<span class="text-danger">No se puede ocupar esta calle.</span>'
+                : '<button type="button" class="btn btn-sm btn-primary mt-2">Elegir esta calle</button>'}
         `;
 
         layer.bindPopup(popup);
 
         function elegirCalle() {
+            let ll;
 
-            if (typeof layer.getBounds !== 'function') {
+            clearTimeout(temporizadorBusqueda);
+            numeroBusqueda++;
+
+            // Las calles en azul no se pueden ocupar.
+            if (estaBloqueado(props.id)) {
+                calleInput.value = '';
+                latInput.value = '';
+                lngInput.value = '';
+                tramoInput.value = '';
+
+                if (seleccionado && seleccionado.setStyle) {
+                    capaCalles.resetStyle(seleccionado);
+                }
+                seleccionado = null;
+
+                estado.textContent = MENSAJE_BLOQUEADO;
                 return;
             }
 
-            const ll = layer.getBounds().getCenter();
+            if (marcadorManual) {
+                mapa.removeLayer(marcadorManual);
+                marcadorManual = null;
+            }
+
+            if (typeof layer.getBounds === 'function') {
+                ll = layer.getBounds().getCenter();
+            } else {
+                return;
+            }
 
             calleInput.value = nombre;
             latInput.value = ll.lat.toFixed(7);
             lngInput.value = ll.lng.toFixed(7);
+            tramoInput.value = props.id;
 
             if (seleccionado && seleccionado.setStyle) {
                 capaCalles.resetStyle(seleccionado);
@@ -683,30 +862,20 @@ try {
 
             seleccionado = layer;
 
-            // Mantener el color original del tramo.
-            const estilo = clasificar(feature);
-
-            layer.setStyle({
-                weight: 8,
-                color: estilo.color
-            });
+            if (layer.setStyle) {
+                layer.setStyle({weight: 8, color: '#111827'});
+            }
         }
 
         layer.on('click', elegirCalle);
 
         layer.on('popupopen', () => {
             const boton = popup.querySelector('button');
-
-            if (boton) {
-                boton.onclick = elegirCalle;
-            }
+            if (boton) boton.onclick = elegirCalle;
         });
     }
 
-    // ==========================================
-    // OCUPACIONES ACTIVAS
-    // ==========================================
-
+    // Ocupaciones activas recibidas desde PHP.
     const ocupaciones = <?= json_encode(
         $ocupaciones,
         JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT
@@ -718,50 +887,35 @@ try {
     ];
 
     function crearIconoAuto(color) {
-
         const dibujo = `
             <svg xmlns="http://www.w3.org/2000/svg"
                  width="42" height="48" viewBox="0 0 42 48">
-
                 <ellipse cx="21" cy="24" rx="19" ry="22"
                          fill="#fff" opacity="0.95"/>
-
                 <g stroke="#1f2937" stroke-width="1.5"
                    stroke-linejoin="round">
-
                     <rect x="5" y="13" width="6" height="10"
                           rx="2" fill="#111827"/>
-
                     <rect x="31" y="13" width="6" height="10"
                           rx="2" fill="#111827"/>
-
                     <rect x="5" y="28" width="6" height="10"
                           rx="2" fill="#111827"/>
-
                     <rect x="31" y="28" width="6" height="10"
                           rx="2" fill="#111827"/>
-
                     <path d="M13 5 Q21 2 29 5 L34 13 L35 35
                              L29 43 Q21 46 13 43 L7 35 L8 13 Z"
                           fill="${color}"/>
-
                     <path d="M13 10 Q21 7 29 10 L31 17 L11 17 Z"
                           fill="#bfdbfe"/>
-
                     <path d="M11 20 L31 20 L31 30 L11 30 Z"
                           fill="#dbeafe"/>
-
                     <path d="M11 32 L31 32 L29 39
                              Q21 42 13 39 Z"
                           fill="#bfdbfe"/>
-
                     <path d="M9 12 L12 10 M30 10 L33 12"
-                          fill="none" stroke="#fef3c7"
-                          stroke-width="2.5"/>
-
+                          fill="none" stroke="#fef3c7" stroke-width="2.5"/>
                     <path d="M9 36 L12 38 M30 38 L33 36"
-                          fill="none" stroke="#ef4444"
-                          stroke-width="2.5"/>
+                          fill="none" stroke="#ef4444" stroke-width="2.5"/>
                 </g>
             </svg>
         `;
@@ -775,14 +929,31 @@ try {
         });
     }
 
-    ocupaciones.forEach(auto => {
+    // Si varios autos están en el mismo punto, se separan un poco
+    // para que no queden uno encima del otro.
+    const posicionesUsadas = {};
 
+    // Dibujar únicamente las ocupaciones que devolvió la consulta SQL.
+    ocupaciones.forEach(auto => {
         const lat = Number(auto.latitud);
         const lng = Number(auto.longitud);
 
         if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
         if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return;
         if (lat === 0 || lng === 0) return;
+
+        const clave = lat.toFixed(5) + ',' + lng.toFixed(5);
+        const n = posicionesUsadas[clave] = (posicionesUsadas[clave] ?? -1) + 1;
+
+        let latMarcador = lat;
+        let lngMarcador = lng;
+
+        if (n > 0) {
+            const angulo = n * 2.4;
+            const radio = 0.00007; // unos 7 metros
+            latMarcador += radio * Math.sin(angulo);
+            lngMarcador += radio * Math.cos(angulo);
+        }
 
         const indice =
             Math.abs(Number(auto.id_automovil)) % coloresAutos.length;
@@ -795,22 +966,14 @@ try {
             <div class="popup-auto">
                 <strong>${escaparHTML(marcaModelo || 'Automóvil')}</strong>
                 <hr>
-                <div><strong>Color:</strong>
-                    ${escaparHTML(auto.color || 'No especificado')}
-                </div>
-                <div><strong>Calle:</strong>
-                    ${escaparHTML(auto.calle || 'No especificada')}
-                </div>
-                <div><strong>Estacionado:</strong>
-                    ${escaparHTML(String(auto.hora_estacionamiento).substring(0, 5))}
-                </div>
-                <div><strong>Se libera:</strong>
-                    ${escaparHTML(String(auto.hora_liberacion).substring(0, 5))}
-                </div>
+                <div><strong>Color:</strong> ${escaparHTML(auto.color || 'No especificado')}</div>
+                <div><strong>Calle:</strong> ${escaparHTML(auto.calle || 'No especificada')}</div>
+                <div><strong>Estacionado:</strong> ${escaparHTML(String(auto.hora_estacionamiento).substring(0, 5))}</div>
+                <div><strong>Se libera:</strong> ${escaparHTML(String(auto.hora_liberacion).substring(0, 5))}</div>
             </div>
         `;
 
-        L.marker([lat, lng], {
+        L.marker([latMarcador, lngMarcador], {
             icon: crearIconoAuto(coloresAutos[indice]),
             title: marcaModelo || 'Automóvil estacionado',
             zIndexOffset: 500
@@ -819,54 +982,88 @@ try {
         .bindPopup(popup);
     });
 
-    // ==========================================
-    // CONSULTA A OPENSTREETMAP
-    // ==========================================
+    // Lugares recién liberados (icono verde pulsante).
+    const liberados = <?= json_encode(
+        $liberados,
+        JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT
+    ) ?: '[]' ?>;
 
+    const MINUTOS_LIBERADO = <?= (int)MINUTOS_LIBERADO ?>;
+
+    function crearIconoLiberado() {
+        return L.divIcon({
+            html: '<div class="liberado-pin"><div class="pulso"></div><div class="centro">P</div></div>',
+            className: 'icono-liberado',
+            iconSize: [44, 44],
+            iconAnchor: [22, 22],
+            popupAnchor: [0, -22]
+        });
+    }
+
+    liberados.forEach(lugar => {
+        const lat = Number(lugar.latitud);
+        const lng = Number(lugar.longitud);
+
+        if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+        if (lat === 0 || lng === 0) return;
+
+        const minutos = Math.max(0, Number(lugar.minutos) || 0);
+        const hace = minutos < 1
+            ? 'hace instantes'
+            : `hace ${minutos} min`;
+
+        const popup = `
+            <div class="popup-auto">
+                <strong>Lugar recientemente liberado</strong>
+                <hr>
+                <div><strong>Calle:</strong> ${escaparHTML(lugar.calle || 'No especificada')}</div>
+                <div><strong>Liberado:</strong> ${escaparHTML(hace)}</div>
+                <small>Se muestra durante ${MINUTOS_LIBERADO} minutos.</small>
+            </div>
+        `;
+
+        const marcadorLiberado = L.marker([lat, lng], {
+            icon: crearIconoLiberado(),
+            title: 'Lugar recientemente liberado',
+            zIndexOffset: 1000
+        })
+        .addTo(mapa)
+        .bindPopup(popup);
+
+        // Quitar el icono cuando se cumplen los minutos, sin recargar la página.
+        const restanteMs = Math.max(
+            1000,
+            (MINUTOS_LIBERADO - minutos) * 60 * 1000
+        );
+
+        setTimeout(() => mapa.removeLayer(marcadorLiberado), restanteMs);
+    });
+
+    // Consulta de calles de OpenStreetMap mediante Overpass.
     const query =
         '[out:json][timeout:25];' +
-
-        // Calles dentro de los límites del mapa.
         'way["highway"~' +
         '"^(residential|tertiary|secondary|primary|unclassified|living_street|service)$"]' +
-        '(-34.8952,-56.1653,-34.8862,-56.1544);' +
-        'out geom tags;' +
+        '(-34.8952,-56.1653,-34.8862,-56.1544);out geom tags;';
 
-        // Lugares de interés: área ampliada unos 500 metros.
-        '(' +
+    const claveCache = 'calles_mapa_estacionamiento_v1';
+    const duracionCache = 30 * 60 * 1000;
 
-        'nwr["amenity"~"school|hospital|clinic|doctors|university|college|kindergarten|marketplace|restaurant|fast_food|bus_station"]' +
-        '(-34.9002,-56.1708,-34.8812,-56.1489);' +
-
-        // Limitar los comercios para reducir la carga de Overpass.
-        'nwr["shop"~"supermarket|convenience|mall"]' +
-        '(-34.9002,-56.1708,-34.8812,-56.1489);' +
-
-        ');' +
-
-        'out center tags;';
-
-    // ==========================================
-    // DIBUJAR CALLES
-    // ==========================================
-
-    function dibujarCalles(features, lugares = []) {
-
-        lugaresDemanda = lugares;
-
+    function dibujarCalles(features) {
         if (capaCalles) {
             mapa.removeLayer(capaCalles);
         }
 
+        seleccionado = null;
+
         capaCalles = L.geoJSON(
-            {
-                type: 'FeatureCollection',
-                features
-            },
+            {type: 'FeatureCollection', features},
             {
                 style: feature => {
-
-                    const c = clasificar(feature);
+                    const c = clasificar(
+                        feature.properties.id,
+                        feature.properties.tags
+                    );
 
                     return {
                         color: c.color,
@@ -874,45 +1071,99 @@ try {
                         opacity: 0.88
                     };
                 },
-
                 onEachFeature: seleccionar
             }
         ).addTo(mapa);
 
-        estado.textContent =
-            'Calles cargadas. Seleccioná una línea para elegirla.';
+        estado.textContent = fallaronProbabilidades
+            ? 'Calles cargadas, pero no se pudo calcular la disponibilidad (se ven en gris). Hacé clic acá para reintentar.'
+            : 'Calles cargadas. Seleccioná una línea para elegirla.';
     }
 
-    // ==========================================
-    // OBTENER DATOS DE OVERPASS
-    // ==========================================
+    // Pide las probabilidades al servidor. Si falla, no rompe nada:
+    // las calles quedan en gris ("Sin datos").
+    async function cargarProbabilidades(features) {
+        probabilidadesTramos = {};
+        fallaronProbabilidades = false;
 
-    async function obtenerCalles() {
+        // Límite de 25 segundos para que nunca quede "Calculando..." para siempre.
+        const controlador = new AbortController();
+        const temporizador = setTimeout(() => controlador.abort(), 25000);
+        controladorPagina.signal.addEventListener(
+            'abort',
+            () => controlador.abort()
+        );
 
+        try {
+            const tramos = features.map(feature => ({
+                id: feature.properties.id,
+                coordenadas: feature.geometry.coordinates.map(c => [
+                    Number(c[0].toFixed(6)),
+                    Number(c[1].toFixed(6))
+                ])
+            }));
+
+            const respuesta = await fetch('calcular_probabilidades.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    tramos: tramos,
+                    bbox: BBOX
+                }),
+                signal: controlador.signal
+            });
+
+            if (!respuesta.ok) {
+                throw new Error(`Error HTTP ${respuesta.status}`);
+            }
+
+            const datos = await respuesta.json();
+
+            console.log('Probabilidades calculadas:', datos);
+
+            probabilidadesTramos = datos.probabilidades || {};
+
+        } catch (error) {
+            console.warn('No se pudieron calcular probabilidades:', error);
+            probabilidadesTramos = {};
+            fallaronProbabilidades = true;
+        } finally {
+            clearTimeout(temporizador);
+        }
+    }
+
+    const esperar = ms => new Promise(r => setTimeout(r, ms));
+
+    // Consulta a los 3 servidores Overpass AL MISMO TIEMPO
+    // y usa el primero que responda bien.
+    async function obtenerCallesDirecto() {
         const servidores = [
             'https://overpass.private.coffee/api/interpreter',
             'https://overpass-api.de/api/interpreter',
             'https://overpass.kumi.systems/api/interpreter'
         ];
 
-        let ultimoError = null;
+        const controladores = servidores.map(() => new AbortController());
 
-        for (const servidor of servidores) {
+        controladorPagina.signal.addEventListener('abort', () => {
+            controladores.forEach(c => c.abort());
+        });
+
+        const pedidos = servidores.map(async (servidor, i) => {
+            const temporizador = setTimeout(
+                () => controladores[i].abort(),
+                20000
+            );
 
             try {
-
-                console.log('Intentando cargar datos:', servidor);
-
                 const respuesta = await fetch(servidor, {
                     method: 'POST',
-
                     headers: {
                         'Content-Type':
                             'application/x-www-form-urlencoded;charset=UTF-8'
                     },
-
                     body: 'data=' + encodeURIComponent(query),
-                    signal: AbortSignal.timeout(45000)
+                    signal: controladores[i].signal
                 });
 
                 if (!respuesta.ok) {
@@ -925,45 +1176,115 @@ try {
                     throw new Error('Respuesta inválida de Overpass');
                 }
 
-                console.log(
-                    'Elementos recibidos:',
-                    data.elements.length
-                );
-
+                console.log('Calles recibidas desde:', servidor);
                 return data;
+            } finally {
+                clearTimeout(temporizador);
+            }
+        });
 
+        try {
+            const data = await Promise.any(pedidos);
+            controladores.forEach(c => c.abort());
+            return data;
+        } catch (error) {
+            throw new Error('Ningún servidor de calles respondió.');
+        }
+    }
+
+    // Primero pide las calles a NUESTRO servidor (calles.php, con caché).
+    // Si eso falla, prueba directamente con los servidores de Overpass.
+    async function obtenerCalles() {
+        try {
+            const controlador = new AbortController();
+            const temporizador = setTimeout(() => controlador.abort(), 70000);
+            controladorPagina.signal.addEventListener(
+                'abort',
+                () => controlador.abort()
+            );
+
+            try {
+                const respuesta = await fetch('calles.php', {
+                    signal: controlador.signal
+                });
+
+                if (!respuesta.ok) {
+                    throw new Error(`Error HTTP ${respuesta.status}`);
+                }
+
+                const data = await respuesta.json();
+
+                if (!data || !Array.isArray(data.elements) || !data.elements.length) {
+                    throw new Error('Respuesta inválida de calles.php');
+                }
+
+                ultimaFuente = 'servidor';
+                return data;
+            } finally {
+                clearTimeout(temporizador);
+            }
+        } catch (error) {
+            if (controladorPagina.signal.aborted) throw error;
+            console.warn('calles.php falló, probando Overpass directo:', error);
+            const datosDirectos = await obtenerCallesDirecto();
+            ultimaFuente = 'directo';
+            return datosDirectos;
+        }
+    }
+
+    // Reintenta automáticamente hasta 3 veces.
+    async function obtenerCallesConReintentos() {
+        let ultimoError = null;
+
+        for (let intento = 1; intento <= 3; intento++) {
+            if (controladorPagina.signal.aborted) break;
+
+            try {
+                return await obtenerCalles();
             } catch (error) {
-
                 ultimoError = error;
+                console.warn(`Intento ${intento} fallido:`, error);
 
-                console.warn(
-                    'Falló el servidor:',
-                    servidor,
-                    error
-                );
+                if (intento < 3) {
+                    estado.textContent =
+                        `Reintentando cargar las calles (${intento + 1}/3)...`;
+                    await esperar(2000);
+                }
             }
         }
 
-        throw ultimoError ||
-            new Error('No se pudieron obtener los datos');
+        throw ultimoError || new Error('Carga cancelada.');
     }
 
-    // ==========================================
-    // CARGAR CALLES Y LUGARES
-    // ==========================================
+    function convertirAFeatures(data) {
+        return data.elements
+            .filter(e =>
+                e.type === 'way' &&
+                Array.isArray(e.geometry) &&
+                e.geometry.length > 1
+            )
+            .map(e => ({
+                type: 'Feature',
+                properties: {
+                    id: e.id,
+                    tags: e.tags || {}
+                },
+                geometry: {
+                    type: 'LineString',
+                    coordinates: e.geometry.map(p => [p.lon, p.lat])
+                }
+            }));
+    }
 
-    async function cargarCalles(forzarConsulta = false) {
-
+    async function cargarCallesInterno(forzarConsulta = false) {
         let guardado = null;
 
         try {
-
             guardado = JSON.parse(
                 localStorage.getItem(claveCache) || 'null'
             );
-
         } catch (error) {
-            console.warn('No se pudo leer la caché.');
+            console.warn('No se pudo leer la caché del mapa.');
         }
 
         const cacheValida =
@@ -971,163 +1292,157 @@ try {
             Array.isArray(guardado.features) &&
             guardado.features.length > 0;
 
-        // Cargar datos guardados.
+        let dibujadoDesdeCache = false;
+
+        // 1) Si hay calles guardadas (aunque sean viejas), mostrarlas YA
+        //    y calcular los colores enseguida.
         if (!forzarConsulta && cacheValida) {
+            dibujarCalles(guardado.features);
+            dibujadoDesdeCache = true;
 
-            dibujarCalles(
-                guardado.features,
-                guardado.lugares || []
-            );
+            sembrarServidor(guardado.features);
 
+            estado.textContent = 'Calculando disponibilidad...';
+            await cargarProbabilidades(guardado.features);
+            dibujarCalles(guardado.features);
+
+            // Caché reciente: no hace falta consultar Overpass.
             if (Date.now() - guardado.fecha < duracionCache) {
                 return;
             }
-
-            estado.textContent =
-                'Calles guardadas cargadas; actualizando...';
-        }
-
-        if (!cacheValida || forzarConsulta) {
+        } else {
             estado.textContent = 'Cargando calles...';
         }
 
+        // 2) Pedir calles actualizadas (en segundo plano si ya se dibujó caché).
         try {
-
-            const data = await obtenerCalles();
-
-            // Separar las calles.
-            const elementosCalles = data.elements.filter(e =>
-                e.type === 'way' &&
-                Array.isArray(e.geometry) &&
-                e.geometry.length > 1 &&
-                e.tags?.highway
-            );
-
-            // Obtener hospitales, liceos y comercios.
-            const nuevosLugares = data.elements
-                .filter(e => {
-
-                    const tags = e.tags || {};
-
-                    return (
-                        tags.amenity ||
-                        tags.shop
-                    ) && (
-                        e.lat !== undefined ||
-                        e.center?.lat !== undefined
-                    );
-                })
-                .map(e => {
-
-                    const tags = e.tags || {};
-
-                    return {
-                        lat: Number(e.lat ?? e.center.lat),
-                        lng: Number(e.lon ?? e.center.lon),
-                        tipo: tags.amenity || 'commercial'
-                    };
-                })
-                .filter(l =>
-                    Number.isFinite(l.lat) &&
-                    Number.isFinite(l.lng)
-                );
-
-            // Convertir las calles a GeoJSON.
-            const features = elementosCalles.map(e => ({
-
-                type: 'Feature',
-
-                properties: {
-                    id: e.id,
-                    tags: e.tags || {}
-                },
-
-                geometry: {
-                    type: 'LineString',
-
-                    coordinates: e.geometry.map(p => [
-                        p.lon,
-                        p.lat
-                    ])
-                }
-            }));
+            const data = await obtenerCallesConReintentos();
+            const features = convertirAFeatures(data);
 
             if (!features.length) {
                 throw new Error('No se encontraron calles.');
             }
 
-            // Dibujar calles y lugares.
-            dibujarCalles(features, nuevosLugares);
+            try {
+                localStorage.setItem(
+                    claveCache,
+                    JSON.stringify({fecha: Date.now(), features})
+                );
+            } catch (error) {
+                console.warn('No se pudo guardar la caché.');
+            }
 
-            // Guardar todo en la caché.
-            localStorage.setItem(
-                claveCache,
-                JSON.stringify({
-                    fecha: Date.now(),
-                    features,
-                    lugares: nuevosLugares
-                })
-            );
+            if (ultimaFuente === 'directo') {
+                sembrarServidor(features);
+            }
 
-            console.log('Calles:', features.length);
-            console.log('Lugares de demanda:', nuevosLugares.length);
+            estado.textContent = 'Calculando disponibilidad...';
+            await cargarProbabilidades(features);
+            dibujarCalles(features);
 
         } catch (error) {
+            if (controladorPagina.signal.aborted) return;
 
             console.error('Error al cargar calles:', error);
 
-            if (cacheValida) {
-
-                dibujarCalles(
-                    guardado.features,
-                    guardado.lugares || []
-                );
-
+            if (dibujadoDesdeCache) {
                 estado.textContent =
-                    'Calles cargadas desde caché. No se pudo actualizar.';
-
+                    'Calles cargadas desde la caché. No se pudo actualizar el mapa.';
             } else {
-
                 estado.textContent =
-                    'No se pudieron cargar las calles. Revisá la conexión e intentá recargar.';
+                    'No se pudieron cargar las calles. Hacé clic acá para reintentar.';
             }
         }
     }
 
-    // ==========================================
-    // RECARGAR MAPA
-    // ==========================================
+    // Si este navegador tiene las calles pero el servidor no, se las envía
+    // para que los demás dispositivos las reciban desde calles.php.
+    async function sembrarServidor(features) {
+        const clave = 'calles_sembradas_v1';
 
+        try {
+            const ultima = Number(localStorage.getItem(clave) || 0);
+            if (Date.now() - ultima < 24 * 60 * 60 * 1000) return;
+
+            const respuesta = await fetch('guardar_calles.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({features})
+            });
+
+            if (respuesta.ok) {
+                localStorage.setItem(clave, String(Date.now()));
+            }
+        } catch (error) {
+            console.warn('No se pudo enviar las calles al servidor:', error);
+        }
+    }
+
+    // Evita lanzar dos cargas a la vez (por ejemplo, al hacer clic mientras carga).
+    let cargandoCalles = false;
+
+    async function cargarCalles(forzarConsulta = false) {
+        if (cargandoCalles) return;
+        cargandoCalles = true;
+
+        try {
+            await cargarCallesInterno(forzarConsulta);
+        } finally {
+            cargandoCalles = false;
+        }
+    }
+
+    // Permitir volver a intentar la carga de calles haciendo clic en el estado.
     estado.style.cursor = 'pointer';
     estado.title = 'Hacé clic para volver a cargar las calles';
-
-    estado.addEventListener('click', () => {
-        cargarCalles(true);
-    });
+    estado.addEventListener('click', () => cargarCalles(true));
 
     cargarCalles();
 
-    // ==========================================
-    // VALIDAR CALLE SELECCIONADA
-    // ==========================================
-
+    // Buscar las coordenadas cuando se escribe una calle manualmente.
     calleInput.addEventListener('input', () => {
+        clearTimeout(temporizadorBusqueda);
+
+        numeroBusqueda++;
+
         latInput.value = '';
         lngInput.value = '';
+        tramoInput.value = '';
+
+        if (marcadorManual) {
+            mapa.removeLayer(marcadorManual);
+            marcadorManual = null;
+        }
+
+        const calle = calleInput.value.trim();
+
+        if (calle.length < 4) {
+            estado.textContent =
+                'Escribí al menos 4 caracteres para buscar la calle.';
+            return;
+        }
+
+        const busquedaActual = numeroBusqueda;
+
+        // Esperar un segundo para no consultar por cada tecla.
+        temporizadorBusqueda = setTimeout(() => {
+            buscarCoordenadas(calle, busquedaActual);
+        }, 1000);
     });
 
-    document.getElementById('form-ocupar')
-        .addEventListener('submit', e => {
+    document.getElementById('form-ocupar').addEventListener('submit', e => {
+        if (!calleInput.value.trim()) {
+            e.preventDefault();
+            calleInput.focus();
+            alert('Ingresá una calle o seleccioná una en el mapa.');
+            return;
+        }
 
-            if (!calleInput.value.trim()) {
-                e.preventDefault();
-                calleInput.focus();
-
-                alert(
-                    'Ingresá una calle o seleccioná una en el mapa.'
-                );
-            }
-        });
+        if (!latInput.value || !lngInput.value) {
+            e.preventDefault();
+            alert('Esperá a que se encuentre la ubicación de la calle antes de confirmar.');
+        }
+    });
 
 })();
 </script>

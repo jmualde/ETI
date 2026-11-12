@@ -126,27 +126,6 @@ if (!isset($_SESSION["usuario"])) {
             content: "";
         }
 
-        .boton-marco-manual {
-            width: 100%;
-            margin-top: 12px;
-            padding: 12px 16px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            background: transparent;
-            color: #f3f3f3;
-            font-weight: 500;
-            transition: background-color 0.2s ease, border-color 0.2s ease;
-        }
-
-        .boton-marco-manual:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(255, 255, 255, 0.4);
-        }
-
-        #campos-marca-modelo-manual {
-            margin-top: 16px;
-        }
-
         @media (max-width: 767.98px) {
             .registro-auto-layout {
                 grid-template-columns: minmax(0, 1fr);
@@ -220,33 +199,21 @@ if (!isset($_SESSION["usuario"])) {
             <div class="registro-auto-content">
                 <h1>Ingrese los datos del vehículo</h1>
                 <form action="guardar_auto.php" method="POST">
-                    <div class="mb-3" id="campo-marca">
+                    <div class="mb-3">
                         <label for="marca" class="textoBlanco">Marca</label>
                         <select class="campo form-control" id="marca" name="marca" required>
                             <option value="">Seleccione una marca</option>
                         </select>
                     </div>
-
-                    <div class="mb-3" id="campo-modelo">
+                    <div class="mb-3">
                         <label for="modelo" class="textoBlanco">Modelo</label>
                         <div class="marca-color">
                             <select class="campo form-control" id="modelo" name="modelo" required>
                                 <option value="">Primero seleccione marca</option>
                             </select>
+                            <input type="color" class="campoColor" id="color" name="color">
                         </div>
                     </div>
-
-                    <div class="mb-3" id="campo-color">
-                        <label for="color" class="textoBlanco">Color</label>
-                        <input type="color" class="campoColor" id="color" name="color">
-                    </div>
-
-                    <div id="campos-marca-modelo-manual"></div>
-
-                    <button type="button" id="btn_no_disponible" class="boton-marco-manual" onclick="editarMarcaModelo()">
-                        ¿Falta tu marca/modelo?
-                    </button>
-
                     <button type="submit" class="botonRegistra">Registrar vehículo</button>
                 </form>
             </div>
@@ -511,38 +478,6 @@ if (!isset($_SESSION["usuario"])) {
             }
         );
 
-        function editarMarcaModelo() {
-            const campoMarca = document.getElementById("campo-marca");
-            const campoModelo = document.getElementById("campo-modelo");
-            const campoColor = document.getElementById("campo-color");
-            const contenedorManual = document.getElementById("campos-marca-modelo-manual");
-
-            if (contenedorManual.childElementCount > 0) {
-                return;
-            }
-
-            campoMarca.hidden = true;
-            campoModelo.hidden = true;
-            campoColor.hidden = false;
-            selectMarca.disabled = true;
-            selectModelo.disabled = true;
-
-            const inputMarca = document.createElement("input");
-            inputMarca.type = "text";
-            inputMarca.classList.add("campo", "form-control", "mb-3");
-            inputMarca.name = "marca";
-            inputMarca.placeholder = "Ingrese la marca";
-            inputMarca.required = true;
-
-            const inputModelo = document.createElement("input");
-            inputModelo.type = "text";
-            inputModelo.classList.add("campo", "form-control", "mb-3");
-            inputModelo.name = "modelo";
-            inputModelo.placeholder = "Ingrese el modelo";
-            inputModelo.required = true;
-
-            contenedorManual.append(inputMarca, inputModelo);
-        }
     </script>
 
 </body>
