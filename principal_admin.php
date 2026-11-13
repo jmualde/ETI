@@ -23,6 +23,8 @@ if (!isset($_SESSION["usuario"])) {
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap"
         rel="stylesheet">
 
+        <link rel="stylesheet" href="disenio.css">
+
     <title>Pagina Principal</title>
 
     <style>
@@ -45,24 +47,39 @@ if (!isset($_SESSION["usuario"])) {
         }
 
         .tarjetaArriba-principal {
-            background-color: #181C1F;
-            width: 100%;
-            min-height: 60px;
+            background: rgba(16, 18, 20, 0.58);
+            width: fit-content;
+            max-width: calc(100% - 24px);
+            min-height: 62px;
+            margin: 18px auto 0;
 
             display: flex;
             justify-content: center;
             align-items: center;
 
-            gap: 35px;
-            padding: 10px 20px;
-
+            gap: 18px;
+            padding: 10px 22px;
             flex-wrap: wrap;
+
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 999px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+            backdrop-filter: blur(8px);
         }
 
         .tarjetaArriba-principal a {
             text-decoration: none;
             color: white;
             margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            transition: 0.25s ease;
+        }
+
+                .tarjetaArriba-principal a:hover {
+            background: rgba(255, 255, 255, 0.06);
         }
 
         .textoBlanco-principal {
@@ -90,9 +107,8 @@ if (!isset($_SESSION["usuario"])) {
             font-size: clamp(40px, 5vw, 70px);
             font-weight: bold;
             color: #f0e8d8;
-
+            text-align: center;
             margin: 0;
-            max-width: 700px;
         }
 
         .botones {
@@ -126,12 +142,6 @@ if (!isset($_SESSION["usuario"])) {
            TARJETA MAPA
         ========================= */
 
-        .contenedorMapa {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-        }
 
         .tarjeta-principal,
         .tarjeta {
@@ -151,12 +161,6 @@ if (!isset($_SESSION["usuario"])) {
             align-items: center;
         }
 
-        .mapa {
-            border-radius: 10px;
-            width: 100%;
-            max-width: 100%;
-            height: auto;
-        }
 
         /* =========================
            SECCIÓN INFORMACIÓN
@@ -230,16 +234,19 @@ if (!isset($_SESSION["usuario"])) {
         @media (max-width: 576px) {
 
             .tarjetaArriba-principal {
-                min-height: auto;
-
-                flex-direction: column;
-                gap: 12px;
-
-                padding: 18px 10px;
+                width: calc(100% - 20px);
+                min-height: 62px;
+                position: static;
+                display: grid;
+                grid-template-columns: repeat(5, minmax(0, 1fr));
+                gap: 2px;
+                padding: 8px 6px;
+                margin: 12px auto 0;
             }
 
             .tarjetaArriba-principal a {
-                font-size: 14px;
+                width: 100%;
+                font-size: 11px;
             }
 
             .seccionPrincipal {
@@ -286,6 +293,12 @@ if (!isset($_SESSION["usuario"])) {
                 text-align: left;
             }
 
+                    @media (max-width: 380px) {
+            .tarjetaArriba-principal {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
         }
 
     </style>
@@ -299,7 +312,7 @@ if (!isset($_SESSION["usuario"])) {
 
         <nav class="tarjetaArriba-principal">
 
-            <a href="principal_admin.html">
+            <a href="principal_admin.php">
                 <p class="textoBlanco-principal">Página Principal</p>
             </a>
 
@@ -307,8 +320,8 @@ if (!isset($_SESSION["usuario"])) {
                 <p class="textoBlanco-principal">¿Quiénes somos?</p>
             </a>
 
-             <a href="panel_admin.php">
-                <p class="textoBlanco-principal">Panel de administración</p>
+            <a href="panel_admin.php">
+                <p class="textoBlanco-principal">Panel de Administración</p>
             </a>
 
         </nav>
@@ -321,38 +334,17 @@ if (!isset($_SESSION["usuario"])) {
 
                     <!-- TEXTO -->
 
-                    <div class="col-12 col-lg-6">
+                    <div class="col">
 
                         <h1 class="textoPrincipal">
-                            Estaciona en el caos
-                            y cobrá como capo.
+                       Bienvenido al sistema de reservas de estacionamiento del Colegio y Liceo Logosófico
+
+
                         </h1>
 
-                    </div>
-
-
-                    <!-- MAPA -->
-
-                    <div class="col-12 col-lg-6">
-
-                        <div class="contenedorMapa">
-
-                            <div class="tarjeta">
-
-                                <img
-                                    class="mapa"
-                                    src="image.png"
-                                    alt="Mapa">
-
-                            </div>
-
-                        </div>
-
-                    </div>
 
                 </div>
-
-            </div>
+                </div>
 
         </section>
 

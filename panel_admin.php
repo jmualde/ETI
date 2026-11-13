@@ -46,24 +46,39 @@ if (!isset($_SESSION["usuario"])) {
         }
 
         .tarjetaArriba-principal {
-            background-color: #181C1F;
-            width: 100%;
-            min-height: 60px;
+            background: rgba(16, 18, 20, 0.58);
+            width: fit-content;
+            max-width: calc(100% - 24px);
+            min-height: 62px;
+            margin: 18px auto 0;
 
             display: flex;
             justify-content: center;
             align-items: center;
 
-            gap: 35px;
-            padding: 10px 20px;
-
+            gap: 18px;
+            padding: 10px 22px;
             flex-wrap: wrap;
+
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 999px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+            backdrop-filter: blur(8px);
         }
 
         .tarjetaArriba-principal a {
             text-decoration: none;
             color: white;
             margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            transition: 0.25s ease;
+        }
+
+                .tarjetaArriba-principal a:hover {
+            background: rgba(255, 255, 255, 0.06);
         }
 
         .textoBlanco-principal {
@@ -163,7 +178,7 @@ if (!isset($_SESSION["usuario"])) {
             </a>
 
             <a href="panel_admin.php">
-                <p class="textoBlanco-principal">Panel de administración</p>
+                <p class="textoBlanco-principal">Panel de Administración</p>
             </a>
 
         </nav>
@@ -254,13 +269,13 @@ if (!isset($_SESSION["usuario"])) {
                                      <table class="table table-dark table-striped">
                         <thead>
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">CoordenadaX</th>
-                                <th scope="col">CoordenadaY</th>
-                                <th scope="col">ID Usuario</th>
-                                <th scope="col">Fecha_inicio</th>
-                                <th scope="col">Fecha_fin</th>
-                                <th scope="col">ID Automovil</th>
+                                <th scope="col">Id</th>
+                                <th scope="col">Id Usuario</th>
+                                <th scope="col">Id Automovil</th>
+                                <th scope="col">Hora Estacionamiento</th>
+                                <th scope="col">Hora Liberacion</th>
+                                <th scope="col">Latitud</th>
+                                <th scope="col">Longitud</th>
                                 <th scope="col"></th>
                                 <th scope="col"></th>
                             </tr>
@@ -274,12 +289,12 @@ if (!isset($_SESSION["usuario"])) {
                             while ($fila3 = $resultado3->fetch(PDO::FETCH_ASSOC)) {
                                 echo "<tr>";
                                 echo "<td>" . $fila3['id'] . "</td>";
-                                echo "<td>" . $fila3['coordenadaX'] . "</td>";
-                                echo "<td>" . $fila3['coordenadaY'] . "</td>";
                                 echo "<td>" . $fila3['id_usuario'] . "</td>";
-                                echo "<td>" . $fila3['fecha_inicio'] . "</td>";
-                                echo "<td>" . $fila3['fecha_fin'] . "</td>";
                                 echo "<td>" . $fila3['id_automovil'] . "</td>";
+                                echo "<td>" . $fila3['hora_estacionamiento'] . "</td>";
+                                echo "<td>" . $fila3['hora_liberacion'] . "</td>";                                   
+                                echo "<td>" . $fila3['latitud'] . "</td>";
+                                echo "<td>" . $fila3['longitud'] . "</td>";
                                 echo "<td><button class='boton' onclick='editar_ocupa(" . $fila3['id'] . ")'>Editar</button></td>";
                                 echo "<td><button class='boton' onclick='eliminar_ocupa(" . $fila3['id'] . ")'>Eliminar</button></td>";
                                 echo "</tr>";

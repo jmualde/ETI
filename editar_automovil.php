@@ -22,26 +22,30 @@ $fila = $stmt->fetch(PDO::FETCH_ASSOC);
         rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
         crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="disenio.css">
 </head>
-<body>
-    <h1>Ingrese datos del vehiculo a editar</h1>
+<body style="background-color: #101214;">
+    <h1 style="text-align: center;">Ingrese datos del vehiculo a editar</h1>
     <br>
+    <div class="tarjeta-registrar">
     <form action="guardar_editar_automovil.php" method="POST">
-        <input type="hidden" name="id" value="<?php echo $id ?>">
-    <label class="form-label">Marca</label>
+        <input  type="hidden" name="id" value="<?php echo $id ?>">
+    <label class="azul">Marca </label>
     <input type="text" class="form-control" id="marca" name="marca" value="<?php echo $fila['marca']; ?>" required>
     <br>
-    <label class="form-label">Modelo</label>
+    <label class="azul">Modelo</label>
     <input type="text" class="form-control" id="modelo" name="modelo" value="<?php echo $fila['modelo']; ?>" required>
     <br>
-    <label class="form-label">Color</label>
+    <label class="azul">Color</label>
     <input type="color" class="form-control" id="color" name="color" value="<?php echo $fila['color']; ?>" required>
     <br>
-    <label class="form-label">Id_usuario</label>
+    <label class="azul">Id_usuario</label>
     <input type="number" class="form-control" id="id_usuario" name="id_usuario" value="<?php echo $fila['id_usuario']; ?>" required>
+    <br>
 
-    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    <button type="submit" class="botonRegistra">Guardar cambios</button>
     </form>
+    </div>
 </body>
 </html>
 

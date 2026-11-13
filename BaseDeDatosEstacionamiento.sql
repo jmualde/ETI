@@ -20,8 +20,10 @@ CREATE TABLE gestiona(
     id_usuario INT, 
     id_admin INT,
     
-    FOREIGN KEY(id_usuario) REFERENCES usuario(id),
-    FOREIGN KEY(id_admin) REFERENCES admin(id),
+    FOREIGN KEY(id_usuario) REFERENCES usuario(id)
+    ON DELETE CASCADE,
+    FOREIGN KEY(id_admin) REFERENCES admin(id)
+    ON DELETE CASCADE,
     PRIMARY KEY(id_usuario, id_admin)
 );
 
@@ -33,9 +35,10 @@ CREATE TABLE automovil(
     id_usuario INT NOT NULL,
 
     FOREIGN KEY(id_usuario) REFERENCES usuario(id)
+    ON DELETE CASCADE
 );
 
-
+/*
 CREATE TABLE lugar(
     coordenadaX INT,
     coordenadaY INT,
@@ -44,7 +47,7 @@ CREATE TABLE lugar(
     esquina VARCHAR(100),
 
     PRIMARY KEY(coordenadaX, coordenadaY)
-);
+);*/
 
 
 CREATE TABLE registra(
@@ -53,8 +56,10 @@ CREATE TABLE registra(
 
     PRIMARY KEY(id_automovil, id_usuario),
 
-    FOREIGN KEY (id_usuario) REFERENCES usuario(id),
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id)
+    ON DELETE CASCADE,
     FOREIGN KEY (id_automovil) REFERENCES automovil(id)
+    ON DELETE CASCADE
 );
 
 CREATE TABLE ocupa (
@@ -67,8 +72,11 @@ CREATE TABLE ocupa (
     latitud DECIMAL(10,7),
     longitud DECIMAL(10,7),
 
-    FOREIGN KEY (id_usuario) REFERENCES usuario(id),
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id)
+    ON DELETE CASCADE,
+
     FOREIGN KEY (id_automovil) REFERENCES automovil(id)
+    ON DELETE CASCADE
 );
 
 CREATE TABLE tramos_no_disponibles (
@@ -181,7 +189,7 @@ VALUES (1208968468),
         (78109558),
         (983895897),
         (95181819),
-        (1195244180)
+        (1195244180),
         (1206984784),
         (707089565),
         (832731037),
