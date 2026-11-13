@@ -76,20 +76,7 @@ $resultado = $conexion->query($sql);
                 </div>
 
             </form>
-        
-           
-            <div class="text-center">
-                <form action="olvidoContrasenia.html" method="POST">
-
-                    <button type="submit" class="botonAyuda">
-                        <span class="gris">
-                            Ayuda, olvidé mi contraseña
-                        </span>
-                    </button>
-
-                </form>
-            </div>
-
+            
         </div>
 
         
