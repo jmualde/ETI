@@ -524,7 +524,7 @@ try {
                 </div>
 
                 <div class="leyenda" aria-label="Leyenda de disponibilidad">
-                    <span><i class="muestra" style="background:#16a34a"></i>Alta (80–100%)</span>
+                    <span><i class="muestra" style="background:#16a34a"></i>Alta (80–99%)</span>
                     <span><i class="muestra" style="background:#eab308"></i>Media (50–79%)</span>
                     <span><i class="muestra" style="background:#f97316"></i>Media-baja (30–49%)</span>
                     <span><i class="muestra" style="background:#dc2626"></i>Baja (1–29%)</span>

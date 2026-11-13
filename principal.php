@@ -359,8 +359,8 @@ $fila = $stmt->fetch(PDO::FETCH_ASSOC);
                     <div class="col-12 col-lg-6">
 
                         <h1 class="textoPrincipal">
-                            Estaciona en el caos
-                            y cobrá como capo.
+                            Estacioná en el caos
+                            y simplifica tu vida.
                         </h1>
 
                         <div class="botones">
