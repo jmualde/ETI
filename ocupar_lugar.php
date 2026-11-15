@@ -122,6 +122,7 @@ const MINUTOS_LIBERADO = 5;
 
 $misOcupaciones = [];
 $liberados = [];
+$segundosAhora = null; // hora actual de la base de datos, en segundos
 
 // Consulta independiente: si falta la tabla, el resto de la página sigue andando.
 try {
@@ -140,6 +141,18 @@ try {
              AND (CURTIME() >= o.hora_estacionamiento
                   OR CURTIME() <  o.hora_liberacion))
         )";
+
+    // LIMPIEZA: borrar las ocupaciones que ya terminaron.
+    // Se esperan MINUTOS_LIBERADO minutos después de la hora de liberación
+    // para que alcance a mostrarse la "P" verde del lugar recién liberado.
+    $conexion->exec("
+        DELETE o FROM ocupa o
+        WHERE o.hora_estacionamiento IS NOT NULL
+          AND o.hora_liberacion IS NOT NULL
+          AND ((TIME_TO_SEC(CURTIME()) - TIME_TO_SEC(o.hora_liberacion) + 86400) % 86400)
+              >= " . ((int)MINUTOS_LIBERADO * 60) . "
+          AND NOT ($condicionActiva)
+    ");
 
     // Ocupaciones activas del usuario (para el botón "Liberé mi lugar").
     if (!empty($usuario['id'])) {
@@ -165,6 +178,37 @@ try {
     ");
     $stmtLib->execute();
     $liberados = $stmtLib->fetchAll(PDO::FETCH_ASSOC);
+
+    // Hora actual según la base de datos (la misma que usan las ocupaciones).
+    $segundosAhora = (int)$conexion->query('SELECT TIME_TO_SEC(CURTIME())')->fetchColumn();
+
+    // Lugares cuya hora de liberación programada se cumplió hace poco
+    // (se descartan los que ya fueron avisados con el botón, para no duplicar).
+    $stmtProg = $conexion->prepare("
+        SELECT o.id, o.calle, o.latitud, o.longitud,
+               FLOOR(((TIME_TO_SEC(CURTIME()) - TIME_TO_SEC(o.hora_liberacion) + 86400) % 86400) / 60) AS minutos
+        FROM ocupa o
+        WHERE o.latitud IS NOT NULL
+          AND o.longitud IS NOT NULL
+          AND o.latitud <> 0
+          AND o.longitud <> 0
+          AND o.hora_estacionamiento IS NOT NULL
+          AND o.hora_liberacion IS NOT NULL
+          AND o.hora_estacionamiento <> o.hora_liberacion
+          AND ((TIME_TO_SEC(CURTIME()) - TIME_TO_SEC(o.hora_liberacion) + 86400) % 86400)
+              < " . (int)MINUTOS_LIBERADO . " * 60
+          AND NOT ($condicionActiva)
+          AND NOT EXISTS (
+              SELECT 1 FROM lugares_liberados l
+              WHERE l.id_automovil = o.id_automovil
+                AND ABS(l.latitud - o.latitud) < 0.000001
+                AND ABS(l.longitud - o.longitud) < 0.000001
+                AND l.liberado_en >= NOW() - INTERVAL " . (int)MINUTOS_LIBERADO . " MINUTE
+          )
+        LIMIT 100
+    ");
+    $stmtProg->execute();
+    $liberados = array_merge($liberados, $stmtProg->fetchAll(PDO::FETCH_ASSOC));
 
 } catch (PDOException $e) {
     error_log('Error cargando lugares liberados: ' . $e->getMessage());
@@ -929,6 +973,9 @@ try {
         });
     }
 
+    // Hora actual del servidor (en segundos) para programar las liberaciones.
+    const segundosAhora = <?= json_encode($segundosAhora) ?>;
+
     // Si varios autos están en el mismo punto, se separan un poco
     // para que no queden uno encima del otro.
     const posicionesUsadas = {};
@@ -973,13 +1020,28 @@ try {
             </div>
         `;
 
-        L.marker([latMarcador, lngMarcador], {
+        const marcadorAuto = L.marker([latMarcador, lngMarcador], {
             icon: crearIconoAuto(coloresAutos[indice]),
             title: marcaModelo || 'Automóvil estacionado',
             zIndexOffset: 500
         })
         .addTo(mapa)
         .bindPopup(popup);
+
+        // Cuando llegue la hora de liberación, el auto desaparece del mapa
+        // y aparece la "P" verde en ese lugar (sin recargar la página).
+        if (segundosAhora !== null && auto.hora_liberacion) {
+            const [h, m, sg] = String(auto.hora_liberacion).split(':').map(Number);
+            const objetivo = h * 3600 + m * 60 + (sg || 0);
+            const espera = ((objetivo - segundosAhora + 86400) % 86400) * 1000;
+
+            if (espera > 0) {
+                setTimeout(() => {
+                    mapa.removeLayer(marcadorAuto);
+                    mostrarLiberado(lat, lng, auto.calle, 0);
+                }, espera);
+            }
+        }
     });
 
     // Lugares recién liberados (icono verde pulsante).
@@ -1000,14 +1062,8 @@ try {
         });
     }
 
-    liberados.forEach(lugar => {
-        const lat = Number(lugar.latitud);
-        const lng = Number(lugar.longitud);
-
-        if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
-        if (lat === 0 || lng === 0) return;
-
-        const minutos = Math.max(0, Number(lugar.minutos) || 0);
+    // Dibuja la "P" verde y la quita sola cuando pasan los minutos.
+    function mostrarLiberado(lat, lng, calle, minutos) {
         const hace = minutos < 1
             ? 'hace instantes'
             : `hace ${minutos} min`;
@@ -1016,13 +1072,13 @@ try {
             <div class="popup-auto">
                 <strong>Lugar recientemente liberado</strong>
                 <hr>
-                <div><strong>Calle:</strong> ${escaparHTML(lugar.calle || 'No especificada')}</div>
+                <div><strong>Calle:</strong> ${escaparHTML(calle || 'No especificada')}</div>
                 <div><strong>Liberado:</strong> ${escaparHTML(hace)}</div>
                 <small>Se muestra durante ${MINUTOS_LIBERADO} minutos.</small>
             </div>
         `;
 
-        const marcadorLiberado = L.marker([lat, lng], {
+        const marcador = L.marker([lat, lng], {
             icon: crearIconoLiberado(),
             title: 'Lugar recientemente liberado',
             zIndexOffset: 1000
@@ -1030,13 +1086,29 @@ try {
         .addTo(mapa)
         .bindPopup(popup);
 
-        // Quitar el icono cuando se cumplen los minutos, sin recargar la página.
         const restanteMs = Math.max(
             1000,
             (MINUTOS_LIBERADO - minutos) * 60 * 1000
         );
 
-        setTimeout(() => mapa.removeLayer(marcadorLiberado), restanteMs);
+        setTimeout(() => mapa.removeLayer(marcador), restanteMs);
+
+        return marcador;
+    }
+
+    liberados.forEach(lugar => {
+        const lat = Number(lugar.latitud);
+        const lng = Number(lugar.longitud);
+
+        if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+        if (lat === 0 || lng === 0) return;
+
+        mostrarLiberado(
+            lat,
+            lng,
+            lugar.calle,
+            Math.max(0, Number(lugar.minutos) || 0)
+        );
     });
 
     // Consulta de calles de OpenStreetMap mediante Overpass.
