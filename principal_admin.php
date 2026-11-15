@@ -45,7 +45,6 @@ if (!isset($_SESSION["usuario"])) {
             font-family: "Inter", sans-serif;
             overflow-x: hidden;
         }
-
         .tarjetaArriba-principal {
             background: rgba(16, 18, 20, 0.58);
             width: fit-content;

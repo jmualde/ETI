@@ -398,13 +398,50 @@ try {
                 height: 430px;
             }
         }
+
+
+                .tarjetaArriba-principal {
+            background: rgba(16, 18, 20, 0.58);
+            width: fit-content;
+            max-width: calc(100% - 24px);
+            min-height: 62px;
+            margin: 18px auto 0;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            gap: 18px;
+            padding: 10px 22px;
+            flex-wrap: wrap;
+
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 999px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+            backdrop-filter: blur(8px);
+        }
+
+                .tarjetaArriba-principal a {
+            text-decoration: none;
+            color: white;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            transition: 0.25s ease;
+        }
+
+                .tarjetaArriba-principal a:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
     </style>
 </head>
 
 <body>
 <div class="container-fluid p-0">
 
-    <nav class="tarjetaArriba-cuenta">
+    <nav class="tarjetaArriba-principal">
         <a href="principal.php">
             <p class="textoBlanco-principal">Página Principal</p>
         </a>
