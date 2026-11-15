@@ -1,0 +1,45 @@
+services:
+  web:
+    build: .
+    image: estacionamiento
+    container_name: estacionamiento_web
+    ports:
+      - "8080:80"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: mysql:latest
+    command: --default-time-zone=-03:00
+    container_name: estacionamiento_db
+    environment:
+      MYSQL_ROOT_PASSWORD: "root12345"
+      MYSQL_DATABASE: estacionamiento
+      MYSQL_USER: app
+      MYSQL_PASSWORD: "app12345"
+    volumes:
+      - datos_mysql:/var/lib/mysql
+      - ./BaseDeDatosEstacionamiento.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: estacionamiento_phpmyadmin
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  datos_mysql:
